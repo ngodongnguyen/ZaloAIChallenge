@@ -1,0 +1,9 @@
+__pycache__/
+models/
+cache/
+data/
+public_test/
+private_test/
+train/*.jsonl
+submission.jsonl
+result/
