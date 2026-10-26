@@ -1,6 +1,0 @@
-torch>=2.3
-transformers>=4.46
-accelerate>=0.34
-peft>=0.13
-soundfile>=0.12
-numpy
