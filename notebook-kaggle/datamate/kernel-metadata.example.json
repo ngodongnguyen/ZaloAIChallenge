@@ -1,0 +1,17 @@
+{
+  "id": "<owner>/zalo2026-datamate-baseline",
+  "title": "Zalo 2026 DataMate Baseline",
+  "code_file": "baseline_pipeline.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "thanhkhil/zaloai-datamate-dataset"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

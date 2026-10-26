@@ -1,17 +1,50 @@
+# Python artifacts
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Large models, caches, and raw data
 models/
 cache/
 data/
 public_test/
 private_test/
-train/*.jsonl
+train/
+*.wav
+*.mp3
+*.flac
+*.zip
+*.tar.gz
+*.7z
+*.sqlite
+*.db
+
+# Output and submission artifacts
 submission.jsonl
 result/
+results/
+*.log
 
-# IDE & Local Assets
-.vscode/
-.vscode/docs/
-extracted_images/
+# Scratch and internal agent artifacts
+.superpowers/
+
+# Allow documentation and planning in .vscode
+!.vscode/
+!.vscode/docs/
+!.vscode/docs/**
+!.vscode/planning-research/
+!.vscode/planning-research/**
+!.vscode/extracted_images/
+!.vscode/extracted_images/**
+
+# Root files
 Link_data.txt
 
-notebook-kaggle/
+# Local-only agent instructions (Kaggle accounts, personal info)
+AGENTS.local.md
+CLAUDE.local.md
+
+# Kaggle kernel metadata contains the owner's username; commit only *.example.json
+notebook-kaggle/**/kernel-metadata.json
