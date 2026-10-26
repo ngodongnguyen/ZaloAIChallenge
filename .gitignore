@@ -7,3 +7,10 @@ private_test/
 train/*.jsonl
 submission.jsonl
 result/
+
+# IDE & Local Assets
+.vscode/
+.vscode/docs/
+extracted_images/
+Link_data.txt
+
