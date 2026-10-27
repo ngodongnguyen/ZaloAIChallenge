@@ -15,7 +15,10 @@ class LLM:
         torch = self.torch
         ids = self.tok.apply_chat_template(
             messages, add_generation_prompt=True, return_tensors="pt"
-        ).to(self.model.device)
+        )
+        if hasattr(ids, "input_ids"):
+            ids = ids.input_ids
+        ids = ids.to(self.model.device)
         with torch.no_grad():
             out = self.model.generate(
                 ids,
