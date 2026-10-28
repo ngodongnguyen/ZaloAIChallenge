@@ -7,6 +7,7 @@ import argparse
 import json
 import random
 import sys
+import time
 from pathlib import Path
 
 import soundfile as sf
@@ -141,6 +142,7 @@ def main():
         opt, lambda s: (s + 1) / warm if s < warm else 0.5 * (1 + torch.cos(torch.tensor((s - warm) / max(1, total - warm) * 3.14159265)).item()))
 
     step = 0
+    t0 = time.time()
     for ep in range(args.epochs):
         model.train()
         run = 0.0
@@ -157,7 +159,9 @@ def main():
                 opt.zero_grad(set_to_none=True)
                 step += 1
                 if step % 20 == 0:
-                    print(f"epoch {ep} step {step}/{total} loss {run / (20 * args.accum):.4f}", flush=True)
+                    el = time.time() - t0
+                    print(f"epoch {ep} step {step}/{total} loss {run / (20 * args.accum):.4f}  "
+                          f"elapsed {el / 60:.1f}m  {el / step:.1f}s/step  eta {el / step * (total - step) / 60:.1f}m", flush=True)
                     run = 0.0
 
     model = model.merge_and_unload()
