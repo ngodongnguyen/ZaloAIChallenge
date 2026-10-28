@@ -1,6 +1,5 @@
 """Prompt construction shared by SFT data building and inference (must stay identical)."""
 import json
-import re
 
 from config import TOOL_RESULT_CHARS
 
@@ -13,8 +12,7 @@ Quy tắc:
 2. Cần ID/thông tin mà chưa có: gọi tool read trước rồi mới gọi tool write.
 3. Chỉ hỏi lại khi THỰC SỰ thiếu thông tin người dùng chưa nói và không tra được: trước hết dùng tool read để tìm (danh bạ, thiết bị, lịch, danh sách...), dùng ngữ cảnh/hồ sơ (nhà, nơi làm việc, giờ hiện tại). Chỉ khi vẫn không xác định được một tham số bắt buộc mới gọi {"name": "sys.ask_missing_info", "arguments": {"tool_name": "<tool định gọi>", "params": ["<tham số thiếu>"]}} rồi kết thúc.
 4. Không có ứng dụng nào xử lý được yêu cầu: kết thúc ngay {"done": true}, không gọi tool nào.
-5. Không gọi tool thừa. Tham số tùy chọn: truyền khi người dùng nói đến hoặc suy ra được từ yêu cầu (loại, tiêu đề, giờ hẹn...); nếu không có thì bỏ qua, không dùng giá trị rỗng ("", null). Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng.
-6. Yêu cầu có điều kiện ("nếu... thì... không thì..."): gọi tool đọc trước, so sánh số trong KẾT QUẢ với ngưỡng người dùng nói (số lớn có kèm bản rút gọn trong ngoặc), rồi chỉ thực hiện đúng MỘT nhánh phù hợp."""
+5. Không gọi tool thừa. Không truyền tham số tùy chọn mà người dùng không nói đến; không dùng giá trị rỗng ("", null). Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng."""
 
 
 def _param_line(name, spec, required):
@@ -77,22 +75,8 @@ def allowed_names(item, catalog):
     return {t["name"] for t in tools_for_item(item, catalog)} | {"sys.ask_missing_info"}
 
 
-_BIG_INT = re.compile(r'(?<![\w."\-:])(\d{6,})(?![\w."\-:])')
-
-
-def _short(m):
-    n = int(m.group(1))
-    v, unit = (n / 1_000_000, "triệu") if n >= 1_000_000 else (n / 1_000, "nghìn")
-    return f"{m.group(1)} (≈{round(v, 1):g} {unit})"
-
-
-def humanize_numbers(s):
-    """Annotate bare integers >= 100000 with a short form so the model compares them to spoken amounts reliably."""
-    return _BIG_INT.sub(_short, s)
-
-
 def truncate(obj, limit=TOOL_RESULT_CHARS):
-    s = humanize_numbers(json.dumps(obj, ensure_ascii=False))
+    s = json.dumps(obj, ensure_ascii=False)
     return s if len(s) <= limit else s[:limit] + "…"
 
 
