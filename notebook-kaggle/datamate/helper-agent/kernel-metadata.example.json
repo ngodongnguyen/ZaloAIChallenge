@@ -1,9 +1,9 @@
 {
-  "id": "<owner>/zalo2026-datamate-baseline",
-  "title": "Zalo 2026 DataMate Baseline",
-  "code_file": "baseline_pipeline.py",
+  "id": "<owner>/zalo2026-datamate-helper-agent",
+  "title": "Zalo 2026 DataMate Helper Agent",
+  "code_file": "datamate_helper_agent.ipynb",
   "language": "python",
-  "kernel_type": "script",
+  "kernel_type": "notebook",
   "is_private": true,
   "enable_gpu": true,
   "enable_tpu": false,
@@ -12,6 +12,8 @@
     "thanhkhil/zaloai-datamate-dataset"
   ],
   "competition_sources": [],
-  "kernel_sources": [],
+  "kernel_sources": [
+    "<owner>/zalo2026-wheels"
+  ],
   "model_sources": []
 }

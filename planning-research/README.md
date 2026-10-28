@@ -1,32 +1,43 @@
-# HƯỚNG DẪN QUẢN LÝ KẾ HOẠCH & NGHIÊN CỨU (PLANNING & RESEARCH)
-## ZALO AI CHALLENGE 2026 — LIFEMATE & DATAMATE
+# Planning — Zalo AI Challenge 2026
 
-Thư mục này là trung tâm theo dõi chiến lược kỹ thuật, nhật ký thực nghiệm và phân tích lỗi cho hai bảng đấu:
-1. **[`lifemate/`](<lifemate/>)**: Track 1 — Trợ lý ảo AI tiếp nhận giọng nói điều khiển thiết bị (Voice-to-Action).
-2. **[`datamate/`](<datamate/>)**: Track 2 — Trợ lý AI phân tích dữ liệu bảng kinh doanh (Tabular Data Analytics).
+```
+planning-research/
+├── _RUN_TEMPLATE.md            mẫu run card (dùng chung 2 track)
+├── lifemate/ | datamate/
+│   ├── planning.md             chiến lược, thí nghiệm dự kiến, vận hành Kaggle, mốc chốt
+│   ├── insights.md             kiến thức đúc kết: đã xác nhận / ngõ cụt / nhóm lỗi / giả định chưa kiểm / ý tưởng
+│   └── experiments/
+│       ├── INDEX.md            bảng mọi run + tốt nhất hiện tại + log nộp Public LB + GPU-hour theo account
+│       └── YYYY-MM-DD_<run_id>.md   run card của từng lần chạy
+```
 
----
+Đọc theo thứ tự trước khi làm gì mới: `planning.md` → `insights.md` → `experiments/INDEX.md`. Đặc tả cuộc thi ở `.vscode/docs/`, notebook ở `notebook-kaggle/<track>/`.
 
-## Cấu trúc chuẩn cho mỗi Track
+## Lịch sử phiên bản plan
 
-Mỗi bảng đấu bao gồm 4 tài liệu chuẩn hóa:
-- **`strategy.md`**: Bản mô tả kiến trúc mô hình, lựa chọn ASR / LLM / Code Interpreter, prompt engineering và pipeline thiết kế.
-- **`experiment_log.md`**: Bảng nhật ký ghi lại chi tiết từng lượt chạy thử nghiệm (Run ID, Model, Tham số, Điểm số Validation / Leaderboard).
-- **`error_analysis.md`**: Phân tích chuyên sâu các trường hợp dự đoán sai, vi phạm schema hoặc bị phạt điểm.
-- **`submission_checklist.md`**: Danh mục kiểm tra điều kiện cần và đủ trước khi nộp file `submission.jsonl` lên cổng thi hoặc đóng gói Docker Offline.
+`planning.md` là bản đang hiệu lực của mỗi track. **Trước mỗi đợt sửa hoặc thay thế**, lưu nguyên văn bản hiện tại vào [`.vscode/history_plan/`](../.vscode/history_plan/README.md), kiểm SHA-256, rồi ghi [sổ phiên bản](../.vscode/history_plan/INDEX.md) gồm thời điểm, nguồn, lý do và bản kế tiếp. Chỉ sau khi lưu thành công mới edit; không ghi đè hoặc xóa snapshot cũ.
 
----
+Snapshot dùng tên `<track>/YYYY-MM-DD_HHMMSS+0700__<tên-file>__<lý-do>.md`; plan mới liên kết ngược về lịch sử. Lưu cả thay đổi chưa commit trên ổ đĩa, không thay bằng HEAD/staging. Đây là lịch sử **kế hoạch**, tách với run card thực nghiệm ở `experiments/`; Codex, Claude Code và agy cùng tuân thủ mục tương ứng trong [AGENTS.md](../AGENTS.md).
 
-## Quy trình làm việc của AI Agents (Standard Operating Procedure)
+## Quy ước ghi thực nghiệm
 
-1. **Trước khi lập trình / Thử nghiệm mô hình mới**:
-   - Đọc kỹ `strategy.md` của track tương ứng để nắm rõ kiến trúc đang triển khai.
-   - Cập nhật mục tiêu và giả thuyết thực nghiệm vào `strategy.md`.
-2. **Sau khi chạy xong một đợt suy luận (Inference Run)**:
-   - Thêm một dòng mới vào bảng nhật ký `experiment_log.md`.
-   - Ghi nhận đầy đủ: Thời gian, Run ID, Mô hình, Kỹ thuật áp dụng, Điểm Metric (F1 cho LifeMate, Penalized Accuracy cho DataMate).
-3. **Phân tích lỗi (Error Triage)**:
-   - Trích xuất các mẫu bị điểm 0 (LifeMate do lệch `state_hash`) hoặc bị trừ -1 (DataMate).
-   - Ghi lại nguyên nhân gốc rễ và đề xuất giải pháp vào `error_analysis.md`.
-4. **Nộp bài (Submission)**:
-   - Chạy toàn bộ checklist trong `submission_checklist.md` trước khi upload file lên web hoặc nộp Docker image.
+1. **Bắt đầu run**: tạo `experiments/YYYY-MM-DD_<run_id>.md` từ `_RUN_TEMPLATE.md` (status `running`) và thêm một dòng vào `INDEX.md`. Có thể đăng ký trước với status `planned`; khi đó thời điểm chạy, account, version, hash và kết quả chưa có để `null`, chỉ đổi sang `running` lúc thực thi thật.
+2. **`run_id`**: `<lm|dm>-<lane>-<NNN>-<mô-tả-ngắn>`, NNN tăng dần theo track (vd `lm-B-001-baseline-public`, `dm-D-002-qwen3-14b-4bit`). Không đổi run_id sau khi tạo.
+3. **Một thay đổi chính mỗi run**, ghi `parent_run` + `change_vs_parent` để so được và dựng được cây lineage.
+4. **Account**: chỉ ghi bí danh `acc1`…`acc9` (số thứ tự trong pool). Username thật chỉ nằm trong `AGENTS.local.md`.
+5. **Kết thúc run**: điền kết quả từ output notebook (`merge_report.json`, `summary.shard*.json`, `config_hash`), link output version, GPU-hour; cập nhật dòng INDEX và bảng "Tốt nhất hiện tại".
+6. **Nộp Public LB**: thêm một dòng vào bảng nộp trong INDEX (ngày, lần thứ mấy trong ngày, run_id, điểm). Tối đa 5 lần/ngày/track.
+7. **Rút kinh nghiệm**: điều đã kiểm chứng, ngõ cụt, nhóm lỗi lặp lại → một dòng trong `insights.md` có ngày + run_id.
+8. Run hỏng / bỏ dở vẫn giữ card (status `failed` / `abandoned` + lý do) để agent sau không chạy lại cùng cấu hình.
+9. Chỉ Markdown ở đây; trace, checkpoint, submission nằm trong output Kaggle, không commit.
+
+## Hai experiment tiếp theo — thiết kế đã duyệt 2026-10-29
+
+Ưu tiên hiện tại là đo baseline bằng model thật trên notebook có sẵn. Hai dry-run cũ dùng mock/oracle, chưa là điểm baseline. Checklist triển khai nằm trong mục 9–10 của từng file planning; chưa sửa code/chạy GPU trong đợt lập kế hoạch này.
+
+| Track | Experiment planned | Câu hỏi cần đo | Plan / run card |
+|---|---|---|---|
+| LifeMate | `lm-B-001-baseline-paired-dev` | Cùng dev_seen: planner với transcript sạch so với PhoWhisper cả history/final | [plan](lifemate/planning.md#10-lifemate-paired-dev--implementation-plan) · [card](lifemate/experiments/2026-10-29_lm-B-001-baseline-paired-dev.md) |
+| DataMate | `dm-D-001-baseline-dev` | Helper-agent Qwen3-4B trên 6 shop dev_tune: PA, C/W/A, coverage và lỗi | [plan](datamate/planning.md#10-datamate-helper-baseline--implementation-plan) · [card](datamate/experiments/2026-10-29_dm-D-001-baseline-dev.md) |
+
+Mỗi execution Kaggle/version đều có card riêng, kể cả resume. `experiment` định danh phép đo; `run_id` định danh một execution và tăng NNN theo track. Không ghép output khác semantic config. Public/holdout là các lần chạy riêng về sau, chưa tự nộp LB.

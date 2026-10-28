@@ -145,15 +145,41 @@ $$\text{Final score} = \frac{100}{N} \sum_{i=1}^N \text{Score}_i$$
 
 ---
 
-## 6. KIẾN TRÚC MÔ HÌNH KHUYẾN NGHỊ (MODEL SELECTION)
+## 6. QUY ĐỊNH KỸ THUẬT & GIỚI HẠN CỦA BAN TỔ CHỨC (OFFICIAL TECHNICAL REQUIREMENTS)
 
-Theo quy chế: **Tổng hệ thống < 6B, riêng LLM < 5B**:
+Mọi giải pháp tham gia Track 1 (LifeMate) bắt buộc phải tuân thủ nghiêm ngặt toàn bộ các yêu cầu kỹ thuật do Ban tổ chức ban hành:
 
-| Thành phần | Lựa chọn tối ưu | Số tham số | Ưu điểm & Đánh giá phần cứng |
-| :--- | :--- | :---: | :--- |
-| **ASR Module** | `openai/whisper-large-v3-turbo`<br>*(hoặc `vinai/PhoWhisper-medium`)* | 809M<br>(769M) | Tốc độ nhanh gấp 4 lần PhoWhisper-large (chỉ 4 decoder layers), tiêu thụ chỉ ~1.8GB VRAM. Giúp toàn pipeline không bao giờ bị timeout 30s. |
-| **LLM Module** | `Qwen/Qwen2.5-3B-Instruct` | 3.09B | Tối ưu nhất phân khúc < 5B. Kiến trúc GQA nhẹ, hiểu tiếng Việt xuất sắc, sinh JSON chuẩn. |
-| **Tổng hệ thống** | **ASR + LLM** | **~3.90B** | **Hoàn toàn hợp lệ (< 6B)**, VRAM khi chạy chung chỉ ~10.5GB, chạy cực kỳ an toàn trên GPU 16GB (Kaggle T4) lẫn GPU 24GB (A30/3090). |
+1. **Giới hạn kích thước mô hình (Model size)**:
+   - Toàn bộ hệ thống (bao gồm ASR, LLM và bất kỳ thành phần/module phụ trợ nào khác) phải có **tổng số tham số nhỏ hơn 6 tỷ (< 6B parameters)**.
+   - Riêng mô hình ngôn ngữ lớn (LLM) phải có **ít hơn 5 tỷ (< 5B parameters)**.
+   - Độ dài ngữ cảnh (context length) của LLM tối đa là **16K (16,384 tokens)**.
+
+2. **Quy định truy cập dữ liệu ứng dụng (Data access)**:
+   - Hệ thống/Agent **tuyệt đối không được** đọc, sao chép hoặc phân tích cú pháp (parse) bất kỳ tệp nào trong thư mục `<split>_environment/` (bao gồm cả `state.json`).
+   - Mọi thao tác đọc và thay đổi dữ liệu ứng dụng bắt buộc phải thông qua thư viện `zaic_tools` của Ban tổ chức.
+   - Mỗi mẫu thử nghiệm chỉ được khởi tạo đúng **một instance `ToolEnv` duy nhất**, và mọi cuộc gọi thực hiện trên instance đó bắt buộc phải xuất hiện đầy đủ trong kết quả nộp bài.
+
+3. **Dữ liệu và tài nguyên được phép sử dụng (Allowed data & resources)**:
+   - Các đội thi được phép sử dụng dữ liệu công khai và các mô hình mã nguồn mở được phát hành công khai trước ngày **26/10/2026**, với điều kiện giấy phép (license) cho phép sử dụng.
+   - Dữ liệu tổng hợp (synthetic data) có thể được sinh ra bằng các dịch vụ hoặc mô hình khác (LLM thương mại, Text-to-Speech...) trong quá trình phát triển (development), nhưng **tuyệt đối không được sử dụng các dịch vụ/mô hình này tại thời điểm suy luận (inference)**.
+   - Nghiêm cấm hành vi gán nhãn tập `public_test` hoặc `private_test` (thủ công hoặc bằng mô hình/dịch vụ bên ngoài) để huấn luyện hay tinh chỉnh giải pháp.
+
+4. **Thời gian chạy và cấu hình phần cứng máy chấm thi (Runtime & Hardware)**:
+   - Mỗi mẫu âm thanh phải được xử lý hoàn tất trong vòng **tối đa 30 giây**; các mẫu vượt quá thời gian (timeout) hoặc gặp lỗi runtime không thể hoàn thành sẽ nhận **0 điểm**.
+   - Giải pháp bắt buộc phải chạy hoàn toàn **offline**, không có kết nối internet và không gọi bất kỳ API/dịch vụ ngoài nào tại thời điểm suy luận.
+   - Cấu hình phần cứng máy chấm thi của Ban tổ chức:
+     - **GPU**: 1× NVIDIA A30 GPU (24 GB VRAM).
+     - **CPU**: 16-core Intel Xeon Gold 6442Y.
+     - **RAM**: 64 GB.
+
+5. **Quy chuẩn tái lập tất định (Reproducibility)**:
+   - Bắt buộc cố định toàn bộ các giá trị random seed (Python `random`, `numpy`, `torch`...).
+   - Sử dụng giải pháp giải mã tất định cho ASR và LLM (chẳng hạn như greedy decoding hoặc `temperature = 0`).
+   - Nếu kết quả chạy lại từ Docker image sai khác so với kết quả nộp bài, Ban tổ chức sẽ tiến hành chạy Docker image **5 lần** và lấy **điểm số trung bình** làm điểm chính thức.
+
+6. **Quy tắc phân định thứ hạng khi hòa điểm (Tie-breaking)**:
+   - Nếu các đội có cùng điểm số chung cuộc, Ban tổ chức sẽ chấm lại chuỗi `tool_calls` theo công thức $F_1$, bỏ qua bước kiểm tra mã băm `state_hash`.
+   - Nếu vẫn tiếp tục hòa điểm, đội thi có **thời gian xử lý trung bình mỗi mẫu thấp hơn** sẽ được xếp hạng cao hơn.
 
 ---
 

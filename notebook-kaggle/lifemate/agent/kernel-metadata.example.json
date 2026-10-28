@@ -1,9 +1,9 @@
 {
-  "id": "<owner>/zalo2026-lifemate-baseline",
-  "title": "Zalo 2026 LifeMate Baseline",
-  "code_file": "baseline_pipeline.py",
+  "id": "<owner>/zalo2026-lifemate-agent",
+  "title": "Zalo 2026 LifeMate Agent",
+  "code_file": "lifemate_agent.ipynb",
   "language": "python",
-  "kernel_type": "script",
+  "kernel_type": "notebook",
   "is_private": true,
   "enable_gpu": true,
   "enable_tpu": false,
@@ -12,6 +12,8 @@
     "thanhkhil/zaloai-lifemate-dataset"
   ],
   "competition_sources": [],
-  "kernel_sources": [],
+  "kernel_sources": [
+    "<owner>/zalo2026-wheels"
+  ],
   "model_sources": []
 }

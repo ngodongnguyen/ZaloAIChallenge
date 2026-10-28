@@ -1,4 +1,5 @@
 # Python artifacts
+.venv/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -28,16 +29,17 @@ results/
 *.log
 
 # Scratch and internal agent artifacts
-.superpowers/
+# .superpowers/
+# .playwright-cli/
 
 # Allow documentation and planning in .vscode
-!.vscode/
-!.vscode/docs/
-!.vscode/docs/**
-!.vscode/planning-research/
-!.vscode/planning-research/**
-!.vscode/extracted_images/
-!.vscode/extracted_images/**
+# !.vscode/
+# !.vscode/docs/
+# !.vscode/docs/**
+# !.vscode/planning-research/
+# !.vscode/planning-research/**
+# !.vscode/extracted_images/
+# !.vscode/extracted_images/**
 
 # Root files
 Link_data.txt

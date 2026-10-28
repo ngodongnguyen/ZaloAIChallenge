@@ -7,8 +7,8 @@ Tài liệu này cung cấp toàn bộ các mẫu Prompt kỹ thuật số, cấ
 
 ## PHẦN 1: TRACK 1 (LIFEMATE) — PROMPT VÀ AGENT INTERACTION LOOP
 
-### 1.1. System Prompt mẫu cho LLM (`Qwen2.5-3B-Instruct`)
-Prompt này được thiết kế để ép mô hình tuân thủ quy trình gọi công cụ, không bịa ID (`x-ref`), biết gọi `sys.ask_missing_info` khi thiếu tham số và trả về `{"done": true}` khi out-of-scope:
+### 1.1. Cấu trúc System Prompt & Chỉ thị Ràng buộc cho LLM Agent (Track 1: LifeMate)
+Mẫu chỉ thị hệ thống chuẩn hóa giúp ép mô hình tuân thủ quy trình gọi công cụ, không bịa ID (`x-ref`), biết gọi `sys.ask_missing_info` khi thiếu tham số và trả về `{"action": "done"}` khi out-of-scope:
 
 ```text
 Bạn là LifeMate AI Assistant - Trợ lý thông minh điều khiển thiết bị và ứng dụng cho người dùng Việt Nam.
@@ -74,8 +74,8 @@ Action: {"action": "done"}
 
 ## PHẦN 2: TRACK 2 (DATAMATE) — PROMPT VÀ ĐOẠN MÃ MẪU CHUẨN RULEBOOK
 
-### 2.1. System Prompt cho Code Interpreter Agent (`Qwen2.5-Coder-14B/7B`)
-Prompt này nạp toàn bộ 10 điều khoản Rulebook vào ràng buộc tư duy của mô hình trước khi viết mã Python:
+### 2.1. Cấu trúc System Prompt & Ràng buộc Rulebook cho Code Agent (Track 2: DataMate)
+Mẫu chỉ thị nạp toàn bộ 10 điều khoản Rulebook vào ràng buộc tư duy của mô hình trước khi viết mã Python thao tác dữ liệu:
 
 ```text
 Bạn là DataMate Python Code Specialist - Chuyên gia viết mã phân tích dữ liệu bán hàng cho doanh nghiệp Việt Nam.

@@ -59,22 +59,46 @@ Tài liệu này là nguồn thông tin chính thức (Single Source of Truth), 
 
 ## 4. QUY CHẾ SUBMISSION & ĐÓNG GÓI DOCKER
 
-1. **Vòng Public Test (Hàng ngày)**:
-   - Mỗi đội được nộp tối đa **5 lần / ngày / track**.
-   - Nộp file `submission.jsonl` trực tiếp trên web để tính điểm Public Leaderboard.
-2. **Vòng Thẩm định Docker (Bắt buộc để xét giải)**:
-   - Trước 23:59 ngày 16/11/2026, đội thi bắt buộc phải nộp Docker container hoàn chỉnh.
+1. **Vòng Public Test (Hàng ngày: 26/10 – 16/11)**:
+   - Mỗi đội được nộp tối đa **5 lần / ngày / track** (hạn mức reset vào cuối ngày).
+   - Nộp file `submission.jsonl` trực tiếp trên web portal để tính điểm Public Leaderboard. Điểm số dùng để tham khảo trong quá trình phát triển.
+2. **Vòng Thẩm định Docker (Bắt buộc để xét giải — Hạn chót 23:59 ngày 16/11/2026)**:
+   - Các đội thi đóng băng giải pháp và nộp gói Docker hoàn chỉnh bao gồm: mã nguồn huấn luyện (training code), mã nguồn suy luận (inference code), mô hình (weights) và tài liệu hướng dẫn qua form "Solution Submission" trên cổng thi đấu.
+   - Do file Docker dung lượng lớn, đội thi cung cấp **mã kiểm tra tính toàn vẹn (checksum)** và **đường dẫn Google Drive công khai** để BTC tải về.
+   - Mỗi đội được nộp tối đa **2 lần**; BTC chỉ chấm bài nộp cuối cùng.
    - **Môi trường OFFLINE tuyệt đối (`--network none`)**:
      - Mọi trọng số (weights), tokenizers, dependencies Python phải được đóng gói sẵn trong Docker image.
      - Nghiêm cấm mọi lệnh tải động qua mạng (HuggingFace Hub, PyPI, GitHub). Bất kỳ lệnh gọi mạng nào sẽ lập tức làm sập container và nhận điểm 0.
-   - **Hạ tầng máy chấm thi của BTC**:
-     - GPU: 1x NVIDIA A30 (24GB VRAM) hoặc tương đương (RTX 3090, A100).
-     - CPU: 16 vCPUs, RAM: 64GB.
-     - Tương thích CUDA: Đóng gói Docker tương thích CUDA 12.1 – 12.4 (tránh dùng CUDA 12.8 Blackwell để không bị lỗi kernel crash).
-   - **Quy tắc Tái lập Tất định (Reproducibility)**:
-     - Kết quả chạy lại từ Docker của BTC phải khớp với file nộp:
-       $$|\text{Score}_{\text{uploaded}} - \text{Score}_{\text{rerun}}| \le 0.03$$
-     - Bắt buộc dùng **Greedy Decoding (temperature = 0, seed cố định)**.
+   - **Cơ chế gắn ổ đĩa khi chấm thi**:
+     - Thư mục dữ liệu test được gắn vào container tại đường dẫn: `/data` (chế độ chỉ đọc - read only).
+     - File kết quả suy luận bắt buộc xuất ra tại: `/result/submission.jsonl`.
+   - **Hạ tầng máy chấm thi của BTC (Hardware Specs per Track)**:
+     - **Track 1 (LifeMate)**:
+       - GPU: **1× NVIDIA A30 GPU** (24 GB VRAM).
+       - CPU: **16-core Intel Xeon Gold 6442Y**.
+       - RAM: **64 GB**.
+       - Giới hạn thời gian: Tối đa **30 giây / mẫu**. Mẫu quá thời gian hoặc crash tính 0 điểm.
+     - **Track 2 (DataMate)**:
+       - GPU: **2× NVIDIA RTX 5090** (32 GB VRAM mỗi card, tổng cộng 64 GB VRAM).
+       - RAM: **512 GB**.
+       - Giới hạn thời gian: Toàn bộ tập private test phải chạy xong trong vòng **6 giờ** (tính cả thời gian load model).
+       - **Yêu cầu GPU Blackwell**: Bắt buộc dùng **CUDA ≥ 12.8** và bản build PyTorch / vLLM tương thích kiến trúc Blackwell.
+   - **Quy tắc Tái lập Tất định (Reproducibility) & Xử lý Hòa điểm (Tie-breaking)**:
+     - **Track 1 (LifeMate)**:
+       - Cố định mọi seed ngẫu nhiên (Python, NumPy, PyTorch), dùng giải mã tất định (Greedy decoding, temperature = 0).
+       - Nếu kết quả chạy lại sai khác với file đã nộp, BTC sẽ chạy Docker image 5 lần và lấy **điểm số trung bình** làm điểm chính thức.
+       - *Tie-breaking*: Nếu bằng điểm, BTC chấm lại theo công thức F1 bỏ qua điều kiện `state_hash`. Nếu vẫn hòa, đội có thời gian xử lý trung bình mỗi mẫu thấp hơn sẽ xếp trên.
+     - **Track 2 (DataMate)**:
+       - Điểm số chạy lại Docker của BTC trên tập private test là điểm số chung cuộc chính thức.
+       - Bài thi được coi là tái lập thành công nếu:
+         $$|\text{PA}_{\text{uploaded}} - \text{PA}_{\text{rerun}}| \le 0.03$$
+       - Nếu sai lệch vượt quá 0.03 mà không thể giải trình hợp lý, bài thi sẽ bị hủy kết quả.
+       - Nếu container quá thời gian 6 giờ hoặc dừng sớm, chỉ những câu đã ghi vào `/result/submission.jsonl` được chấm, các câu còn lại tính là `abstain` (0 điểm).
+       - *Tie-breaking*: Ưu tiên đội có tổng thời gian suy luận thấp hơn trong lần chạy lại của BTC, sau đó xét theo thời điểm nộp bài sớm hơn.
+3. **Vòng Private Test (20/11 – 23/11)**:
+   - 09:00 ngày 20/11: BTC phát hành tập Private Test.
+   - Các đội chạy giải pháp đã đóng băng và nộp kết quả trước 23:59 ngày 23/11/2026.
+   - BTC chạy lại Docker để xác minh, rà soát mã nguồn chống gian lận và công bố Top 2 đội mỗi track vào ngày 02/12/2026.
 
 ---
 

@@ -12,10 +12,11 @@ Tài liệu này được tối ưu hóa riêng cho các AI Subagents và Develo
 | **Bản chất** | Voice-to-Action Agent (Audio $\rightarrow$ Tool Calls) | Tabular Data Agent (Messy Excel/CSV $\rightarrow$ Answer) |
 | **Tên file nộp** | `submission.jsonl` | `submission.jsonl` |
 | **Cấu trúc dòng** | `{"id": "...", "tool_calls": [...], "state_hash": "..."}` | `{"id": "...", "type": "...", "answer": ...}` |
-| **Giới hạn Model** | Toàn hệ thống < 6B, LLM < 5B | Toàn hệ thống $\le$ 15B |
-| **Model đề xuất** | `whisper-large-v3-turbo` (809M) + `Qwen2.5-3B-Instruct` | `Qwen2.5-Coder-14B` (hoặc `7B`) + Python Code Sandbox |
+| **Giới hạn tham số (Model Budget)** | Toàn hệ thống < 6B, riêng LLM < 5B (context $\le$ 16K) | Toàn hệ thống $\le$ 15B (tính toàn bộ tham số MoE) |
+| **Mốc phát hành mô hình cho phép** | Công khai trước ngày 26/10/2026 | Công khai trước ngày 01/10/2026 |
 | **Metric đánh giá** | $F_1 = \frac{2PR}{P+R}$ với **Cổng chặn State Hash** | Penalized Accuracy: $\text{PA} = \frac{1}{N}\sum s_i$ ($s_i \in \{+1, 0, -1\}$) |
 | **Điều kiện bị 0 điểm** | $\text{hash}_{\text{sys}} \neq \text{hash}_{\text{gold}}$ hoặc $M = 0$ | Bỏ trống / Chọn `{"type": "abstain"}` |
+| **Phần cứng máy chấm** | 1× NVIDIA A30 (24GB VRAM), 16 vCPUs, 64GB RAM | 2× NVIDIA RTX 5090 (64GB total VRAM), 512GB RAM (CUDA $\ge$ 12.8) |
 | **Thời gian tối đa** | $\le 30$ giây / mẫu | Tối đa 6 giờ cho toàn bộ Private Test set |
 | **Độ tất định** | Bắt buộc chạy lại khớp kết quả | $\|\Delta \text{PA}\| \le 0.03$, bắt buộc **Greedy Decoding (temp=0)** |
 
@@ -24,7 +25,7 @@ Tài liệu này được tối ưu hóa riêng cho các AI Subagents và Develo
 ## 2. CHECKLIST TRÁNH 12 CẠM BẪY CHẾT NGƯỜI (FATAL PITFALLS)
 
 ### Nhóm Bẫy Track 1 (LifeMate):
-- [ ] **Bẫy 1: Không bao giờ dùng Model $\ge$ 5B**: Cấm `Qwen2.5-7B`. Chỉ dùng `Qwen2.5-3B-Instruct` (3.09B) để không bị truất quyền thi đấu.
+- [ ] **Bẫy 1: Nghiêm cấm vi phạm giới hạn kích thước Model**: Toàn bộ hệ thống phải < 6B tham số, riêng LLM phải < 5B tham số và context length $\le 16\text{K}$ tokens. Vi phạm trần tham số sẽ bị truất quyền thi đấu.
 - [ ] **Bẫy 2: Không đọc trực tiếp `state.json`**: Mọi thao tác phải đi qua `ToolEnv(split, id, root)`.
 - [ ] **Bẫy 3: Luôn `env.validate()` trước khi `env.call()`**: Lỗi schema trong `env.call()` sẽ bị ghi nhận vĩnh viễn vào `tool_calls` nộp về.
 - [ ] **Bẫy 4: Tuân thủ `x-ref`**: Không bao giờ bịa ID thiết bị/người dùng; phải gọi tool `read/search` để lấy ID trước.

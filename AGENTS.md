@@ -28,6 +28,11 @@ Cuộc thi có 2 track: **LifeMate** (track 1) và **DataMate** (track 2).
 - **Chỉ chứa tài liệu (Markdown)**, không chứa code chạy được.
 - Cách tổ chức file bên trong: xem `planning-research/README.md`.
 
+### `.vscode/history_plan/` — Lịch sử phiên bản kế hoạch
+- Lưu nguyên văn plan trước mỗi đợt chỉnh sửa/thay thế, tách theo track.
+- `INDEX.md` ghi nguồn, thời điểm lưu, lý do thay đổi, SHA-256 và liên kết tới bản kế tiếp.
+- Snapshot cũ là bất biến; đây là lịch sử để tracing/monitor, không thay plan đang hiệu lực trong `planning-research/`.
+
 ### `notebook-kaggle/` — Nơi implement & chạy thử nghiệm
 - Mỗi track một thư mục con: `notebook-kaggle/lifemate/`, `notebook-kaggle/datamate/`.
 - Chứa code thử nghiệm + `kernel-metadata.json` để push lên Kaggle.
@@ -76,6 +81,33 @@ kaggle datasets download -d thanhkhil/zaloai-lifemate-dataset # tải dataset (t
 - `id` trong metadata có dạng `<owner>/<slug>`. Muốn push bằng tài khoản khác thì phải đổi `<owner>` thành đúng username đó, nếu không push sẽ lỗi.
 - Hết quota GPU / giới hạn rate → chuyển sang tài khoản khác trong pool rồi push lại. Ghi lại đã chạy bằng tài khoản nào khi log kết quả vào `planning-research/<track>/`.
 - Không in, không commit API key Kaggle; không sửa `~/.kaggle/kaggle.json` bằng tay.
+
+## Thư viện cài thêm: wheels dùng chung
+
+- Mọi thư viện ngoài image Kaggle được tải sẵn thành wheel bởi `notebook-kaggle/wheels/build_wheels.ipynb` (Kaggle: `<owner>/zalo2026-wheels`). Hai danh sách duy nhất trong notebook đó: `requirements.txt` (cài vào môi trường gốc, không được kéo torch/CUDA mới) và `requirements-vllm.txt` (cài vào venv riêng `/tmp/venv_vllm`).
+- **Không bao giờ `pip install vllm` vào môi trường gốc Kaggle**: nó thay torch (2.13+cu130 trên image 2026-10) và làm hỏng torchaudio → ASR transformers chết. Worker LLM chạy bằng python của venv (`LLM_PYTHON`), ASR và fallback transformers dùng môi trường gốc.
+- Notebook thí nghiệm Add Input output `zalo2026-wheels` (metadata: `kernel_sources`) và cài bằng hàm `pip_install(...)` ở cell cài đặt: ưu tiên `--no-index --find-links /kaggle/input/**/wheels`, lỗi hoặc không có thì cài từ mạng. Không viết `pip install` trần trong notebook mới.
+- **Thêm thư viện mới**: thêm dòng vào đúng danh sách → chạy lại `zalo2026-wheels` (version mới) → xem `wheels/SMOKE.json` phải OK → notebook dùng nó lấy version output mới. Khi đã biết bản chạy được thì ghim phiên bản (`vllm==x.y.z`).
+- Image Kaggle đổi (Python / CUDA / torch khác) thì build lại wheels; notebook nên đặt *Environment: Pin to original environment*.
+
+## Ghi lịch sử thực nghiệm (bắt buộc với mọi agent)
+
+- Trước khi đề xuất / chạy thí nghiệm: đọc `planning-research/<track>/insights.md` và `experiments/INDEX.md` để không lặp lại run cũ hay ngõ cụt.
+- Mỗi lần chạy trên Kaggle (kể cả hỏng) có một run card `planning-research/<track>/experiments/YYYY-MM-DD_<run_id>.md` theo `planning-research/_RUN_TEMPLATE.md` và một dòng trong `INDEX.md`. Quy ước đặt `run_id`, account bí danh `acc<N>`, log nộp Public LB: xem `planning-research/README.md`.
+- Kết luận đã kiểm chứng → một dòng trong `insights.md` (ngày + run_id + nguồn).
+
+## Lưu lịch sử plan trước khi sửa (bắt buộc với mọi agent)
+
+Áp dụng cho **Codex, Claude Code, Antigravity (`agy`), `dsh` và mọi subagent** khi sửa hoặc thay thế `planning-research/<track>/planning.md` hay một tài liệu plan đang hiệu lực khác. **Không sửa trực tiếp plan cũ khi chưa lưu bản trước đó.** “Mỗi track một planning.md” nghĩa là một bản đang hiệu lực; các phiên bản trước phải được giữ lại.
+
+1. **Trước khi edit**, đọc bản hiện tại trên ổ đĩa và lưu nguyên văn vào `.vscode/history_plan/<track>/YYYY-MM-DD_HHMMSS+0700__<tên-file>__<lý-do>.md`. Thay toàn bộ plan thì chuyển bản cũ vào lịch sử trước khi tạo bản mới; chỉnh một phần thì snapshot đầy đủ trước khi sửa. Một snapshot/file cho mỗi đợt chỉnh sửa liên tục; nếu có thay đổi từ agent khác, đọc lại và lưu preimage mới.
+2. Tạo file archive mới, **không ghi đè** khi trùng tên; thêm hậu tố duy nhất. Kiểm bytes/SHA-256 của archive khớp bản trước-edit rồi mới sửa. Lưu thất bại → giữ nguyên plan và báo lỗi, không tiếp tục ghi đè.
+3. Thêm dòng `.vscode/history_plan/INDEX.md`: thời điểm thực có múi giờ, track, đường dẫn nguồn, snapshot, SHA-256, lý do và bản kế tiếp. Nếu khôi phục từ Git thì ghi rõ nguồn/revision và thời điểm khôi phục; không giả mốc thời gian gốc.
+4. Plan đang hiệu lực phải liên kết ngược về archive/INDEX. Không chỉnh hoặc xóa snapshot cũ, kể cả sửa link; đính chính metadata bằng dòng mới trong INDEX.
+5. **Không lấy HEAD/staging thay cho bản trên ổ đĩa trong quy trình bình thường**: phải giữ cả thay đổi chưa commit của người dùng/agent khác. Git chỉ là nguồn khôi phục khi cần và phải ghi provenance. Không thay đổi Git index hoặc tự commit/push để lưu lịch sử.
+6. Quy tắc này áp dụng cả việc bổ sung nội dung vào plan; không yêu cầu snapshot đệ quy của chính archive INDEX/README hoặc mỗi cập nhật vận hành run card/insights. Run card vẫn có lịch sử riêng theo phần trên.
+
+Quy trình đầy đủ: [`.vscode/history_plan/README.md`](.vscode/history_plan/README.md). Claude Code đọc quy tắc này qua `CLAUDE.md`; agy có entry point `GEMINI.md`; Codex đọc `AGENTS.md`.
 
 ## Rules chung
 

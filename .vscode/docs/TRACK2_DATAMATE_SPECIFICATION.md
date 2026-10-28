@@ -28,7 +28,49 @@ Tài liệu này là cẩm nang đặc tả kỹ thuật, logic kinh doanh nghi�
 
 ---
 
-## 2. TOÀN BỘ 10 ĐIỀU KHOẢN RULEBOOK CHÍNH THỨC CỦA BAN TỔ CHỨC
+## 2. CẤU TRÚC DỮ LIỆU ĐẦU VÀO (INPUT SPECIFICATION) & BỘ DỮ LIỆU KAGGLE
+
+Bộ dữ liệu chính thức được lưu trữ tại Kaggle: [thanhkhil/zaloai-datamate-dataset](https://www.kaggle.com/datasets/thanhkhil/zaloai-datamate-dataset).
+
+### 2.1. Cấu trúc thư mục
+```text
+<split>/ (train, public_test, private_test)
+├── questions.jsonl                 # Danh sách câu hỏi cần trả lời
+├── answers.jsonl                   # (Chỉ có ở train): Nhãn chuẩn và alias chấp nhận
+├── calendar.csv                    # Bảng đối chiếu dương lịch - âm lịch
+└── data/                           # Dữ liệu bảng của từng doanh nghiệp
+    ├── <business_id>/              # (Train: biz_101..biz_130; Public Test: dev_001..dev_014)
+    │   ├── README.md               # Mô tả ngành nghề, quy ước, bảng quy đổi đơn vị
+    │   ├── *.xlsx / *.csv / *.sqlite # Các sổ bán hàng, nhập hàng, công nợ, danh mục
+```
+
+### 2.2. Chi tiết từng tệp dữ liệu
+1. **`questions.jsonl`**:
+   - Mỗi dòng là 1 đối tượng JSON đại diện cho 1 câu hỏi:
+     ```json
+     {"id": "q_06de33fa21cc", "business_id": "biz_118", "question": "sp bán dc nhiều nhất tuần rồi là gì", "as_of_date": "2026-03-04"}
+     ```
+   - `id`: Mã định danh câu hỏi (dùng để xuất vào `submission.jsonl`).
+   - `business_id`: Thư mục dữ liệu tương ứng trong `data/<business_id>/`.
+   - `question`: Câu hỏi bằng tiếng Việt tự nhiên của chủ shop / nhân viên.
+   - `as_of_date`: Mốc thời gian "Hôm nay" (`YYYY-MM-DD`). Mọi dữ liệu sau ngày này xem như chưa xảy ra!
+2. **`answers.jsonl`** (Tập Train):
+   - Chứa nhãn đúng và danh sách các cách biểu diễn được chấp nhận (`alias`):
+     ```json
+     {"id": "q_06de33fa21cc", "type": "string", "answer": "Xi măng Hà Tiên PCB40 bao 50kg", "alias": ["SP0001"]}
+     ```
+3. **`calendar.csv`**:
+   - Gồm các cột: `date` (YYYY-MM-DD), `lunar_day`, `lunar_month`, `lunar_year`, `is_leap_month`.
+   - Bắt buộc dùng để tra cứu các mốc thời gian âm lịch (như Mùa Tết: từ 23 Chạp năm trước đến mùng 10 Giêng năm nay).
+4. **`data/<business_id>/README.md`**:
+   - Chứa thông tin cực kỳ quan trọng:
+     - Giới hạn ngày dữ liệu phát hành (`Dữ liệu có đến hết YYYY-MM-DD`).
+     - Bảng quy đổi đơn vị (ví dụ: `1 thùng = 24 lon`, `1 lốc = 6 lon`, `1 bao = 25 kg`).
+     - Ý nghĩa các cột và trạng thái của từng file Excel/CSV.
+
+---
+
+## 3. TOÀN BỘ 10 ĐIỀU KHOẢN RULEBOOK CHÍNH THỨC CỦA BAN TỔ CHỨC
 
 Mọi đáp án chuẩn của Ban tổ chức đều được tính toán nghiêm ngặt theo 10 điều khoản dưới đây:
 
@@ -183,29 +225,61 @@ Mỗi kiểu chỉ có **đúng 1 format duy nhất; sai format là bị phạt 
 
 ---
 
-## 3. KIẾN TRÚC MÔ HÌNH KHUYẾN NGHỊ: CODE INTERPRETER AGENT
+## 4. QUY ĐỊNH KỸ THUẬT & GIỚI HẠN CỦA BAN TỔ CHỨC (OFFICIAL TECHNICAL REQUIREMENTS)
 
-Do dữ liệu bảng thực tế có hàng nghìn dòng, nhiều sheet và logic tính toán cực kỳ khắt khe, phương pháp duy nhất đạt thứ hạng cao là **Code Interpreter Pattern**:
+Mọi giải pháp tham gia Track 2 (DataMate) bắt buộc phải tuân thủ nghiêm ngặt toàn bộ các yêu cầu kỹ thuật do Ban tổ chức ban hành:
 
-```text
-User Question + as_of_date
-         │
-         ▼
-[LLM Planner / Code Generator] (Qwen2.5-Coder-14B / 7B)
-  - Đọc Schema bảng, tên cột, README shop, Rulebook
-  - Sinh mã Python (Pandas / Polars / DuckDB / SQLite)
-         │
-         ▼
-[Execution Sandbox in RAM] (CPU / SQLite in memory)
-  - Đọc Excel/CSV, forward fill ô trống, lọc ngày theo as_of_date
-  - Thực thi phép tính số học chính xác 100%
-  - Định dạng chuẩn theo 9 kiểu đầu ra
-         │
-    ┌────┴────┐
-    │ Thành   │ Thất bại / Lỗi cú pháp
-    ▼ công    ▼
-[Format Check] ──> [Self-Correction Loop (tối đa 2 lần)]
-    │                      │
-    ▼ Thành công           ▼ Vẫn lỗi
-{"type": "...", ...}   {"type": "abstain"} (Bảo toàn 0 điểm)
+1. **Giới hạn số lượng tham số (Model Parameter Budget)**:
+   - Tổng số tham số của **tất cả các mô hình được sử dụng khi suy luận** (Language models, embedding models, rerankers, classifiers) — bất kể được nạp cùng lúc hay lần lượt — **không được vượt quá 15 tỷ (≤ 15B parameters)**.
+   - Đối với mô hình Mixture-of-Experts (MoE), tính **tổng toàn bộ tham số** của mô hình (không chỉ tính riêng tham số kích hoạt / active parameters).
+   - Cho phép sử dụng mọi hình thức lượng hóa (quantization: 4-bit, 8-bit, AWQ, GPTQ...).
+   - Các mô hình được sử dụng bắt buộc phải được khai báo rõ ràng trong file `README` của giải pháp.
+
+2. **Dữ liệu và mô hình cho phép (Allowed Models & Resources)**:
+   - Được phép sử dụng bất kỳ mô hình nào có trọng số (weights) được phát hành công khai trước ngày **01/10/2026** với giấy phép (license) cho phép sử dụng.
+   - Được phép tự do tinh chỉnh (fine-tune) mô hình trước cuộc thi.
+   - Không được phép can thiệp thủ công (human-in-the-loop) hay sử dụng bất kỳ dịch vụ/mô hình thương mại bên ngoài nào tại thời điểm suy luận.
+
+3. **Cơ chế thực thi mã nguồn (Code Execution)**:
+   - Agent được phép tự sinh và thực thi mã nguồn (code) bên trong container; điều này được khuyến khích nhưng không bắt buộc.
+   - Thư mục dữ liệu đầu vào `/data` được gắn kết ở chế độ **chỉ đọc (read-only)**; mọi tệp tạm (temporary files) phải được ghi ra các thư mục khác (như `/tmp`).
+
+4. **Hạ tầng máy chấm thi của Ban tổ chức**:
+   - **GPU**: **2× NVIDIA RTX 5090** (32 GB VRAM mỗi card, tổng cộng **64 GB VRAM**).
+   - **RAM**: **512 GB**.
+   - **Phần mềm**: Kiến trúc Blackwell yêu cầu **CUDA ≥ 12.8**.
+
+5. **Giới hạn thời gian (Time Limit)**:
+   - Toàn bộ tập dữ liệu Private Test phải được xử lý hoàn tất trong vòng **tối đa 6 giờ** (wall-clock time) trên máy chấm thi của Ban tổ chức, tính cả thời gian nạp mô hình vào bộ nhớ.
+   - Nếu quá 6 giờ hoặc container dừng sớm, chỉ những câu hỏi đã kịp ghi kết quả vào `/result/submission.jsonl` được đưa vào chấm điểm; những câu hỏi còn lại tự động tính là `abstain` (nhận 0 điểm).
+
+6. **Môi trường suy luận Offline Tuyệt đối (`--network none`)**:
+   - Docker container được chạy với cờ `--network none` (hoàn toàn không có mạng internet). Mọi weights, thư viện Python, dependencies phải đóng gói sẵn trong image.
+
+7. **Quy chuẩn tái lập tất định (Reproducibility)**:
+   - Bắt buộc cố định random seed và sử dụng giải mã tất định (greedy decoding, `temperature = 0`).
+   - Kết quả chạy lại từ Docker của Ban tổ chức phải đạt tiêu chuẩn:
+     $$|\text{PA}_{\text{uploaded}} - \text{PA}_{\text{rerun}}| \le 0.03$$
+
+8. **Quy tắc phân định thứ hạng khi hòa điểm (Tie-breaking)**:
+   - Ưu tiên đội có **tổng thời gian suy luận thấp hơn** trong lần chạy lại của Ban tổ chức.
+   - Nếu vẫn tiếp tục hòa điểm, ưu tiên đội nộp bài sớm hơn trên hệ thống.
+
+---
+
+## 5. ĐỊNH DẠNG TỆP NỘP BÀI (SUBMISSION FORMAT)
+
+Tệp nộp bài có tên bắt buộc là **`submission.jsonl`**, mỗi dòng là một JSON object độc lập gồm 3 trường:
+```json
+{"id": "test_0001", "type": "number", "answer": 1500000}
+{"id": "test_0002", "type": "percent", "answer": 15.5}
+{"id": "test_0003", "type": "string", "answer": "Cà phê sữa đá"}
+{"id": "test_0004", "type": "date", "answer": "2026-05-15"}
+{"id": "test_0005", "type": "boolean", "answer": true}
+{"id": "test_0006", "type": "list", "answer": ["SP01", "SP02"]}
+{"id": "test_0007", "type": "table", "answer": {"columns": ["san_pham", "so_luong"], "rows": [["Cà phê", 100], ["Trà đào", 50]]}}
+{"id": "test_0008", "type": "unanswerable", "reason": "Dữ liệu không ghi nhận doanh thu chi nhánh B"}
+{"id": "test_0009", "type": "abstain"}
 ```
+
+* Đường dẫn xuất kết quả trong Docker container: `/result/submission.jsonl`.
