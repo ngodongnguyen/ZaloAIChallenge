@@ -37,6 +37,7 @@ def main():
     ap.add_argument("--out", default="submission.jsonl")
     ap.add_argument("--asr-cache", default=None)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--ids", default=None, help="file with sample ids (one per line) to run")
     args = ap.parse_args()
 
     seed_everything()
@@ -50,6 +51,7 @@ def main():
     with open(root / split / f"{split}_tools_catalog.json", encoding="utf-8") as f:
         catalog = json.load(f)
     asr, llm = ASR(cache_path=args.asr_cache), LLM()
+    only = set(open(args.ids).read().split()) if args.ids else None
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     n = 0
@@ -57,6 +59,8 @@ def main():
             open(args.out, "w", encoding="utf-8") as fout:
         for line in fin:
             item = json.loads(line)
+            if only is not None and item["id"] not in only:
+                continue
             t0 = time.time()
             env = ToolEnv(split, item["id"], root=root)  # exactly one env per sample
             try:

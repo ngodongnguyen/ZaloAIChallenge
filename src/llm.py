@@ -7,9 +7,14 @@ class LLM:
         from transformers import AutoModelForCausalLM, AutoTokenizer
         self.torch = torch
         self.tok = AutoTokenizer.from_pretrained(model_path)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_path, torch_dtype=torch.bfloat16, device_map="auto" if torch.cuda.is_available() else None
-        ).eval()
+        if torch.cuda.is_available():
+            dev = "cuda"
+            dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16  # T4 has no bf16
+        elif torch.backends.mps.is_available():
+            dev, dtype = "mps", torch.float16
+        else:
+            dev, dtype = "cpu", torch.float32
+        self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype).to(dev).eval()
 
     def generate(self, messages):
         torch = self.torch

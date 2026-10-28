@@ -5,6 +5,7 @@ Official formula was an image in the brief, so this reports P, R and F1 = 2PR/(P
 with P = M/(M+U), R = M/|G|; gold-empty samples score 1 only for an empty submission.
 """
 import argparse
+import sys
 import json
 import re
 import unicodedata
@@ -85,17 +86,33 @@ def main():
         r = json.loads(line)
         gold[r["id"]] = r["label"]["tool_calls"]
 
-    scores, empty_ok, empty_n = [], 0, 0
+    sys.path.insert(0, base)  # zaic_tools of the split: gold hash = replay of gold calls
+    from zaic_tools import ToolEnv
+
+    def gold_hash(sid):
+        env = ToolEnv(args.split, sid, root=args.root)
+        for c in gold[sid]:
+            env.call(c["name"], c.get("arguments", {}))
+        return env.get_state_hash()
+
+    scores, empty_ok, empty_n, hash_ok, tool_scores = [], 0, 0, 0, []
     for line in open(args.pred, encoding="utf-8"):
         p = json.loads(line)
         if p["id"] not in gold:
             continue
         s, _, _ = score(p["tool_calls"], gold[p["id"]], fuzzy)
+        tool_scores.append(s)
+        if p.get("state_hash") != gold_hash(p["id"]):
+            s = 0.0  # official rule: wrong final state scores 0
+        else:
+            hash_ok += 1
         scores.append(s)
         if not gold[p["id"]]:
             empty_n += 1
             empty_ok += s
-    print(f"samples={len(scores)}  mean_score={sum(scores) / max(len(scores), 1):.4f}")
+    n = max(len(scores), 1)
+    print(f"samples={len(scores)}  mean_score={sum(scores) / n:.4f}  (tool-call only: {sum(tool_scores) / n:.4f})")
+    print(f"state_hash matches gold: {hash_ok}/{len(scores)}")
     if empty_n:
         print(f"out-of-scope: {int(empty_ok)}/{empty_n} correct")
 

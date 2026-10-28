@@ -10,9 +10,9 @@ Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
 Quy tắc:
 1. Chỉ dùng tool trong danh sách. Tham số có x-ref phải là ID lấy từ kết quả tool đọc (read), không được bịa.
 2. Cần ID/thông tin mà chưa có: gọi tool read trước rồi mới gọi tool write.
-3. Thiếu thông tin người dùng chưa cung cấp (không suy ra được từ yêu cầu, ngữ cảnh, hồ sơ): gọi {"name": "sys.ask_missing_info", "arguments": {"tool_name": "<tool định gọi>", "params": ["<tham số thiếu>"]}} rồi kết thúc.
+3. Chỉ hỏi lại khi THỰC SỰ thiếu thông tin người dùng chưa nói và không tra được: trước hết dùng tool read để tìm (danh bạ, thiết bị, lịch, danh sách...), dùng ngữ cảnh/hồ sơ (nhà, nơi làm việc, giờ hiện tại). Chỉ khi vẫn không xác định được một tham số bắt buộc mới gọi {"name": "sys.ask_missing_info", "arguments": {"tool_name": "<tool định gọi>", "params": ["<tham số thiếu>"]}} rồi kết thúc.
 4. Không có ứng dụng nào xử lý được yêu cầu: kết thúc ngay {"done": true}, không gọi tool nào.
-5. Không gọi tool thừa. Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng."""
+5. Không gọi tool thừa. Không truyền tham số tùy chọn mà người dùng không nói đến; không dùng giá trị rỗng ("", null). Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng."""
 
 
 def _param_line(name, spec, required):
@@ -80,6 +80,21 @@ def truncate(obj, limit=TOOL_RESULT_CHARS):
     return s if len(s) <= limit else s[:limit] + "…"
 
 
+def render_history(history):
+    """History turns: user -> text (audio_text), assistant -> text + executed calls (results truncated)."""
+    out = []
+    for h in history or []:
+        if h.get("role") == "user":
+            out.append({"role": "user", "text": h.get("audio_text", "")})
+        else:
+            turn = {"role": "assistant", "text": h.get("text", "")}
+            if h.get("tool_calls"):
+                turn["tool_calls"] = h["tool_calls"]
+                turn["tool_results"] = [truncate(r, 500) for r in h.get("tool_results", [])]
+            out.append(turn)
+    return out
+
+
 def initial_messages(item, transcript, catalog):
     ctx = item["context"]
     tools = tools_for_item(item, catalog)
@@ -94,7 +109,7 @@ def initial_messages(item, transcript, catalog):
         f"## Công cụ khả dụng\n{tool_txt}\n"
         f"* sys.ask_missing_info (meta): hỏi lại người dùng. Tham số: tool_name: string, params: array<string>\n\n"
         f"## Ngữ cảnh\n{json.dumps(meta, ensure_ascii=False)}\n\n"
-        f"## Lịch sử hội thoại\n{json.dumps(item.get('history') or [], ensure_ascii=False)}\n\n"
+        f"## Lịch sử hội thoại\n{json.dumps(render_history(item.get('history')), ensure_ascii=False)}\n\n"
         f"## Yêu cầu của người dùng (từ giọng nói)\n{transcript}"
     )
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
