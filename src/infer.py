@@ -65,6 +65,10 @@ def main():
             env = ToolEnv(split, item["id"], root=root)  # exactly one env per sample
             try:
                 text = asr.transcribe(root / split / item["audio"], item["id"])
+                # Test history user turns carry only audio (no audio_text); without this the agent sees empty turns.
+                for h in item.get("history") or []:
+                    if h.get("role") == "user" and h.get("audio") and not h.get("audio_text"):
+                        h["audio_text"] = asr.transcribe(root / split / h["audio"])
                 run_agent(env, item, text, catalog, llm, t0)
             except Exception as e:  # keep whatever was logged so far
                 print(f"[warn] {item['id']}: {e!r}", file=sys.stderr)

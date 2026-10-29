@@ -4,7 +4,7 @@ import random
 SEED = 42
 ASR_MODEL = os.environ.get("ASR_MODEL", "vinai/PhoWhisper-large")
 LLM_MODEL = os.environ.get("LLM_MODEL", "models/lifemate-llm")  # merged SFT model
-BASE_LLM = os.environ.get("BASE_LLM", "Qwen/Qwen2.5-3B-Instruct")
+BASE_LLM = os.environ.get("BASE_LLM", "Qwen/Qwen3-4B-Instruct-2507")
 
 MAX_STEPS = 8
 MAX_NEW_TOKENS = 256

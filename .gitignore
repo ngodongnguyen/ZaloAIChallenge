@@ -7,3 +7,5 @@ private_test/
 train/*.jsonl
 submission.jsonl
 result/
+data/.venv/
+out/

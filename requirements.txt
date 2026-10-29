@@ -1,5 +1,5 @@
 torch>=2.3
-transformers>=4.46
+transformers==4.57.6  # Qwen3; 4.46 cannot load it
 accelerate>=0.34
 peft>=0.13
 soundfile>=0.12

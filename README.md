@@ -14,7 +14,7 @@ python src/transcribe_split.py --root . --split train --out cache/train_asr.json
 
 # 2. build trajectories + fine-tune
 python train/build_sft.py --root . --split train --asr-cache cache/train_asr.jsonl --out train/sft.jsonl
-python train/sft.py --data train/sft.jsonl --base models/base-llm --out models/lifemate-llm
+python train/sft.py --data train/sft.jsonl --base models/base-llm --out models/lifemate-llm  # 2 GPUs: torchrun --nproc_per_node 2 train/sft.py ...
 
 # 3. infer + local eval (use --holdout in sft.py to evaluate on unseen train ids)
 python src/infer.py --root . --split public_test --out submission.jsonl
