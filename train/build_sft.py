@@ -6,12 +6,17 @@ With --asr-cache, each sample is emitted twice (gold transcript and ASR transcri
 import argparse
 import json
 import random
+import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from prompt import call_msg, done_msg, initial_messages, result_msg  # noqa: E402
 from augment import augment  # noqa: E402
+
+
+# the teacher cannot see the tool list; thoughts claiming a tool/ID does not exist would teach the student to refuse
+BAD_THOUGHT = re.compile(r"không có (tool|công cụ|flight|id)|(tool|công cụ|id) không (có|tồn tại)|không có trong danh sách", re.I)
 
 
 def last_text(audio_text):
@@ -62,7 +67,8 @@ def main():
         thoughts = {}
         for line in open(args.thoughts, encoding="utf-8"):
             r = json.loads(line)
-            thoughts[(r["id"], r["step"])] = r["thought"]
+            if r["thought"] and not BAD_THOUGHT.search(r["thought"]):
+                thoughts[(r["id"], r["step"])] = r["thought"]
     n = n_aug = 0
     with open(base / f"{args.split}.jsonl", encoding="utf-8") as fin, open(args.out, "w", encoding="utf-8") as fout:
         for line in fin:

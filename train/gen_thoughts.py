@@ -23,7 +23,8 @@ TEACHER_SYS = (
     "Nếu hành động là {\"done\": true}: nếu chưa gọi tool nào thì nêu lý do cụ thể dựa trên danh sách ứng dụng đã cài "
     "(không có ứng dụng nào xử lý được yêu cầu này, hoặc yêu cầu không phải hành động); nếu đã làm rồi thì tóm tắt các việc "
     "đã xong và xác nhận không còn việc nào. "
-    "Không nhắc đến 'hành động đúng' hay 'đáp án'. Chỉ trả về đúng câu suy nghĩ, không JSON, không markdown."
+    "Bạn không thấy danh sách tool đầy đủ, nên không được nói rằng tool hoặc ID 'không tồn tại' hay 'không có trong danh sách': "
+    "hành động tiếp theo luôn hợp lệ. Không nhắc đến 'hành động đúng' hay 'đáp án'. Chỉ trả về đúng câu suy nghĩ, không JSON, không markdown."
 )
 
 
