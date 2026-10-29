@@ -1,7 +1,7 @@
 """Prompt construction shared by SFT data building and inference (must stay identical)."""
 import json
 
-from config import TOOL_RESULT_CHARS
+from config import HISTORY_RESULT_CHARS, TOOL_RESULT_CHARS
 
 SYSTEM = """Bạn là trợ lý giọng nói tiếng Việt thực hiện hành động qua các công cụ (tool) của ứng dụng đã cài trên thiết bị.
 Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
@@ -90,7 +90,7 @@ def render_history(history):
             turn = {"role": "assistant", "text": h.get("text", "")}
             if h.get("tool_calls"):
                 turn["tool_calls"] = h["tool_calls"]
-                turn["tool_results"] = [truncate(r, 500) for r in h.get("tool_results", [])]
+                turn["tool_results"] = [truncate(r, HISTORY_RESULT_CHARS) for r in h.get("tool_results", [])]
             out.append(turn)
     return out
 
@@ -115,12 +115,16 @@ def initial_messages(item, transcript, catalog):
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
-def call_msg(name, arguments):
-    return {"role": "assistant", "content": json.dumps({"name": name, "arguments": arguments}, ensure_ascii=False)}
+def call_msg(name, arguments, thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj.update({"name": name, "arguments": arguments})
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
-def done_msg():
-    return {"role": "assistant", "content": json.dumps({"done": True})}
+def done_msg(thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj["done"] = True
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
 def result_msg(result):

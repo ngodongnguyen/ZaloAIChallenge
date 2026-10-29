@@ -39,6 +39,7 @@ def run_agent(env, item, transcript, catalog, llm, t0=None):
         if action.get("done"):
             break
         name, args = action.get("name"), action.get("arguments", {})
+        thought = action.get("thought") if isinstance(action.get("thought"), str) else None
         if name not in allowed or not isinstance(args, dict):
             invalid += 1
             if invalid > 1:
@@ -57,12 +58,12 @@ def run_agent(env, item, transcript, catalog, llm, t0=None):
             invalid += 1
             if invalid > 1:
                 break
-            messages.append(call_msg(name, args))
+            messages.append(call_msg(name, args, thought))
             messages.append(result_msg(check))
             continue
 
         result = env.call(name, args)
-        messages.append(call_msg(name, args))
+        messages.append(call_msg(name, args, thought))
         messages.append(result_msg(result))
         if name == "sys.ask_missing_info":
             break
