@@ -7,7 +7,7 @@ LLM_MODEL = os.environ.get("LLM_MODEL", "models/lifemate-llm")  # merged SFT mod
 BASE_LLM = os.environ.get("BASE_LLM", "Qwen/Qwen2.5-3B-Instruct")
 
 MAX_STEPS = 8
-MAX_NEW_TOKENS = 256
+MAX_NEW_TOKENS = 320  # room for the one-line thought before the action
 TOOL_RESULT_CHARS = 1500
 TIME_BUDGET_S = 26.0  # hard limit per sample is 30s
 

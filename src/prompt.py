@@ -115,12 +115,16 @@ def initial_messages(item, transcript, catalog):
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
-def call_msg(name, arguments):
-    return {"role": "assistant", "content": json.dumps({"name": name, "arguments": arguments}, ensure_ascii=False)}
+def call_msg(name, arguments, thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj.update({"name": name, "arguments": arguments})
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
-def done_msg():
-    return {"role": "assistant", "content": json.dumps({"done": True})}
+def done_msg(thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj["done"] = True
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
 def result_msg(result):

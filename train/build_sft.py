@@ -20,18 +20,21 @@ def last_text(audio_text):
     return audio_text or ""
 
 
-def trajectory(item, transcript, catalog):
+def trajectory(item, transcript, catalog, thoughts=None):
     label = item["label"]
     calls = label["tool_calls"]
     results = label.get("tool_results") or []
     msgs = initial_messages(item, transcript, catalog)
+    th = (lambda k: thoughts.get((item["id"], k))) if thoughts else (lambda k: None)
+    n = 0
     for i, c in enumerate(calls):
-        msgs.append(call_msg(c["name"], c.get("arguments", {})))
+        msgs.append(call_msg(c["name"], c.get("arguments", {}), th(i)))
+        n = i + 1
         if c["name"] == "sys.ask_missing_info":
             break
         res = results[i] if i < len(results) else {"ok": True}
         msgs.append(result_msg(res))
-    msgs.append(done_msg())
+    msgs.append(done_msg(th(n)))
     return msgs
 
 
@@ -43,6 +46,7 @@ def main():
     ap.add_argument("--out", default="train/sft.jsonl")
     ap.add_argument("--aug-frac", type=float, default=0.0, help="fraction of trajectories whose app/tool names are renamed")
     ap.add_argument("--seed", default="aug1")
+    ap.add_argument("--thoughts", default=None, help="jsonl from gen_thoughts.py: adds a reasoning line to each assistant turn")
     args = ap.parse_args()
 
     base = Path(args.root) / args.split
@@ -53,6 +57,12 @@ def main():
             r = json.loads(line)
             asr[r["id"]] = r["text"]
 
+    thoughts = None
+    if args.thoughts:
+        thoughts = {}
+        for line in open(args.thoughts, encoding="utf-8"):
+            r = json.loads(line)
+            thoughts[(r["id"], r["step"])] = r["thought"]
     n = n_aug = 0
     with open(base / f"{args.split}.jsonl", encoding="utf-8") as fin, open(args.out, "w", encoding="utf-8") as fout:
         for line in fin:
@@ -65,7 +75,7 @@ def main():
                 if random.Random(f"{args.seed}-{item['id']}-{k}-pick").random() < args.aug_frac:
                     it, cat = augment(item, catalog, f"{args.seed}-{item['id']}-{k}")
                     n_aug += 1
-                fout.write(json.dumps({"id": item["id"], "messages": trajectory(it, t, cat)}, ensure_ascii=False) + "\n")
+                fout.write(json.dumps({"id": item["id"], "messages": trajectory(it, t, cat, thoughts)}, ensure_ascii=False) + "\n")
                 n += 1
     print(f"wrote {n} trajectories ({n_aug} renamed) to {args.out}")
 
