@@ -1,4 +1,4 @@
 @AGENTS.md
 @AGENTS.local.md
 
-Trước mỗi đợt sửa/thay thế plan, bắt buộc lưu nguyên văn bản hiện tại vào `.vscode/history_plan/` và cập nhật INDEX theo mục **Lưu lịch sử plan trước khi sửa** trong AGENTS.md. Chỉ edit sau khi đối chiếu snapshot khớp preimage; không dùng HEAD/staging thay cho thay đổi chưa commit trên ổ đĩa.
+Tracking: mỗi track một file `.vscode/history_plan/<track>.md` (bảng run + kết quả + điều đã biết). Mỗi run Kaggle một dòng. Không tạo file plan, run card hay snapshot; không tạo lại `planning-research/`.

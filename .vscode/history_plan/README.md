@@ -1,28 +1,19 @@
-# Lịch sử phiên bản kế hoạch
+# Tracking
 
-`planning-research/<track>/planning.md` là plan đang hiệu lực. Thư mục này giữ nguyên văn các bản trước mỗi đợt sửa/thay thế để truy vết quyết định; không dùng snapshot cũ làm plan hiện hành.
+Mỗi track **một file duy nhất**: [`lifemate.md`](lifemate.md), [`datamate.md`](datamate.md). Mỗi file gồm:
 
-## Quy trình bắt buộc
+- **Runs**: một dòng mỗi lần chạy Kaggle (kể cả hỏng hoặc mới dự định): `run_id`, account bí danh `acc<N>`, status, thay đổi chính, kết quả, kết luận.
+- **Nộp Public LB**: một dòng mỗi lần nộp (tối đa 5 lần/ngày/track).
+- **Đã xác nhận / Ngõ cụt / Nhóm lỗi / Chưa kiểm**: kiến thức rút ra, mỗi mục một dòng có ngày + nguồn.
 
-1. Đọc quy tắc chung trong `../../AGENTS.md`, plan hiện hành và `INDEX.md` ở đây trước khi sửa.
-2. Đọc/capture nguyên văn file hiện tại trên ổ đĩa, tính SHA-256. Lưu bản đó vào `<track>/YYYY-MM-DD_HHMMSS+0700__<tên-file>__<lý-do>.md` **trước khi sửa**. Dùng chế độ tạo file mới, không ghi đè nếu trùng tên; thêm hậu tố duy nhất khi cần. Nếu thay thế toàn bộ plan thì chuyển bản cũ vào lịch sử rồi tạo bản hiện hành mới; nếu chỉnh một phần thì snapshot đầy đủ trước khi edit.
-3. Đối chiếu bytes/SHA-256 snapshot với preimage; chỉ tiếp tục khi khớp. Một snapshot cho mỗi file trong một đợt chỉnh sửa liên tục; nếu agent khác sửa file trong lúc đó, đọc lại và lưu preimage mới trước khi tiếp tục.
-4. Thêm dòng `INDEX.md`: thời điểm lưu có múi giờ, track, đường dẫn nguồn, snapshot, SHA-256, lý do, nguồn phục hồi nếu có và bản kế tiếp. Plan hiện hành có liên kết ngược về snapshot/INDEX.
-5. Snapshot là bất biến: không chỉnh nội dung, không xóa, không tái sử dụng tên file. Mọi đính chính về nguồn/thời điểm ghi bổ sung trong INDEX. Không cần snapshot đệ quy cho chính INDEX/README hoặc cập nhật vận hành run card/insights.
-6. Không dùng `git show HEAD`/staging thay cho bản trên ổ đĩa trong quy trình bình thường: plan có thể chứa thay đổi chưa commit của người dùng/agent khác. Không sửa Git index để lưu lịch sử; không tự commit/push.
+## Quy ước
 
-## Nguồn của các bản khôi phục đầu tiên
+- `run_id`: `<lm|dm>-<lane>-<NNN>-<mô-tả-ngắn>`, NNN tăng dần theo track, không đổi sau khi tạo. Mỗi run một thay đổi chính so với run trước để so được.
+- Bắt đầu run: thêm dòng status `running`. Xong: điền kết quả (điểm dev, s/mẫu, peak VRAM nếu có) và đổi status `done` / `failed`. Run hỏng vẫn giữ dòng để không chạy lại cùng cấu hình.
+- Username Kaggle thật chỉ nằm trong `AGENTS.local.md`.
 
-Các snapshot `recovered-before-baseline-dev` được tạo **sau** lượt sửa plan ngày 2026-10-29 để khôi phục thiếu sót lưu lịch sử. Bytes lấy từ Git index, được đối chiếu khớp với bản trước lượt sửa (bỏ đúng phần thêm mục 9–10 và thay đổi câu trạng thái). Thời điểm trong tên là lúc khôi phục/lưu archive, không phải thời điểm plan gốc được viết. Không suy diễn rằng các phiên bản cũ hơn cũng đã được khôi phục.
+## Không làm
 
-Các snapshot `before-history-policy` là nguyên văn working tree trước khi bổ sung liên kết lịch sử trong lượt khắc phục này. Chúng giữ lại bản kế hoạch đã được duyệt ở lượt trước.
-
-Snapshot cố ý giữ nguyên byte, nên link tương đối bên trong được hiểu theo **đường dẫn nguồn ban đầu** ghi ở INDEX; không sửa các link đó ngay trong snapshot.
-
-## Entry point cho các agent
-
-- Codex: quy tắc chính nằm trong `../../AGENTS.md`.
-- Claude Code: `../../CLAUDE.md` import AGENTS.md và nhắc quy tắc trước-edit.
-- Antigravity/agy: `../../GEMINI.md` dẫn vào AGENTS.md và yêu cầu lưu lịch sử trước-edit. Cách đặt AGENTS.md/GEMINI.md tại workspace được mô tả trong [tài liệu Rules của Antigravity](https://antigravity.google/docs/rules/).
-
-Đây là hướng dẫn ở cấp repo; chưa kiểm chứng hành vi thực tế của từng ứng dụng đang chạy. Không chỉnh cấu hình toàn máy.
+- **Không tạo file mới** trong thư mục này: không run card riêng, không plan riêng, không snapshot, không SHA-256.
+- Không ghi sửa vặt (typo, link, chỉnh câu chữ).
+- Bản cũ xem bằng `git log -p <file>`.

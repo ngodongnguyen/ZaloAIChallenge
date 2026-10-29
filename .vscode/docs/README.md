@@ -78,7 +78,7 @@ Các hình ảnh trích xuất trực tiếp từ cổng thông tin thi đấu �
 
 1. **Tuân thủ phân vùng thư mục**:
    - `.vscode/docs/`: Thư mục tài liệu (chỉ đọc, tham chiếu thông tin).
-   - `planning-research/<track>/`: Nơi viết tài liệu phân tích, kế hoạch thực nghiệm, phân tích lỗi (chỉ chứa file Markdown).
+   - `.vscode/history_plan/<track>.md`: Một file tracking mỗi track (bảng run, kết quả, phân tích lỗi, điều đã biết).
    - `notebook-kaggle/<track>/`: Nơi triển khai code chạy được trên Kaggle (`baseline_pipeline.py`, `kernel-metadata.json`).
 2. **Kaggle CLI Pool**:
    - Sử dụng lệnh `kaggle-acc run <user> kaggle ...` để chạy lệnh dưới tài khoản phụ mà không ảnh hưởng tới các Agent khác.

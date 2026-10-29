@@ -36,8 +36,6 @@ results/
 # !.vscode/
 # !.vscode/docs/
 # !.vscode/docs/**
-# !.vscode/planning-research/
-# !.vscode/planning-research/**
 # !.vscode/extracted_images/
 # !.vscode/extracted_images/**
 
