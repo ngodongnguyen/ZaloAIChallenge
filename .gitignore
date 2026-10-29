@@ -9,3 +9,6 @@ submission.jsonl
 result/
 data/.venv/
 out/
+
+*.md
+docs/
