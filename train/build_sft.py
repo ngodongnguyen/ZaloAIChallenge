@@ -5,11 +5,13 @@ With --asr-cache, each sample is emitted twice (gold transcript and ASR transcri
 """
 import argparse
 import json
+import random
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from prompt import call_msg, done_msg, initial_messages, result_msg  # noqa: E402
+from augment import augment  # noqa: E402
 
 
 def last_text(audio_text):
@@ -39,6 +41,8 @@ def main():
     ap.add_argument("--split", default="train")
     ap.add_argument("--asr-cache", default=None)
     ap.add_argument("--out", default="train/sft.jsonl")
+    ap.add_argument("--aug-frac", type=float, default=0.0, help="fraction of trajectories whose app/tool names are renamed")
+    ap.add_argument("--seed", default="aug1")
     args = ap.parse_args()
 
     base = Path(args.root) / args.split
@@ -49,17 +53,21 @@ def main():
             r = json.loads(line)
             asr[r["id"]] = r["text"]
 
-    n = 0
+    n = n_aug = 0
     with open(base / f"{args.split}.jsonl", encoding="utf-8") as fin, open(args.out, "w", encoding="utf-8") as fout:
         for line in fin:
             item = json.loads(line)
             texts = [last_text(item.get("audio_text"))]
             if item["id"] in asr and asr[item["id"]] != texts[0]:
                 texts.append(asr[item["id"]])
-            for t in texts:
-                fout.write(json.dumps({"id": item["id"], "messages": trajectory(item, t, catalog)}, ensure_ascii=False) + "\n")
+            for k, t in enumerate(texts):
+                it, cat = item, catalog
+                if random.Random(f"{args.seed}-{item['id']}-{k}-pick").random() < args.aug_frac:
+                    it, cat = augment(item, catalog, f"{args.seed}-{item['id']}-{k}")
+                    n_aug += 1
+                fout.write(json.dumps({"id": item["id"], "messages": trajectory(it, t, cat)}, ensure_ascii=False) + "\n")
                 n += 1
-    print(f"wrote {n} trajectories to {args.out}")
+    print(f"wrote {n} trajectories ({n_aug} renamed) to {args.out}")
 
 
 if __name__ == "__main__":
