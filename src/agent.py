@@ -64,7 +64,7 @@ def run_agent(env, item, transcript, catalog, llm, t0=None):
 
         result = env.call(name, args)
         messages.append(call_msg(name, args, thought))
-        messages.append(result_msg(result))
+        messages.append(result_msg(result, transcript))
         if name == "sys.ask_missing_info":
             break
     return env

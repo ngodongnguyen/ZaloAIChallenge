@@ -6,6 +6,7 @@
 #   bash scripts/run_e17.sh                 # holdout model (also writes a public_test submission)
 #   FINAL=1 bash scripts/run_e17.sh         # all train data (no holdout, no eval), writes the final submission
 #   USE_PARA=1 bash scripts/run_e17.sh      # also add the E16 rewrites (needs train/paraphrases.jsonl)
+#   COND=1 USE_PARA=1 bash scripts/run_e17.sh   # E18: plus the price-threshold comparison hint
 # Roughly 0.5 h transcribing + 5 h train (1 epoch over ~2x data) + 1-2 h inference.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -19,6 +20,8 @@ CACHE=cache/asr_base_train.jsonl
 # same prompt as E8 (no E14 hint, no E15 digest)
 export MONEY_HINT=0
 export RESULT_DIGEST=0
+# COND=1 (E18): code compares a spoken price threshold with the returned price and states the outcome in the tool result
+export COND_HINT=${COND:-0}
 export TIME_BUDGET_S=${TIME_BUDGET_S:-120}
 
 PARA_ARG=""; NAME=asr
@@ -26,6 +29,7 @@ if [ "${USE_PARA:-0}" = "1" ]; then
   [ -f train/paraphrases.jsonl ] || { echo "missing train/paraphrases.jsonl (run scripts/run_e16.sh first)"; exit 1; }
   PARA_ARG="--para train/paraphrases.jsonl"; NAME=asr-para
 fi
+[ "${COND:-0}" = "1" ] && NAME=$NAME-cond
 if [ "${FINAL:-0}" = "1" ]; then
   TAG=$NAME-final; HOLD=""; ASR_CHECK=$ASR_SUB
 else
