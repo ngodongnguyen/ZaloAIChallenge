@@ -32,6 +32,11 @@ SUB=out/submission_$TAG.jsonl
 for f in data/train/train_tools_catalog.json data/train/zaic_tools "$ASR_CHECK"; do
   [ -e "$f" ] || { echo "missing $f"; exit 1; }
 done
+if [ -n "$HOLD" ]; then
+  for f in cache/holdout_all.txt cache/holdout_unseen.txt cache/holdout_seen.txt; do
+    [ -e "$f" ] || { echo "missing $f (copy cache/holdout_*.txt from the machine that made them)"; exit 1; }
+  done
+fi
 
 echo "== 1/5 rewrites ($TEACHER, n=$PARA_N)"
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True python train/paraphrase.py --root data --model "$TEACHER" --quant 4bit \
