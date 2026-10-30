@@ -1,7 +1,7 @@
 """Prompt construction shared by SFT data building and inference (must stay identical)."""
 import json
 
-from config import HISTORY_RESULT_CHARS, RESULT_DIGEST, TOOL_RESULT_CHARS
+from config import HISTORY_RESULT_CHARS, MONEY_HINT, RESULT_DIGEST, TOOL_RESULT_CHARS
 
 SYSTEM = """Bạn là trợ lý giọng nói tiếng Việt thực hiện hành động qua các công cụ (tool) của ứng dụng đã cài trên thiết bị.
 Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
@@ -166,4 +166,4 @@ def device_digest(obj):
 
 def result_msg(result):
     digest = device_digest(result) if RESULT_DIGEST else ""
-    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result) + money_hint(result) + digest}
+    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result) + (money_hint(result) if MONEY_HINT else "") + digest}
