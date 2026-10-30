@@ -52,6 +52,7 @@ def main():
     ap.add_argument("--aug-frac", type=float, default=0.0, help="fraction of trajectories whose app/tool names are renamed")
     ap.add_argument("--seed", default="aug1")
     ap.add_argument("--thoughts", default=None, help="jsonl from gen_thoughts.py: adds a reasoning line to each assistant turn")
+    ap.add_argument("--para", default=None, help="jsonl from paraphrase.py: extra trajectories with reworded utterances, same labels")
     args = ap.parse_args()
 
     base = Path(args.root) / args.split
@@ -69,13 +70,22 @@ def main():
             r = json.loads(line)
             if r["thought"] and not BAD_THOUGHT.search(r["thought"]):
                 thoughts[(r["id"], r["step"])] = r["thought"]
-    n = n_aug = 0
+    para = {}
+    if args.para:
+        for line in open(args.para, encoding="utf-8"):
+            r = json.loads(line)
+            if r.get("ok"):
+                para.setdefault(r["id"], []).append(r["text"])
+    n = n_aug = n_para = 0
     with open(base / f"{args.split}.jsonl", encoding="utf-8") as fin, open(args.out, "w", encoding="utf-8") as fout:
         for line in fin:
             item = json.loads(line)
             texts = [last_text(item.get("audio_text"))]
             if item["id"] in asr and asr[item["id"]] != texts[0]:
                 texts.append(asr[item["id"]])
+            extra = [t for t in para.get(item["id"], []) if t not in texts]
+            n_para += len(extra)
+            texts += extra
             for k, t in enumerate(texts):
                 it, cat = item, catalog
                 if random.Random(f"{args.seed}-{item['id']}-{k}-pick").random() < args.aug_frac:
@@ -83,7 +93,7 @@ def main():
                     n_aug += 1
                 fout.write(json.dumps({"id": item["id"], "messages": trajectory(it, t, cat, thoughts)}, ensure_ascii=False) + "\n")
                 n += 1
-    print(f"wrote {n} trajectories ({n_aug} renamed) to {args.out}")
+    print(f"wrote {n} trajectories ({n_aug} renamed, {n_para} reworded) to {args.out}")
 
 
 if __name__ == "__main__":

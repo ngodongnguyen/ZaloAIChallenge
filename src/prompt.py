@@ -1,7 +1,7 @@
 """Prompt construction shared by SFT data building and inference (must stay identical)."""
 import json
 
-from config import HISTORY_RESULT_CHARS, TOOL_RESULT_CHARS
+from config import HISTORY_RESULT_CHARS, MONEY_HINT, RESULT_DIGEST, TOOL_RESULT_CHARS
 
 SYSTEM = """Bạn là trợ lý giọng nói tiếng Việt thực hiện hành động qua các công cụ (tool) của ứng dụng đã cài trên thiết bị.
 Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
@@ -127,5 +127,43 @@ def done_msg(thought=None):
     return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
+def money_hint(obj, limit=6):
+    """Large amounts restated in millions ("sell=126.6 triệu"), so a threshold said as "127 triệu" is easy to compare."""
+    found = []
+
+    def walk(o, key=""):
+        if len(found) >= limit:
+            return
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, k)
+        elif isinstance(o, list):
+            for v in o[:6]:
+                walk(v, key)
+        elif isinstance(o, (int, float)) and not isinstance(o, bool) and abs(o) >= 1_000_000:
+            found.append(f"{key}={o / 1_000_000:.2f}".rstrip("0").rstrip(".") + " triệu")
+
+    walk(obj)
+    return "\n(quy đổi: " + ", ".join(found) + ")" if found else ""
+
+
+def device_digest(obj):
+    """Devices/locks regrouped by floor in one line each, so "all lights on floor 2 except rooms with the AC on" is a lookup."""
+    if not isinstance(obj, dict):
+        return ""
+    lines = {}
+    for d in obj.get("devices") or []:
+        if isinstance(d, dict) and "floor" in d and isinstance(d.get("state"), dict):
+            st = ", ".join(f"{k}={v}" for k, v in d["state"].items())
+            lines.setdefault(f"tầng {d['floor']}", []).append(f"{d.get('id')} ({d.get('name')}; {st})")
+    for d in obj.get("locks") or []:
+        if isinstance(d, dict) and "location" in d:
+            lines.setdefault(str(d["location"]), []).append(f"{d.get('id')} ({d.get('name')}; locked={d.get('locked')})")
+    if not lines:
+        return ""
+    return "\n(tóm tắt: " + " | ".join(f"{k}: " + "; ".join(v) for k, v in sorted(lines.items())) + ")"
+
+
 def result_msg(result):
-    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result)}
+    digest = device_digest(result) if RESULT_DIGEST else ""
+    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result) + (money_hint(result) if MONEY_HINT else "") + digest}
