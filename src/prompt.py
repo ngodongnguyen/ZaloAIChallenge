@@ -127,5 +127,25 @@ def done_msg(thought=None):
     return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
+def money_hint(obj, limit=6):
+    """Large amounts restated in millions ("sell=126.6 triệu"), so a threshold said as "127 triệu" is easy to compare."""
+    found = []
+
+    def walk(o, key=""):
+        if len(found) >= limit:
+            return
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, k)
+        elif isinstance(o, list):
+            for v in o[:6]:
+                walk(v, key)
+        elif isinstance(o, (int, float)) and not isinstance(o, bool) and abs(o) >= 1_000_000:
+            found.append(f"{key}={o / 1_000_000:.2f}".rstrip("0").rstrip(".") + " triệu")
+
+    walk(obj)
+    return "\n(quy đổi: " + ", ".join(found) + ")" if found else ""
+
+
 def result_msg(result):
-    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result)}
+    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result) + money_hint(result)}
