@@ -126,13 +126,27 @@ def main():
     prompts.sort(key=lambda x: len(x[2]))  # batch similar lengths together
     t0 = time.time()
     with open(args.out, "a", encoding="utf-8") as fout:
-        for s in range(0, len(prompts), args.batch):
-            chunk = prompts[s : s + args.batch]
+        def run(chunk):
             enc = tok([c[2] for c in chunk], return_tensors="pt", padding=True).to(model.device)
             with torch.no_grad():
                 out = model.generate(**enc, max_new_tokens=args.max_new, do_sample=False, pad_token_id=tok.pad_token_id)
-            for (sid, i, _), o in zip(chunk, out):
-                thought = tok.decode(o[enc.input_ids.shape[1]:], skip_special_tokens=True).strip().replace("\n", " ")
+            return [(sid, i, tok.decode(o[enc.input_ids.shape[1]:], skip_special_tokens=True).strip().replace("\n", " "))
+                    for (sid, i, _), o in zip(chunk, out)]
+
+        for s in range(0, len(prompts), args.batch):
+            chunk = prompts[s : s + args.batch]
+            try:
+                rows = run(chunk)
+            except torch.OutOfMemoryError:  # the longest prompts come last: retry one by one, skip what still does not fit
+                torch.cuda.empty_cache()
+                rows = []
+                for c in chunk:
+                    try:
+                        rows += run([c])
+                    except torch.OutOfMemoryError:
+                        torch.cuda.empty_cache()
+                        print(f"[warn] OOM, skipped {c[0]} step {c[1]}", flush=True)
+            for sid, i, thought in rows:
                 fout.write(json.dumps({"id": sid, "step": i, "thought": thought}, ensure_ascii=False) + "\n")
             fout.flush()
             k = s + len(chunk)

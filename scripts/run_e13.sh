@@ -23,7 +23,7 @@ SFT=train/sft_$TAG.jsonl
 SUB=out/submission_$TAG.jsonl
 
 echo "== 1/5 thoughts ($TEACHER)"
-python train/gen_thoughts.py --root data --model "$TEACHER" --quant 4bit --out "$THOUGHTS"
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True python train/gen_thoughts.py --root data --model "$TEACHER" --quant 4bit --out "$THOUGHTS"
 
 echo "== 2/5 SFT data"
 python train/build_sft.py --root data --thoughts "$THOUGHTS" --out "$SFT"
