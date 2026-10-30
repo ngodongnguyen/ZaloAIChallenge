@@ -10,7 +10,8 @@ MAX_STEPS = 8
 MAX_NEW_TOKENS = 320  # room for the one-line thought before the action
 TOOL_RESULT_CHARS = 1500
 HISTORY_RESULT_CHARS = int(os.environ.get("HISTORY_RESULT_CHARS", 1500))  # was 500: cut off the options (e.g. flight ids) the gold call picks from; set 500 to run models trained before E13
-TIME_BUDGET_S = 26.0  # hard limit per sample is 30s
+RESULT_DIGEST = os.environ.get("RESULT_DIGEST", "0") == "1"  # E15: per-floor device summary in tool results; must match between training and inference
+TIME_BUDGET_S = float(os.environ.get("TIME_BUDGET_S", 26.0))  # hard limit per sample is 30s on the A30; local runs on a slower GPU raise it
 
 
 def seed_everything(seed: int = SEED) -> None:
