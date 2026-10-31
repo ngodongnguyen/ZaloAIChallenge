@@ -115,7 +115,9 @@ def main():
         model.enable_input_require_grads()
     model = get_peft_model(model, LoraConfig(
         r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+        # in_proj_qkv/in_proj_z/out_proj: the Gated DeltaNet layers of Qwen3.5 (absent in Qwen3, PEFT skips unmatched names)
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj",
+                        "in_proj_qkv", "in_proj_z", "out_proj"]))
 
     holdout = set(open(args.holdout).read().split()) if args.holdout else set()
     ds = SFTData(args.data, tok, args.max_len, holdout)
