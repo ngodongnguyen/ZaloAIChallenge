@@ -1,3 +1,4 @@
+from chat import needs_manual, prompt_text
 from config import LLM_MODEL, MAX_NEW_TOKENS
 
 
@@ -18,11 +19,12 @@ class LLM:
 
     def generate(self, messages):
         torch = self.torch
-        ids = self.tok.apply_chat_template(
-            messages, add_generation_prompt=True, return_tensors="pt", enable_thinking=False  # Qwen3.5 thinks by default; Qwen3-2507 ignores it
-        )
-        if hasattr(ids, "input_ids"):
-            ids = ids.input_ids
+        if needs_manual(self.tok):  # Qwen3.5: same rendering as in training (see chat.py)
+            ids = self.tok(prompt_text(messages), return_tensors="pt", add_special_tokens=False).input_ids
+        else:
+            ids = self.tok.apply_chat_template(messages, add_generation_prompt=True, return_tensors="pt")
+            if hasattr(ids, "input_ids"):
+                ids = ids.input_ids
         ids = ids.to(self.model.device)
         with torch.no_grad():
             out = self.model.generate(
