@@ -3,6 +3,7 @@
 # Same labels, more ways of saying them. Each stage is skipped when its output exists, so a re-run resumes where it stopped.
 #   bash scripts/run_e16.sh            # holdout model (measure on holdout, also writes a public_test submission)
 #   FINAL=1 bash scripts/run_e16.sh    # all train data (no holdout, no eval), writes the final submission
+#   BASE=Qwen/Qwen3.5-4B SUFFIX=-q35 bash scripts/run_e16.sh   # same data and recipe on another base model
 # Roughly 1-2 h rewriting + 6-8 h train (3x the data, 1 epoch) + 1-2 h inference.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -25,6 +26,7 @@ if [ "${FINAL:-0}" = "1" ]; then
 else
   TAG=para; HOLD="--holdout cache/holdout_all.txt"; ASR_CHECK=$ASR_EVAL
 fi
+TAG=$TAG${SUFFIX:-}                        # e.g. BASE=Qwen/Qwen3.5-4B SUFFIX=-q35 trains another base under its own name
 LLM=models/lifemate-llm-$TAG
 SFT=train/sft_$TAG.jsonl
 SUB=out/submission_$TAG.jsonl

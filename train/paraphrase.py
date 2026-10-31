@@ -95,6 +95,8 @@ def main():
             if (item["id"], k) not in done:
                 todo.append((item["id"], k, text, STYLES[(n + k) % len(STYLES)]))
     print(f"rewrites to generate: {len(todo)} (already done: {len(done)})")
+    if not todo:
+        return
 
     tok, model = load_model(args.model, args.quant)
 
