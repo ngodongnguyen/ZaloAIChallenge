@@ -19,7 +19,7 @@ class LLM:
     def generate(self, messages):
         torch = self.torch
         ids = self.tok.apply_chat_template(
-            messages, add_generation_prompt=True, return_tensors="pt"
+            messages, add_generation_prompt=True, return_tensors="pt", enable_thinking=False  # Qwen3.5 thinks by default; Qwen3-2507 ignores it
         )
         if hasattr(ids, "input_ids"):
             ids = ids.input_ids

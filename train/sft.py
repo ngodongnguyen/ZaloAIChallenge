@@ -27,15 +27,15 @@ class SFTData(Dataset):
 
     @staticmethod
     def encode(messages, tok, max_len):
-        full = tok.apply_chat_template(messages, tokenize=True)
+        full = tok.apply_chat_template(messages, tokenize=True, enable_thinking=False)
         full = full["input_ids"] if isinstance(full, dict) or hasattr(full, "keys") else full
         labels = [-100] * len(full)
         for i, m in enumerate(messages):
             if m["role"] != "assistant":
                 continue
-            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True)
+            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True, enable_thinking=False)
             pre = pre["input_ids"] if hasattr(pre, "keys") else pre
-            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True)
+            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True, enable_thinking=False)
             upto = upto["input_ids"] if hasattr(upto, "keys") else upto
             for j in range(len(pre), min(len(upto), len(full))):
                 labels[j] = full[j]
