@@ -29,6 +29,11 @@ for f in data/train/train_tools_catalog.json data/train/zaic_tools; do
 done
 if [ -z "$HOLD" ]; then ASR_CHECK=$ASR_SUB; else ASR_CHECK=$ASR_EVAL; fi
 [ -d "$ASR_CHECK" ] || { echo "missing $ASR_CHECK"; exit 1; }
+if [ -n "$HOLD" ]; then
+  for f in cache/holdout_all.txt cache/holdout_unseen.txt cache/holdout_seen.txt; do
+    [ -e "$f" ] || { echo "missing $f (copy cache/holdout_*.txt from the machine that made them)"; exit 1; }
+  done
+fi
 
 echo "== 1/4 SFT data"
 [ -f "$SFT" ] || python train/build_sft.py --root data --out "$SFT"

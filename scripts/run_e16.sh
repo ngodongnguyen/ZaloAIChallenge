@@ -3,6 +3,7 @@
 # Same labels, more ways of saying them. Each stage is skipped when its output exists, so a re-run resumes where it stopped.
 #   bash scripts/run_e16.sh            # holdout model (measure on holdout, also writes a public_test submission)
 #   FINAL=1 bash scripts/run_e16.sh    # all train data (no holdout, no eval), writes the final submission
+#   BASE=Qwen/Qwen3.5-4B SUFFIX=-q35 bash scripts/run_e16.sh   # same data and recipe on another base model
 # Roughly 1-2 h rewriting + 6-8 h train (3x the data, 1 epoch) + 1-2 h inference.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -25,6 +26,7 @@ if [ "${FINAL:-0}" = "1" ]; then
 else
   TAG=para; HOLD="--holdout cache/holdout_all.txt"; ASR_CHECK=$ASR_EVAL
 fi
+TAG=$TAG${SUFFIX:-}                        # e.g. BASE=Qwen/Qwen3.5-4B SUFFIX=-q35 trains another base under its own name
 LLM=models/lifemate-llm-$TAG
 SFT=train/sft_$TAG.jsonl
 SUB=out/submission_$TAG.jsonl
@@ -32,6 +34,11 @@ SUB=out/submission_$TAG.jsonl
 for f in data/train/train_tools_catalog.json data/train/zaic_tools "$ASR_CHECK"; do
   [ -e "$f" ] || { echo "missing $f"; exit 1; }
 done
+if [ -n "$HOLD" ]; then
+  for f in cache/holdout_all.txt cache/holdout_unseen.txt cache/holdout_seen.txt; do
+    [ -e "$f" ] || { echo "missing $f (copy cache/holdout_*.txt from the machine that made them)"; exit 1; }
+  done
+fi
 
 echo "== 1/5 rewrites ($TEACHER, n=$PARA_N)"
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True python train/paraphrase.py --root data --model "$TEACHER" --quant 4bit \

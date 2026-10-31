@@ -38,7 +38,7 @@ def trajectory(item, transcript, catalog, thoughts=None):
         if c["name"] == "sys.ask_missing_info":
             break
         res = results[i] if i < len(results) else {"ok": True}
-        msgs.append(result_msg(res))
+        msgs.append(result_msg(res, transcript))
     msgs.append(done_msg(th(n)))
     return msgs
 

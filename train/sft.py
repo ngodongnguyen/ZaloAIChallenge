@@ -27,15 +27,15 @@ class SFTData(Dataset):
 
     @staticmethod
     def encode(messages, tok, max_len):
-        full = tok.apply_chat_template(messages, tokenize=True)
+        full = tok.apply_chat_template(messages, tokenize=True, enable_thinking=False)
         full = full["input_ids"] if isinstance(full, dict) or hasattr(full, "keys") else full
         labels = [-100] * len(full)
         for i, m in enumerate(messages):
             if m["role"] != "assistant":
                 continue
-            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True)
+            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True, enable_thinking=False)
             pre = pre["input_ids"] if hasattr(pre, "keys") else pre
-            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True)
+            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True, enable_thinking=False)
             upto = upto["input_ids"] if hasattr(upto, "keys") else upto
             for j in range(len(pre), min(len(upto), len(full))):
                 labels[j] = full[j]
@@ -115,7 +115,9 @@ def main():
         model.enable_input_require_grads()
     model = get_peft_model(model, LoraConfig(
         r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+        # in_proj_qkv/in_proj_z/out_proj: the Gated DeltaNet layers of Qwen3.5 (absent in Qwen3, PEFT skips unmatched names)
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj",
+                        "in_proj_qkv", "in_proj_z", "out_proj"]))
 
     holdout = set(open(args.holdout).read().split()) if args.holdout else set()
     ds = SFTData(args.data, tok, args.max_len, holdout)
