@@ -12,7 +12,7 @@ Mỗi lần chạy (kể cả hỏng) một dòng, mới nhất ở cuối. Acco
 | dm-D-001-baseline-dev | 2026-10-29 | — | planned | Qwen3-4B thật, helper-agent trên 6 shop dev_tune cố định | chưa chạy | — |
 | dm-D-002-baseline-public | 2026-10-29 | acc3 | failed | Qwen3-4B, `pip install vllm` vào môi trường gốc | Worker chết lúc nạp model: vLLM thay torch → cả vLLM lẫn transformers lỗi | Ngõ cụt: vLLM phải ở venv riêng |
 | dm-C-003-raw-dev | 2026-10-29 | — | planned | Raw code-agent vs helper trên cùng 6 shop dev_tune | chưa chạy | — |
-| dm-D-004-baseline-public | 2026-10-29 | acc3 | running | vLLM venv riêng, public helper (scriptVersionId 363296233) | Profiler 14/14 shop, 163 bảng; worker chưa có output | — |
+| dm-D-004-baseline-public | 2026-10-29 | acc3 | done | vLLM venv riêng, public helper (scriptVersionId 363296233) | 1000/1000 mẫu hoàn tất. Phân bổ: abstain 364 (260 lỗi runtime code, 104 timeout), number 294, unanswerable 168, percent 86, string 46, list 23, date 11, boolean 7, table 1 | Tỷ lệ abstain 36.4% kéo trần điểm tối đa xuống <=63.6 điểm. Cần nâng model lên Qwen2.5-Coder-14B để giảm lỗi code và vectorized pandas để tránh timeout. |
 
 ## Nộp Public LB (tối đa 5 lần/ngày/track)
 
@@ -20,6 +20,8 @@ Mỗi lần chạy (kể cả hỏng) một dòng, mới nhất ở cuối. Acco
 |---|---|---|---|---|---|
 
 ## Đã xác nhận
+
+- 2026-11-01 · Audit CPU trực tiếp `answer.py` nhúng trong `helper-agent/datamate_helper_agent.ipynb`, đối chiếu ảnh công thức/bảng matching trong `docs/extracted_images/` · Fixture 70 đúng / 20 sai / 10 abstain cho PA=0.50; 7 ca kiểu dữ liệu/biên qua (unanswerable, abstain, boolean, list có thứ tự, đơn vị percent). Chấm nhãn với chính nó: 3000/3000 đúng. Đây là kiểm tra công thức và tính nhất quán local, không chứng minh matcher giống tuyệt đối BTC. Không train, không chạy Kaggle, không có điểm LB mới.
 
 Mỗi mục một dòng: ngày · nguồn · nội dung.
 
@@ -42,10 +44,13 @@ Mỗi mục một dòng: ngày · nguồn · nội dung.
 
 | Nhóm | Run | Số câu | Ghi chú / cách xử lý |
 |---|---|---|---|
+| Runtime error trong code Python | dm-D-004 | 260/1000 | LLM 4B sinh code pandas không chuẩn, lỗi cú pháp hoặc KeyError. Nâng model lên Qwen2.5-Coder-14B và thêm self-debug. |
+| Timeout câu hỏi quá 60s | dm-D-004 | 104/1000 | Code pandas chạy vòng lặp `iterrows` chậm trên bảng lớn. Chuyển sang vectorized pandas / DuckDB SQL. |
 
 ## Chưa kiểm / ý tưởng chờ thử
 
+- Thay LLM Coder bằng `Qwen/Qwen2.5-Coder-14B-Instruct` (tận dụng trần 15B), giảm 90% lỗi runtime code.
+- Đóng gói sẵn 10 quy tắc Rulebook (hàm tính COGS cấm FIFO, lọc bỏ cả đơn trả hàng 1 phần, tính đơn đang giao, quy đổi đơn vị cơ bản) thành thư viện `dmlib.rules`.
+- Tối ưu hóa đọc Excel bằng `python-calamine` kết hợp DuckDB để triệt tiêu lỗi timeout.
 - Scorer (giả định): `type` dự đoán phải trùng `type` nhãn; percent so sau làm tròn 2 chữ số; cột table khớp theo tên rồi mới theo vị trí.
 - GPU chờ CPU: chạy code batch k song song với lượt sinh batch k+1, `exec_workers=2` sau khi đo RAM, nạp bảng shop một lần. Làm sau baseline, đo `s_per_item` trước.
-- Model lớn hơn trong trần 15B: Qwen3-14B 4-bit, Qwen3.5-9B; thinking có giới hạn token cho câu khó.
-- Ánh xạ bảng chuẩn orders/order_lines theo shop (sau phân tích lỗi đợt 1).

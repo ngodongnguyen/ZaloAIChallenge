@@ -9,7 +9,7 @@ __pycache__/
 # Large models, caches, and raw data
 models/
 cache/
-data/
+dataset/
 public_test/
 private_test/
 train/
@@ -42,9 +42,15 @@ results/
 # Root files
 Link_data.txt
 
+# Local copy of competition datasets (both tracks)
+dataset/
+
 # Local-only agent instructions (Kaggle accounts, personal info)
 AGENTS.local.md
 CLAUDE.local.md
 
 # Kaggle kernel metadata contains the owner's username; commit only *.example.json
 notebook-kaggle/**/kernel-metadata.json
+
+# Claude Code local settings
+.claude/settings.local.json

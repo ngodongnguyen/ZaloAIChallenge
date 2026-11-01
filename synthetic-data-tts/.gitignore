@@ -1,0 +1,7 @@
+.env
+.venv/
+outputs/
+recordings/
+reference/
+*.zip
+__pycache__/

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thu giọng của tôi — LifeMate</title>
+<style>
+body{font:17px/1.6 system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 22px;color:#172f36;background:#f4f8f7}
+h1{line-height:1.2}textarea{box-sizing:border-box;width:100%;min-height:110px;padding:14px;font:inherit;border:1px solid #b2c8c1;border-radius:10px}
+button,a.download{display:inline-block;padding:12px 18px;margin:10px 8px 10px 0;border:0;border-radius:8px;background:#116b56;color:white;font:inherit;cursor:pointer;text-decoration:none}
+button:disabled{opacity:.4;cursor:default}audio{display:block;width:100%;margin:15px 0}#status{min-height:2em}small{display:block;color:#4b6565}
+</style>
+<h1>Thu giọng của tôi</h1>
+<p>Thu một câu tự nhiên khoảng <strong>3–8 giây</strong>, ở nơi yên tĩnh. Bản thu có thể dùng làm giọng tham chiếu cho VieNeu trên Colab, hoặc giữ làm audio thật.</p>
+<label for="text">Câu bạn sẽ đọc (sửa cho khớp đúng lời đã đọc)</label>
+<textarea id="text">Xin chào, đây là giọng nói của tôi. Hôm nay tôi đang thử trợ lý tiếng Việt.</textarea>
+<div><button id="start">Bắt đầu thu</button><button id="stop" disabled>Dừng</button></div>
+<p id="status" role="status" aria-live="polite">Micro chỉ hoạt động sau khi bạn bấm Bắt đầu và cho phép.</p>
+<audio id="preview" controls hidden></audio>
+<div id="downloads"></div>
+<small>Audio được giữ trong trình duyệt, không tự gửi lên mạng. Tải cả audio và JSON chứa lời đọc. Trình duyệt thường xuất WebM/Opus; notebook Colab sẽ chuyển định dạng thật sang WAV.</small>
+<script>
+const start=document.getElementById('start'), stop=document.getElementById('stop');
+const status=document.getElementById('status'), preview=document.getElementById('preview');
+const downloads=document.getElementById('downloads'), text=document.getElementById('text');
+let recorder=null,stream=null,timer=null,started=0,urls=[];
+function release(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}clearInterval(timer);}
+function link(blob,name,label){const url=URL.createObjectURL(blob);urls.push(url);const a=document.createElement('a');a.href=url;a.download=name;a.className='download';a.textContent=label;downloads.append(a);return url;}
+start.onclick=async()=>{
+ if(!text.value.trim()){status.textContent='Nhập câu bạn định đọc trước.';return;}
+ if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){status.textContent='Trình duyệt chưa hỗ trợ. Dùng Chrome/Edge; nếu cần mở trang qua localhost như README.';return;}
+ start.disabled=true;
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false}});
+  const mime=['audio/webm;codecs=opus','audio/ogg;codecs=opus','audio/mp4'].find(m=>MediaRecorder.isTypeSupported(m));
+  recorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+  const chunks=[];
+  recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+  recorder.onerror=()=>{release();start.disabled=false;stop.disabled=true;text.disabled=false;status.textContent='Thu âm gặp lỗi. Hãy thử lại.';};
+  recorder.onstop=()=>{
+   release();stop.disabled=true;start.disabled=false;text.disabled=false;
+   urls.forEach(u=>URL.revokeObjectURL(u));urls=[];downloads.replaceChildren();
+   if(!chunks.length){status.textContent='Không có audio. Hãy thử lại.';return;}
+   const type=recorder.mimeType||chunks[0].type||'audio/webm';
+   const ext=type.includes('ogg')?'ogg':type.includes('mp4')?'m4a':'webm';
+   const filename='my_voice.'+ext;
+   const blob=new Blob(chunks,{type});
+   preview.src=link(blob,filename,'Tải bản thu');preview.hidden=false;
+   const metadata={id:'my_voice_reference',speaker:'my_voice',text:text.value.trim(),audio:filename,duration_s:(performance.now()-started)/1000,source:'human',purpose:'reference_or_real_audio'};
+   link(new Blob([JSON.stringify(metadata,null,2)],{type:'application/json'}),'my_voice.json','Tải lời đọc JSON');
+   status.textContent='Đã thu xong. Nghe lại trước khi tải; nếu có đọc khác chữ, thu lại với lời đọc đúng.';
+  };
+  recorder.start();started=performance.now();stop.disabled=false;text.disabled=true;
+  timer=setInterval(()=>{const s=(performance.now()-started)/1000;status.textContent='Đang thu: '+s.toFixed(1)+' giây. '+(s>8?'Đã hơn 8 giây; nên thu đoạn ngắn hơn cho giọng tham chiếu.':'Đọc tự nhiên rồi bấm Dừng.');},100);
+ }catch(e){release();start.disabled=false;text.disabled=false;status.textContent='Không mở được micro. Kiểm tra quyền micro và thử qua localhost.';}
+};
+stop.onclick=()=>{if(recorder?.state==='recording'){stop.disabled=true;recorder.stop();}};
+window.addEventListener('beforeunload',release);
+</script>
+</html>
