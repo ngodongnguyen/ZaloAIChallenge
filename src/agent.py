@@ -29,6 +29,7 @@ def run_agent(env, item, transcript, catalog, llm, t0=None):
     messages = initial_messages(item, transcript, catalog)
     invalid = 0
     seen = {}
+    per_tool = {}
 
     for _ in range(MAX_STEPS):
         if time.time() - t0 > TIME_BUDGET_S:
@@ -51,6 +52,9 @@ def run_agent(env, item, transcript, catalog, llm, t0=None):
         key = (name, json.dumps(args, sort_keys=True, ensure_ascii=False))
         seen[key] = seen.get(key, 0) + 1
         if seen[key] > 2:  # gold sometimes repeats a write (e.g. redeem twice); stop beyond that
+            break
+        per_tool[name] = per_tool.get(name, 0) + 1
+        if per_tool[name] > 3:  # gold calls one tool at most 3 times (once 5); beyond that the model is looping on new args
             break
 
         check = env.validate(name, args)

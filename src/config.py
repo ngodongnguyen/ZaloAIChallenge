@@ -6,8 +6,8 @@ ASR_MODEL = os.environ.get("ASR_MODEL", "vinai/PhoWhisper-large")
 LLM_MODEL = os.environ.get("LLM_MODEL", "models/lifemate-llm")  # merged SFT model
 BASE_LLM = os.environ.get("BASE_LLM", "Qwen/Qwen2.5-3B-Instruct")
 
-MAX_STEPS = 8
-MAX_NEW_TOKENS = 320  # room for the one-line thought before the action
+MAX_STEPS = 7  # gold has at most 6 calls + the final done
+MAX_NEW_TOKENS = 192  # the longest gold call is 304 chars (~130 tokens); a non-stopping model burned 320
 TOOL_RESULT_CHARS = 1500
 HISTORY_RESULT_CHARS = int(os.environ.get("HISTORY_RESULT_CHARS", 1500))  # was 500: cut off the options (e.g. flight ids) the gold call picks from; set 500 to run models trained before E13
 MONEY_HINT = os.environ.get("MONEY_HINT", "1") == "1"  # E14: amounts restated in millions; models trained before E14 need MONEY_HINT=0

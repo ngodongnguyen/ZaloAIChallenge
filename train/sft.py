@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from chat import encode_with_labels, needs_manual  # noqa: E402
 from config import BASE_LLM, seed_everything  # noqa: E402
 
 
@@ -27,6 +28,9 @@ class SFTData(Dataset):
 
     @staticmethod
     def encode(messages, tok, max_len):
+        if needs_manual(tok):  # Qwen3.5: the template renders think blocks by position, so build the text ourselves
+            full, labels = encode_with_labels(tok, messages)
+            return None if len(full) > max_len else {"input_ids": full, "labels": labels}
         full = tok.apply_chat_template(messages, tokenize=True, enable_thinking=False)
         full = full["input_ids"] if isinstance(full, dict) or hasattr(full, "keys") else full
         labels = [-100] * len(full)
