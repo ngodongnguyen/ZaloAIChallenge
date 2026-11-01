@@ -6,6 +6,28 @@ from chat import needs_manual, prompt_text
 from config import LLM_MODEL, MAX_NEW_TOKENS
 
 
+def json_closed(text):
+    """True once the first top-level {...} object in text is complete (string- and escape-aware)."""
+    depth, in_str, esc, started = 0, False, False, False
+    for ch in text:
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+        elif ch == '"':
+            in_str = True
+        elif ch == "{":
+            depth, started = depth + 1, True
+        elif ch == "}":
+            depth -= 1
+            if started and depth == 0:
+                return True
+    return False
+
+
 class LLM:
     def __init__(self, model_path=LLM_MODEL):
         import torch
@@ -31,12 +53,22 @@ class LLM:
                 ids = ids.input_ids
         ids = ids.to(self.model.device)
         t0 = time.time()
+        from transformers import StoppingCriteria, StoppingCriteriaList
+
+        start, tok = ids.shape[1], self.tok
+
+        class JsonDone(StoppingCriteria):  # the loop only uses the first JSON object; stop when it is complete
+            def __call__(self, input_ids, scores, **kwargs):
+                done = json_closed(tok.decode(input_ids[0, start:], skip_special_tokens=True))
+                return torch.full((input_ids.shape[0],), done, dtype=torch.bool, device=input_ids.device)
+
         with torch.no_grad():
             out = self.model.generate(
                 ids,
                 max_new_tokens=MAX_NEW_TOKENS,
                 do_sample=False,
                 pad_token_id=self.tok.eos_token_id,
+                stopping_criteria=StoppingCriteriaList([JsonDone()]),
             )
         if os.environ.get("LLM_TIMING"):  # per-step prompt/new tokens and seconds, to find what makes a sample slow
             if torch.cuda.is_available():
