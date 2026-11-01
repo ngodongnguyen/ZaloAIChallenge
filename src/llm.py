@@ -1,3 +1,7 @@
+import os
+import sys
+import time
+
 from chat import needs_manual, prompt_text
 from config import LLM_MODEL, MAX_NEW_TOKENS
 
@@ -26,6 +30,7 @@ class LLM:
             if hasattr(ids, "input_ids"):
                 ids = ids.input_ids
         ids = ids.to(self.model.device)
+        t0 = time.time()
         with torch.no_grad():
             out = self.model.generate(
                 ids,
@@ -33,4 +38,8 @@ class LLM:
                 do_sample=False,
                 pad_token_id=self.tok.eos_token_id,
             )
+        if os.environ.get("LLM_TIMING"):  # per-step prompt/new tokens and seconds, to find what makes a sample slow
+            if torch.cuda.is_available():
+                torch.cuda.synchronize()
+            print(f"[llm] prompt {ids.shape[1]} tok, new {out.shape[1] - ids.shape[1]} tok, {time.time() - t0:.1f}s", file=sys.stderr, flush=True)
         return self.tok.decode(out[0, ids.shape[1]:], skip_special_tokens=True).strip()
