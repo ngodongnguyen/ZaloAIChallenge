@@ -128,6 +128,12 @@ def rollout(root, split, item, text, catalog, llm, temperature):
     return log
 
 
+def names_user(item, text):
+    """The teacher sometimes addresses the assistant by the user's own profile name ("Anh Việt ơi, ..."); real speech never does."""
+    name = (item["context"].get("user_profile") or {}).get("name")
+    return bool(name) and name.lower() in text.lower()
+
+
 def signature(log):
     return json.dumps([(n, a) for n, a, _ in log], sort_keys=True, ensure_ascii=False)
 
@@ -149,7 +155,9 @@ def stage_roll(args):
         it = json.loads(l)
         items[it["id"]] = dict(it, history=[])
     rows = [json.loads(l) for l in open(args.out_utter, encoding="utf-8")]
-    rows = [r for r in rows if r["ok"]]
+    n_all = len(rows)
+    rows = [r for r in rows if r["ok"] and not names_user(items[r["item"]], r["text"])]
+    print(f"requests kept after the length and user-name filters: {len(rows)} of {n_all}")
     done = set()
     if Path(args.done).exists():
         done = set(open(args.done).read().split())
