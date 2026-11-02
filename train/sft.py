@@ -17,6 +17,7 @@ from torch.utils.data import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainerCallback, TrainingArguments
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from chat import encode_with_labels, needs_manual  # noqa: E402
 from config import BASE_LLM, seed_everything  # noqa: E402
 
 
@@ -45,15 +46,18 @@ class SFTData(Dataset):
 
     @staticmethod
     def encode(messages, tok, max_len):
-        full = tok.apply_chat_template(messages, tokenize=True)
+        if needs_manual(tok):  # Qwen3.5: the template renders think blocks by position, so build the text ourselves
+            full, labels = encode_with_labels(tok, messages)
+            return None if len(full) > max_len else {"input_ids": full, "labels": labels}
+        full = tok.apply_chat_template(messages, tokenize=True, enable_thinking=False)
         full = full["input_ids"] if isinstance(full, dict) or hasattr(full, "keys") else full
         labels = [-100] * len(full)
         for i, m in enumerate(messages):
             if m["role"] != "assistant":
                 continue
-            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True)
+            pre = tok.apply_chat_template(messages[:i], add_generation_prompt=True, tokenize=True, enable_thinking=False)
             pre = pre["input_ids"] if hasattr(pre, "keys") else pre
-            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True)
+            upto = tok.apply_chat_template(messages[: i + 1], tokenize=True, enable_thinking=False)
             upto = upto["input_ids"] if hasattr(upto, "keys") else upto
             for j in range(len(pre), min(len(upto), len(full))):
                 labels[j] = full[j]
@@ -75,11 +79,14 @@ class MaskedLossLM(torch.nn.Module):
     The loss lives in forward() rather than in Trainer.compute_loss: under DDP (torchrun, one model copy per GPU)
     gradients are only all-reduced for a forward that went through the DDP wrapper, and Trainer wraps this module.
     forward() takes no loss kwargs, so Trainer divides the per-sample mean loss by grad_accum itself.
+    token_norm: divide by this constant (mean supervised tokens per sample) instead of the sample's own token count,
+    so every token weighs the same and long trajectories count more, at the same loss scale.
     """
 
-    def __init__(self, peft_model):
+    def __init__(self, peft_model, token_norm=None):
         super().__init__()
         self.peft_model = peft_model
+        self.token_norm = token_norm
 
     def forward(self, input_ids, attention_mask, labels):
         inner = self.peft_model.base_model.model  # Qwen2ForCausalLM under peft
@@ -96,7 +103,7 @@ class MaskedLossLM(torch.nn.Module):
         for i in range(0, tgt.numel(), CHUNK):
             total = total + checkpoint(_chunk_loss, inner.lm_head, h[i:i + CHUNK], tgt[i:i + CHUNK],
                                        use_reentrant=False)
-        return {"loss": total / max(1, tgt.numel())}
+        return {"loss": total / (self.token_norm or max(1, tgt.numel()))}
 
 
 CHUNK = 1024
@@ -110,6 +117,19 @@ class StopOnNanLoss(TrainerCallback):
         loss = (logs or {}).get("loss")
         if loss is not None and not math.isfinite(loss):
             raise RuntimeError(f"loss is {loss} at step {state.global_step}; stopping")
+
+
+class SaveEpochAdapter(TrainerCallback):
+    """Keep <out>_adapter_ep<k> after every epoch but the last (that one is <out>_adapter), to compare epochs
+    without training again."""
+
+    def __init__(self, peft_model, out):
+        self.peft_model = peft_model
+        self.out = out
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        if state.is_world_process_zero and state.epoch < args.num_train_epochs:
+            self.peft_model.save_pretrained(f"{self.out}_adapter_ep{round(state.epoch)}")
 
 
 def _chunk_loss(lm_head, h, tgt):
@@ -142,9 +162,11 @@ def main():
     ap.add_argument("--qlora", action="store_true", help="4-bit base weights (needs bitsandbytes)")
     ap.add_argument("--holdout", default=None, help="file with sample ids (one per line) kept out for validation")
     ap.add_argument("--no-merge", action="store_true", help="save only the LoRA adapter (<out>_adapter)")
+    ap.add_argument("--token-loss", action="store_true", help="weight every supervised token equally, not every sample")
+    ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
 
-    seed_everything()
+    seed_everything(args.seed)
     no_gqa_sdpa()
     # Under torchrun every GPU holds a full model copy and trains on its share of the data (DDP).
     local_rank = int(os.environ.get("LOCAL_RANK", 0))
@@ -169,7 +191,9 @@ def main():
         model.enable_input_require_grads()
     model = get_peft_model(model, LoraConfig(
         r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
+        # in_proj_* and out_proj are the linear attention layers of Qwen3.5; other models have no such modules
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj",
+                        "in_proj_qkv", "in_proj_z", "in_proj_a", "in_proj_b", "out_proj"]))
     if args.fp16:
         # Trainer's fp16 grad scaler refuses fp16 trainable params, so keep the LoRA weights in fp32.
         for p in model.parameters():
@@ -181,18 +205,23 @@ def main():
     if local_rank == 0:
         print("train examples:", len(ds), "gpus:", world, flush=True)
 
+    token_norm = None
+    if args.token_loss:
+        token_norm = sum(sum(x != -100 for x in r["labels"][1:]) for r in ds.rows) / len(ds)
+        if local_rank == 0:
+            print("mean supervised tokens per sample:", round(token_norm, 1), flush=True)
     accum = max(1, 16 // world)  # effective batch stays 16 whatever the GPU count
     steps = -(-int(len(ds) * args.epochs) // 16)  # optimizer steps; warmup_ratio was removed in transformers 5
     trainer = Trainer(
-        model=MaskedLossLM(model),
+        model=MaskedLossLM(model, token_norm),
         train_dataset=ds,
         data_collator=lambda b: collate(b, tok.pad_token_id),
         args=TrainingArguments(
             output_dir=args.out + "_ckpt", num_train_epochs=args.epochs, learning_rate=args.lr,
             per_device_train_batch_size=1, gradient_accumulation_steps=accum, warmup_steps=max(1, int(0.05 * steps)),
             lr_scheduler_type="cosine", logging_steps=1, save_strategy="no", bf16=not args.fp16, fp16=args.fp16,
-            seed=42, report_to="none", remove_unused_columns=False, ddp_find_unused_parameters=False),
-        callbacks=[StopOnNanLoss()],
+            seed=args.seed, report_to="none", remove_unused_columns=False, ddp_find_unused_parameters=False),
+        callbacks=[StopOnNanLoss(), SaveEpochAdapter(model, args.out)],
     )
     trainer.train()
     if local_rank != 0:

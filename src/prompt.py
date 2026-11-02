@@ -1,8 +1,8 @@
 """Prompt construction shared by SFT data building and inference (must stay identical)."""
 import json
-import re
 
-from config import TOOL_RESULT_CHARS
+from condition import condition_hint
+from config import COND_HINT, HISTORY_RESULT_CHARS, MONEY_HINT, RESULT_DIGEST, TOOL_RESULT_CHARS
 
 SYSTEM = """Bạn là trợ lý giọng nói tiếng Việt thực hiện hành động qua các công cụ (tool) của ứng dụng đã cài trên thiết bị.
 Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
@@ -13,8 +13,7 @@ Quy tắc:
 2. Cần ID/thông tin mà chưa có: gọi tool read trước rồi mới gọi tool write.
 3. Chỉ hỏi lại khi THỰC SỰ thiếu thông tin người dùng chưa nói và không tra được: trước hết dùng tool read để tìm (danh bạ, thiết bị, lịch, danh sách...), dùng ngữ cảnh/hồ sơ (nhà, nơi làm việc, giờ hiện tại). Chỉ khi vẫn không xác định được một tham số bắt buộc mới gọi {"name": "sys.ask_missing_info", "arguments": {"tool_name": "<tool định gọi>", "params": ["<tham số thiếu>"]}} rồi kết thúc.
 4. Không có ứng dụng nào xử lý được yêu cầu: kết thúc ngay {"done": true}, không gọi tool nào.
-5. Không gọi tool thừa. Tham số tùy chọn: truyền khi người dùng nói đến hoặc suy ra được từ yêu cầu (loại, tiêu đề, giờ hẹn...); nếu không có thì bỏ qua, không dùng giá trị rỗng ("", null). Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng.
-6. Yêu cầu có điều kiện ("nếu... thì... không thì..."): gọi tool đọc trước, so sánh số trong KẾT QUẢ với ngưỡng người dùng nói (số lớn có kèm bản rút gọn trong ngoặc), rồi chỉ thực hiện đúng MỘT nhánh phù hợp."""
+5. Không gọi tool thừa. Không truyền tham số tùy chọn mà người dùng không nói đến; không dùng giá trị rỗng ("", null). Thời gian dùng định dạng ISO 8601 theo múi giờ của người dùng."""
 
 
 def _param_line(name, spec, required):
@@ -77,22 +76,8 @@ def allowed_names(item, catalog):
     return {t["name"] for t in tools_for_item(item, catalog)} | {"sys.ask_missing_info"}
 
 
-_BIG_INT = re.compile(r'(?<![\w."\-:])(\d{6,})(?![\w."\-:])')
-
-
-def _short(m):
-    n = int(m.group(1))
-    v, unit = (n / 1_000_000, "triệu") if n >= 1_000_000 else (n / 1_000, "nghìn")
-    return f"{m.group(1)} (≈{round(v, 1):g} {unit})"
-
-
-def humanize_numbers(s):
-    """Annotate bare integers >= 100000 with a short form so the model compares them to spoken amounts reliably."""
-    return _BIG_INT.sub(_short, s)
-
-
 def truncate(obj, limit=TOOL_RESULT_CHARS):
-    s = humanize_numbers(json.dumps(obj, ensure_ascii=False))
+    s = json.dumps(obj, ensure_ascii=False)
     return s if len(s) <= limit else s[:limit] + "…"
 
 
@@ -106,7 +91,7 @@ def render_history(history):
             turn = {"role": "assistant", "text": h.get("text", "")}
             if h.get("tool_calls"):
                 turn["tool_calls"] = h["tool_calls"]
-                turn["tool_results"] = [truncate(r, 500) for r in h.get("tool_results", [])]
+                turn["tool_results"] = [truncate(r, HISTORY_RESULT_CHARS) for r in h.get("tool_results", [])]
             out.append(turn)
     return out
 
@@ -131,13 +116,56 @@ def initial_messages(item, transcript, catalog):
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
-def call_msg(name, arguments):
-    return {"role": "assistant", "content": json.dumps({"name": name, "arguments": arguments}, ensure_ascii=False)}
+def call_msg(name, arguments, thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj.update({"name": name, "arguments": arguments})
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
-def done_msg():
-    return {"role": "assistant", "content": json.dumps({"done": True})}
+def done_msg(thought=None):
+    obj = {"thought": thought} if thought else {}
+    obj["done"] = True
+    return {"role": "assistant", "content": json.dumps(obj, ensure_ascii=False)}
 
 
-def result_msg(result):
-    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result)}
+def money_hint(obj, limit=6):
+    """Large amounts restated in millions ("sell=126.6 triệu"), so a threshold said as "127 triệu" is easy to compare."""
+    found = []
+
+    def walk(o, key=""):
+        if len(found) >= limit:
+            return
+        if isinstance(o, dict):
+            for k, v in o.items():
+                walk(v, k)
+        elif isinstance(o, list):
+            for v in o[:6]:
+                walk(v, key)
+        elif isinstance(o, (int, float)) and not isinstance(o, bool) and abs(o) >= 1_000_000:
+            found.append(f"{key}={o / 1_000_000:.2f}".rstrip("0").rstrip(".") + " triệu")
+
+    walk(obj)
+    return "\n(quy đổi: " + ", ".join(found) + ")" if found else ""
+
+
+def device_digest(obj):
+    """Devices/locks regrouped by floor in one line each, so "all lights on floor 2 except rooms with the AC on" is a lookup."""
+    if not isinstance(obj, dict):
+        return ""
+    lines = {}
+    for d in obj.get("devices") or []:
+        if isinstance(d, dict) and "floor" in d and isinstance(d.get("state"), dict):
+            st = ", ".join(f"{k}={v}" for k, v in d["state"].items())
+            lines.setdefault(f"tầng {d['floor']}", []).append(f"{d.get('id')} ({d.get('name')}; {st})")
+    for d in obj.get("locks") or []:
+        if isinstance(d, dict) and "location" in d:
+            lines.setdefault(str(d["location"]), []).append(f"{d.get('id')} ({d.get('name')}; locked={d.get('locked')})")
+    if not lines:
+        return ""
+    return "\n(tóm tắt: " + " | ".join(f"{k}: " + "; ".join(v) for k, v in sorted(lines.items())) + ")"
+
+
+def result_msg(result, transcript=None):
+    digest = device_digest(result) if RESULT_DIGEST else ""
+    cond = condition_hint(transcript, result) if COND_HINT and transcript else ""
+    return {"role": "user", "content": "KẾT QUẢ: " + truncate(result) + (money_hint(result) if MONEY_HINT else "") + digest + cond}
