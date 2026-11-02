@@ -12,6 +12,8 @@ BASE=${BASE:-Qwen/Qwen3-4B-Instruct-2507}
 ASR_EVAL=${ASR_EVAL:-models/asr_ft}        # not trained on the holdout, so holdout numbers stay clean
 ASR_SUB=${ASR_SUB:-models/asr_final}       # trained on all train audio, for the submission
 THOUGHTS=train/thoughts_full.jsonl
+# The 26 s per-sample budget is for the A30; this GPU is ~3x slower, so do not cut samples short when measuring locally.
+export TIME_BUDGET_S=${TIME_BUDGET_S:-120}
 
 if [ "${FINAL:-0}" = "1" ]; then
   TAG=thought-final; HOLD=""

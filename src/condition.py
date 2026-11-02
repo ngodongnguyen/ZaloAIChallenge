@@ -15,20 +15,18 @@ PATTERN = re.compile(rf"\b({ABOVE}|{BELOW})\s+(?:mức\s+)?{NUMBER}\s*(?:triệu
 
 def words_to_int(text):
     """'một trăm hai mươi' -> 120, 'một trăm linh năm' -> 105 (hundreds and tens only; enough for prices in millions)."""
-    total, cur, tens = 0, 0, False
+    total, cur = 0, 0
     for w in text.lower().split():
         if w in UNITS:
             cur = UNITS[w]
         elif w == "mười":
-            cur, tens = 10, True
+            total, cur = total + 10, 0
         elif w == "mươi":
-            cur, tens = cur * 10 if cur else 10, True
-        elif w == "mốt":
-            cur += 1
+            total, cur = total + (cur * 10 if cur else 10), 0
+        elif w == "mốt":  # "hai mươi mốt" -> mươi already added the tens; "hai mốt" (spoken) -> 21
+            total, cur = (total + cur * 10 + 1, 0) if cur else (total + 1, 0)
         elif w == "trăm":
             total, cur = total + cur * 100, 0
-        elif w in ("linh", "lẻ"):
-            continue
     return total + cur
 
 
