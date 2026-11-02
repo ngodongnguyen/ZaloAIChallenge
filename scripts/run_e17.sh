@@ -30,6 +30,7 @@ if [ "${USE_PARA:-0}" = "1" ]; then
   PARA_ARG="--para train/paraphrases.jsonl"; NAME=asr-para
 fi
 [ "${COND:-0}" = "1" ] && NAME=$NAME-cond
+NAME=$NAME${SUFFIX:-}                      # e.g. SUFFIX=-v2 to rerun with a new model/output name
 if [ "${FINAL:-0}" = "1" ]; then
   TAG=$NAME-final; HOLD=""; ASR_CHECK=$ASR_SUB
 else

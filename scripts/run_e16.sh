@@ -18,6 +18,8 @@ PARAS=train/paraphrases.jsonl
 # E16 isolates the wording data: no E14 money hint, no E15 digest (the E8 baseline had neither)
 export MONEY_HINT=0
 export RESULT_DIGEST=0
+# E18 threshold hint, off unless asked (training and inference must agree): COND_HINT=1 SUFFIX=-c bash scripts/run_e16.sh
+export COND_HINT=${COND_HINT:-0}
 # the 26 s per-sample budget is for the A30; do not cut samples short when measuring on a slower GPU
 export TIME_BUDGET_S=${TIME_BUDGET_S:-120}
 
