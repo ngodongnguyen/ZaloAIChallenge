@@ -13,6 +13,7 @@ import argparse
 import json
 import os
 import random
+import re
 import sys
 import time
 from pathlib import Path
@@ -131,7 +132,10 @@ def rollout(root, split, item, text, catalog, llm, temperature):
 def names_user(item, text):
     """The teacher sometimes addresses the assistant by the user's own profile name ("Anh Việt ơi, ..."); real speech never does."""
     name = (item["context"].get("user_profile") or {}).get("name")
-    return bool(name) and name.lower() in text.lower()
+    if not name:
+        return False
+    given = name.split()[-1]  # "Anh Việt" -> "Việt"
+    return name.lower() in text.lower() or re.search(rf"\b{re.escape(given)}\s+ơi", text) is not None
 
 
 def signature(log):
