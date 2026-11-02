@@ -43,7 +43,7 @@ class LLM:
             dev, dtype = "cpu", torch.float32
         self.model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=dtype).to(dev).eval()
 
-    def generate(self, messages):
+    def generate(self, messages, temperature=None):
         torch = self.torch
         if needs_manual(self.tok):  # Qwen3.5: same rendering as in training (see chat.py)
             ids = self.tok(prompt_text(messages), return_tensors="pt", add_special_tokens=False).input_ids
@@ -66,7 +66,7 @@ class LLM:
             out = self.model.generate(
                 ids,
                 max_new_tokens=MAX_NEW_TOKENS,
-                do_sample=False,
+                **({"do_sample": True, "temperature": temperature, "top_p": 0.95} if temperature else {"do_sample": False}),
                 pad_token_id=self.tok.eos_token_id,
                 stopping_criteria=StoppingCriteriaList([JsonDone()]),
             )
