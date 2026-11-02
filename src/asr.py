@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from config import ASR_MODEL
@@ -14,6 +15,7 @@ class ASR:
                     self.cache[r["id"]] = r["text"]
         self.model_name = model_name
         self.pipe = None
+        self.prompt = open(os.environ["ASR_PROMPT_FILE"], encoding="utf-8").read().strip() if os.environ.get("ASR_PROMPT_FILE") else None
 
     def _load(self):
         import torch
@@ -35,8 +37,9 @@ class ASR:
         audio, sr = sf.read(str(wav_path), dtype="float32")
         if audio.ndim > 1:
             audio = audio.mean(axis=1)
-        out = self.pipe(
-            {"raw": audio, "sampling_rate": sr},
-            generate_kwargs={"do_sample": False, "num_beams": 1, "language": "vi", "task": "transcribe"},
-        )
-        return out["text"].strip()
+        kwargs = {"do_sample": False, "num_beams": 1, "language": "vi", "task": "transcribe"}
+        if self.prompt:  # domain words as the previous context nudge Whisper towards them
+            kwargs["prompt_ids"] = self.pipe.tokenizer.get_prompt_ids(self.prompt, return_tensors="pt").to(self.pipe.device)
+        out = self.pipe({"raw": audio, "sampling_rate": sr}, generate_kwargs=kwargs)
+        text = out["text"].strip()
+        return text[len(self.prompt):].strip() if self.prompt and text.startswith(self.prompt) else text
