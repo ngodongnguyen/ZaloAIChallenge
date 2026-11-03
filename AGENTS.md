@@ -110,8 +110,8 @@ kaggle datasets download -d thanhkhil/zaloai-lifemate-dataset # tải dataset (t
 
 - Ưu tiên `kaggle-acc run <user> ...` thay cho `kaggle-switch`. `kaggle-switch` đổi tài khoản cho cả máy, làm hỏng việc của agent khác đang chạy song song.
 - `kernel-metadata.json` **bị gitignore** vì chứa username, chỉ có trên máy local; không tạo file `.example.json`. Thư mục nào chưa có thì viết mới (copy từ thư mục notebook khác rồi sửa `id`, `title`, `code_file`).
-- `id` trong metadata có dạng `<owner>/<slug>`. Muốn push bằng tài khoản khác thì phải đổi `<owner>` thành đúng username đó, nếu không push sẽ lỗi.
-- Hết quota GPU / giới hạn rate → chuyển sang tài khoản khác trong pool rồi push lại. Ghi lại đã chạy bằng tài khoản nào khi log kết quả vào `.vscode/history_plan/<track>.md`.
+- **Chủ sở hữu khi push (quy ước user 2026-11-04, bắt buộc với Codex, Claude Code, `agy`, `dsh`):** mọi notebook/kernel và dataset đẩy hay tạo trên Kaggle (`kaggle kernels push`, kể cả `--no-run`; `kaggle datasets create` / `version`) **chỉ thuộc tài khoản mặc định `acc3`** (username trong `AGENTS.local.md`): `id` trong `kernel-metadata.json` / `dataset-metadata.json` là `<acc3>/<slug>`, chạy bằng `kaggle-acc run <acc3> kaggle ...`. Không push, không tạo kernel/dataset trên 8 tài khoản còn lại, kể cả khi `acc3` hết quota GPU.
+- Hết quota GPU → báo user notebook nào cần chạy (tên + URL đầy đủ); **user tự share thủ công** notebook đó cho tài khoản còn GPU trên Kaggle. Không copy hay push lại sang tài khoản khác. Lệnh chỉ đọc (status, output, download, list) dùng tài khoản nào cũng được. Ghi tài khoản đã chạy (bí danh `acc<N>`) khi log kết quả vào `.vscode/history_plan/<track>.md`.
 - Không in, không commit API key Kaggle; không sửa `~/.kaggle/kaggle.json` bằng tay.
 
 ## Input dataset trong notebook (bắt buộc với mọi agent)

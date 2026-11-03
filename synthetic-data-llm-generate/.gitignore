@@ -1,6 +1,0 @@
-# Generated data and agent transcripts stay local.
-train/
-rejected/
-logs/
-tts_input.jsonl
-__pycache__/

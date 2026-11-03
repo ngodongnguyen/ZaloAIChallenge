@@ -12,3 +12,5 @@ Tracking: mỗi track một file `.vscode/history_plan/<track>.md` (bảng run +
 Input dataset: mọi notebook phải có khối `metadata.kaggle` (dataset cuộc thi của track, GPU T4, Internet) theo mục "Input dataset trong notebook" trong `AGENTS.md`, vì user Import Notebook thủ công.
 
 Dataset local: bản tải sẵn của 2 track ở `dataset/lifemate/train+public_test/` và `dataset/datamate/{train,public_test}/` (chỉ đọc, gitignored). Đọc trực tiếp khi cần xem format / EDA, không tải lại; notebook Kaggle vẫn dùng `/kaggle/input/...`. Chi tiết: mục `dataset/` trong `AGENTS.md`.
+
+Kaggle push: mọi notebook/kernel và dataset đẩy hay tạo trên Kaggle (kể cả `push --no-run`) chỉ thuộc tài khoản mặc định `acc3` (username trong `AGENTS.local.md`); không tạo trên tài khoản khác. Hết quota GPU thì báo user, user tự share thủ công cho tài khoản còn GPU. Theo mục "Rules khi dùng Kaggle" trong `AGENTS.md`.
