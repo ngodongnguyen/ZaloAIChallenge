@@ -10,7 +10,7 @@ THINK = "<think>\n\n</think>\n\n"
 
 def needs_manual(tok):
     tpl = getattr(tok, "chat_template", None) or ""
-    return "enable_thinking" in tpl and "<think>" in tpl
+    return "enable_thinking" in tpl and "<think>" in tpl and "<|im_start|>" in tpl
 
 
 def segments(messages, generation_prompt=False):
