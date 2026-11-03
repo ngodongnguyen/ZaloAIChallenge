@@ -42,9 +42,15 @@ class ASR:
             audio = torchaudio.functional.resample(torch.from_numpy(audio), sr, 16000).numpy()
         feats = self.pipe.feature_extractor(audio, sampling_rate=16000, return_tensors="pt").input_features
         feats = feats.to(self.pipe.device, dtype=self.pipe.model.dtype)
+        from transformers import GenerationMixin
+        tk, model = self.pipe.tokenizer, self.pipe.model
+        start = tk.convert_tokens_to_ids(["<|startoftranscript|>", "<|vi|>", "<|transcribe|>", "<|notimestamps|>"])
+        dec = torch.tensor([start], device=model.device)
         with torch.no_grad():
-            seqs = self.pipe.model.generate(feats, num_beams=k, num_return_sequences=k, language="vi", task="transcribe", max_new_tokens=200)
-        return [t.strip() for t in self.pipe.tokenizer.batch_decode(seqs, skip_special_tokens=True)]
+            # Whisper's own generate() hands back the best beam repeated; the generic one returns k distinct beams
+            seqs = GenerationMixin.generate(model, input_features=feats, decoder_input_ids=dec, num_beams=k,
+                                            num_return_sequences=k, max_new_tokens=200)
+        return [t.strip() for t in tk.batch_decode(seqs, skip_special_tokens=True)]
 
     def transcribe(self, wav_path, sample_id=None):
         if sample_id is not None and sample_id in self.cache:
