@@ -1,0 +1,880 @@
+{
+  "train110": [
+    {
+      "id": "q_0504f61cae69",
+      "question": "e bua qua cua hang ban duoc may don",
+      "from": "2025-10-02",
+      "to": "2025-10-02",
+      "expected": 93,
+      "actual": 93,
+      "correct": true
+    },
+    {
+      "id": "q_05f70ec18809",
+      "question": "cho hỏi số đơn quý 2/2026 là nhiêu",
+      "from": "2026-04-01",
+      "to": "2026-06-30",
+      "expected": 5772,
+      "actual": 5772,
+      "correct": true
+    },
+    {
+      "id": "q_076499936842",
+      "question": "Tháng 9/2025 cửa hàng bán đc tổng cộng bao nhiêu tiền?",
+      "from": "2025-09-01",
+      "to": "2025-09-30",
+      "expected": 153539000,
+      "actual": 153539000,
+      "correct": true
+    },
+    {
+      "id": "q_078fecc248e5",
+      "question": "bua qua dthu duoc bao nhieu",
+      "from": "2026-01-09",
+      "to": "2026-01-09",
+      "expected": 5093500,
+      "actual": 5093500,
+      "correct": true
+    },
+    {
+      "id": "q_09f475fddfec",
+      "question": "xem giúp số đơn hôm nay là bao nhiêu",
+      "from": "2025-06-25",
+      "to": "2025-06-25",
+      "expected": 74,
+      "actual": 74,
+      "correct": true
+    },
+    {
+      "id": "q_0add21504f80",
+      "question": "Doanh thu hôm qua của cửa hàng là bao nhiêu?",
+      "from": "2026-06-26",
+      "to": "2026-06-26",
+      "expected": 4695500,
+      "actual": 4695500,
+      "correct": true
+    },
+    {
+      "id": "q_0ddb6dcd7d01",
+      "question": "tong dthu trong ngay hom nay la bn",
+      "from": "2025-10-01",
+      "to": "2025-10-01",
+      "expected": 6030000,
+      "actual": 6030000,
+      "correct": true
+    },
+    {
+      "id": "q_18e16f9f9f85",
+      "question": "tổng doanh thu tháng 5 năm 2025 là bn",
+      "from": "2025-05-01",
+      "to": "2025-05-31",
+      "expected": 148634000,
+      "actual": 148634000,
+      "correct": true
+    },
+    {
+      "id": "q_1ba969686341",
+      "question": "Tháng 4/2026 cửa hàng bán đc tổng cộng bao nhiêu tiền?",
+      "from": "2026-04-01",
+      "to": "2026-04-30",
+      "expected": 136163500,
+      "actual": 136163500,
+      "correct": true
+    },
+    {
+      "id": "q_2673cb45d798",
+      "question": "hnay cửa hangf có nhiêu ddown",
+      "from": "2026-05-03",
+      "to": "2026-05-03",
+      "expected": 50,
+      "actual": 50,
+      "correct": true
+    },
+    {
+      "id": "q_269c0b4a7a90",
+      "question": "Doanh thu ngày nào cao nhất trong tháng 9 năm 2025?",
+      "from": "2025-09-01",
+      "to": "2025-09-30",
+      "expected": "2025-09-01",
+      "actual": "2025-09-01",
+      "correct": true
+    },
+    {
+      "id": "q_3790a635bd18",
+      "question": "Cho tôi biết số đơn hqua.",
+      "from": "2026-02-09",
+      "to": "2026-02-09",
+      "expected": 63,
+      "actual": 63,
+      "correct": true
+    },
+    {
+      "id": "q_38f93b35964e",
+      "question": "Tổng doanh thu trong ngày hôm nay là bao nhiêu?",
+      "from": "2025-07-22",
+      "to": "2025-07-22",
+      "expected": 6116000,
+      "actual": 6116000,
+      "correct": true
+    },
+    {
+      "id": "q_438bfe9d843a",
+      "question": "ngay nao trong thang 3/2026 dthu cao nhat",
+      "from": "2026-03-01",
+      "to": "2026-03-31",
+      "expected": "2026-03-26",
+      "actual": "2026-03-26",
+      "correct": true
+    },
+    {
+      "id": "q_456f5db25a6d",
+      "question": "Xem giúp doanh thu ngày nào cao nhất trong tháng 5 năm 2026?",
+      "from": "2026-05-01",
+      "to": "2026-05-31",
+      "expected": "2026-05-28",
+      "actual": "2026-05-28",
+      "correct": true
+    },
+    {
+      "id": "q_535b3fe8faed",
+      "question": "trong quý 2 năm 2026, dthu của cửa hàng đươc bn tiền",
+      "from": "2026-04-01",
+      "to": "2026-06-30",
+      "expected": 417354500,
+      "actual": 417354500,
+      "correct": true
+    },
+    {
+      "id": "q_5d6431886ab9",
+      "question": "hnay bán được mấy đơn hàng?",
+      "from": "2026-06-11",
+      "to": "2026-06-11",
+      "expected": 89,
+      "actual": 89,
+      "correct": true
+    },
+    {
+      "id": "q_6fe9f968ba88",
+      "question": "Doanh thu tháng 6/2026 bao nhiêu?",
+      "from": "2026-06-01",
+      "to": "2026-06-30",
+      "expected": 138884000,
+      "actual": 138884000,
+      "correct": true
+    },
+    {
+      "id": "q_70bb43f64fb5",
+      "question": "Ngày nào trong tháng 12/2025 doanh thu cao nhất?",
+      "from": "2025-12-01",
+      "to": "2025-12-31",
+      "expected": "2025-12-29",
+      "actual": "2025-12-29",
+      "correct": true
+    },
+    {
+      "id": "q_72c84fa63b2a",
+      "question": "Tổng dthu trong ngày hôm nay là bao nhiêu?",
+      "from": "2025-06-13",
+      "to": "2025-06-13",
+      "expected": 5002000,
+      "actual": 5002000,
+      "correct": true
+    },
+    {
+      "id": "q_9187bd6c41c9",
+      "question": "dthu bữa nay là bao nhiu hả",
+      "from": "2025-12-16",
+      "to": "2025-12-16",
+      "expected": 7105500,
+      "actual": 7105500,
+      "correct": true
+    },
+    {
+      "id": "q_99a0f6d709bd",
+      "question": "Tính riêng ngày hôm nay, cửa hàng bán được bao nhiêu đơn hàng?",
+      "from": "2026-02-21",
+      "to": "2026-02-21",
+      "expected": 31,
+      "actual": 31,
+      "correct": true
+    },
+    {
+      "id": "q_9cd8322bf3b4",
+      "question": "toongr dthu hôm qua là bn",
+      "from": "2026-05-18",
+      "to": "2026-05-18",
+      "expected": 4658500,
+      "actual": 4658500,
+      "correct": true
+    },
+    {
+      "id": "q_a2632be14081",
+      "question": "Hôm qua cửa hàng bán được bao nhiêu tiền?",
+      "from": "2025-07-06",
+      "to": "2025-07-06",
+      "expected": 2375000,
+      "actual": 2375000,
+      "correct": true
+    },
+    {
+      "id": "q_a8efcf429886",
+      "question": "Hôm qua cửa hàng bán đc bao nhiêu tiền?",
+      "from": "2026-01-22",
+      "to": "2026-01-22",
+      "expected": 5354000,
+      "actual": 5354000,
+      "correct": true
+    },
+    {
+      "id": "q_abf2c0f910bf",
+      "question": "Ngày nào trong tháng 5/2025 doanh thu cao nhất vậy?",
+      "from": "2025-05-01",
+      "to": "2025-05-31",
+      "expected": "2025-05-15",
+      "actual": "2025-05-15",
+      "correct": true
+    },
+    {
+      "id": "q_ae23266bcffe",
+      "question": "Doanh thu hôm qua của cửa hàng là bao nhiêu?",
+      "from": "2026-02-14",
+      "to": "2026-02-14",
+      "expected": 1216000,
+      "actual": 1216000,
+      "correct": true
+    },
+    {
+      "id": "q_b3a4f8dd6cb4",
+      "question": "doanh thu hôm qua của cửa hangf laf bn ta",
+      "from": "2025-11-19",
+      "to": "2025-11-19",
+      "expected": 4036500,
+      "actual": 4036500,
+      "correct": true
+    },
+    {
+      "id": "q_b3b45f9adceb",
+      "question": "Tổng doanh thu quý 3/2025 là bao nhiêu?",
+      "from": "2025-07-01",
+      "to": "2025-09-30",
+      "expected": 456544000,
+      "actual": 456544000,
+      "correct": true
+    },
+    {
+      "id": "q_c86e099eb394",
+      "question": "Tính riêng ngày hôm nay, cửa hàng bán được bao nhiêu đơn hàng?",
+      "from": "2025-05-14",
+      "to": "2025-05-14",
+      "expected": 79,
+      "actual": 79,
+      "correct": true
+    },
+    {
+      "id": "q_d96f45ce61be",
+      "question": "Tổng doanh thu hôm qua là bao nhiêu?",
+      "from": "2026-03-02",
+      "to": "2026-03-02",
+      "expected": 5670500,
+      "actual": 5670500,
+      "correct": true
+    },
+    {
+      "id": "q_dc2e6bc8362b",
+      "question": "xem giup hom qua cua hang ban duoc may don",
+      "from": "2026-05-27",
+      "to": "2026-05-27",
+      "expected": 58,
+      "actual": 58,
+      "correct": true
+    },
+    {
+      "id": "q_e1786165de4a",
+      "question": "cho toi biet dthu hqua",
+      "from": "2026-05-04",
+      "to": "2026-05-04",
+      "expected": 5693000,
+      "actual": 5693000,
+      "correct": true
+    },
+    {
+      "id": "q_ea094bdb2c13",
+      "question": "Doanh thu hôm nay là bao nhiêu?",
+      "from": "2025-09-11",
+      "to": "2025-09-11",
+      "expected": 6093000,
+      "actual": 6093000,
+      "correct": true
+    },
+    {
+      "id": "q_ed5f36c5ec64",
+      "question": "soos bill hqua là nhiêu đó",
+      "from": "2026-05-02",
+      "to": "2026-05-02",
+      "expected": 50,
+      "actual": 50,
+      "correct": true
+    },
+    {
+      "id": "q_f19c4e273491",
+      "question": "quý 4/2025 cuwar hàng có bn order ddos",
+      "from": "2025-10-01",
+      "to": "2025-12-31",
+      "expected": 6236,
+      "actual": 6236,
+      "correct": true
+    },
+    {
+      "id": "q_f50a0876a46e",
+      "question": "Doanh thu hôm nay là bao nhiêu vậy?",
+      "from": "2025-12-11",
+      "to": "2025-12-11",
+      "expected": 5420500,
+      "actual": 5420500,
+      "correct": true
+    },
+    {
+      "id": "q_f6b49fedf388",
+      "question": "Doanh thu hnay là bao nhiêu",
+      "from": "2025-08-15",
+      "to": "2025-08-15",
+      "expected": 3975500,
+      "actual": 3975500,
+      "correct": true
+    },
+    {
+      "id": "q_fb2984e65ce3",
+      "question": "Trong quý 1 năm 2026, doanh thu của cửa hàng được bao nhiêu tiền vậy?",
+      "from": "2026-01-01",
+      "to": "2026-03-31",
+      "expected": 387513000,
+      "actual": 387513000,
+      "correct": true
+    },
+    {
+      "id": "q_fe444980c217",
+      "question": "Hôm qua cửa hàng bán được bao nhiêu tiền?",
+      "from": "2026-05-27",
+      "to": "2026-05-27",
+      "expected": 4107500,
+      "actual": 4107500,
+      "correct": true
+    }
+  ],
+  "train110_correct": 40,
+  "train110_total": 40,
+  "train117": [
+    {
+      "id": "q_008f69128180",
+      "question": "trong thang 10/2025, ti le don huy la bnhiu %",
+      "operation": "cancelrate",
+      "expected": 1.21,
+      "actual": 1.21,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_01b914589609",
+      "question": "Cho tôi biết dthu 30 ngày gần nhất",
+      "operation": "rev",
+      "expected": 730984600,
+      "actual": 730984600,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_0db8d6ef55e9",
+      "question": "thang 5/2025 ngay nao cua hang ban duoc nhiu tien nhat",
+      "operation": "bestday",
+      "expected": "2025-05-11",
+      "actual": "2025-05-11",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_0f7a713a9a4e",
+      "question": "Cho hỏi trong tháng 1 năm 2026, số đơn có doanh thu ≥ 580.000 đồng là bao nhiêu?",
+      "operation": "order_threshold",
+      "expected": 509,
+      "actual": 509,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_16001b7edc7b",
+      "question": "trung bình mỗi đơn tháng 1/2026 mang về bao nhiêu dthu",
+      "operation": "avg",
+      "expected": 1238995,
+      "actual": 1238995,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_18a3c0b665fe",
+      "question": "trong thangs 3/2025, xét theo doanh thu, ngày nào bán đắt nhất nhỉ",
+      "operation": "bestday",
+      "expected": "2025-03-24",
+      "actual": "2025-03-24",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_2528eab85436",
+      "question": "khach nao mua nhieu don nhat thang 12/2025 ha",
+      "operation": "cust_orders",
+      "expected": "Đinh Bảo Châu",
+      "actual": "Đinh Bảo Châu",
+      "actual_type": "string",
+      "correct": true
+    },
+    {
+      "id": "q_3020c306a884",
+      "question": "Trong tháng 3 năm 2025, số đơn có dthu ≥ 590.000 đồng là bao nhiêu?",
+      "operation": "order_threshold",
+      "expected": 445,
+      "actual": 445,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_33c1739f7daf",
+      "question": "Từ đầu tháng này đến hết hnay, doanh thu hơn hay kém cùng kỳ tháng trước mấy %?",
+      "operation": "growth_mtd",
+      "expected": 13.87,
+      "actual": 13.87,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_3596852d6b89",
+      "question": "Trong số khách đã mua hàng tháng 3/2026, bao nhiêu phần trăm mua từ 4 đơn trở lên?",
+      "operation": "cust_min_share",
+      "expected": 48.28,
+      "actual": 48.28,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_36cda8515d30",
+      "question": "tuần trc doanh thu bình quân mỗi đơn hàng là bao nhiêu",
+      "operation": "avg",
+      "expected": 1529206,
+      "actual": 1529206,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_4726d037f8a8",
+      "question": "doanh thu từ đầu tháng này đến hết bữa nay hơn hay kém cùng kỳ tháng rồi bnhiu %",
+      "operation": "growth_mtd",
+      "expected": 14.4,
+      "actual": 14.4,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_4b77ed39a2ff",
+      "question": "Trong tháng 10 năm 2025, số khách mua ít nhất 4 đơn là bao nhiêu?",
+      "operation": "cust_min",
+      "expected": 65,
+      "actual": 65,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_5161c6b90828",
+      "question": "trung bình mỗi đơn tuần rồi mang veef bao nhiu dthu",
+      "operation": "avg",
+      "expected": 1313157,
+      "actual": 1313157,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_5258a06d7513",
+      "question": "Ca sáng tháng 5/2025 doanh thu được bao nhiêu vậy?",
+      "operation": "shift_rev",
+      "expected": 833310100,
+      "actual": 833310100,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_55640348e6de",
+      "question": "tháng 1/2026 có mấy khách mua từ 5 đơn trở lên",
+      "operation": "cust_min",
+      "expected": 42,
+      "actual": 42,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_5811b4c066de",
+      "question": "so vs cùng kỳ th trước, doanh thu từ đầu tháng này đến hết hôm nay tăng hay giảm bao nhiu % hả",
+      "operation": "growth_mtd",
+      "expected": -14.26,
+      "actual": -14.26,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_5f2137f4024a",
+      "question": "dem so don da huy trong thang 4/2025",
+      "operation": "cancel",
+      "expected": 20,
+      "actual": 20,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_6821f6e7e582",
+      "question": "Cho mình biết doanh thu tháng 4/2025.",
+      "operation": "rev",
+      "expected": 1195162900,
+      "actual": 1195162900,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_6a71d597879d",
+      "question": "Tháng 2/2025 dthu ca chiều chênh ca sáng bao nhiêu phần trăm",
+      "operation": "shift_growth_rev",
+      "expected": -55.92,
+      "actual": -55.92,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_700cb0d7392c",
+      "question": "Tháng 2/2026 cửa hàng bỏ ra bao nhiêu tiền nhập hàng nhỉ?",
+      "operation": "import_total",
+      "expected": 668060000,
+      "actual": 668060000,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_7024d934baf7",
+      "question": "tuan roi top 5 hang ban chay nhat la gi",
+      "operation": "top_products",
+      "expected": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Thép cuộn phi 6 Hòa Phát",
+        "Gạch ống 8x8x18 Tuynel",
+        "Thép Pomina D16 cây 11.7m"
+      ],
+      "actual": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Thép cuộn phi 6 Hòa Phát",
+        "Gạch ống 8x8x18 Tuynel",
+        "Thép Pomina D16 cây 11.7m"
+      ],
+      "actual_type": "list",
+      "correct": true
+    },
+    {
+      "id": "q_7232903d4ca7",
+      "question": "Trong tháng 4/2025, xét theo doanh thu, ngày nào bán đắt nhất?",
+      "operation": "bestday",
+      "expected": "2025-04-26",
+      "actual": "2025-04-26",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_768b90abba7a",
+      "question": "thang 1/2026 khach mua tu 3 don tro len chiem bao nhieu % so khach da mua",
+      "operation": "cust_min_share",
+      "expected": 73.56,
+      "actual": 73.56,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_7761f1a6f55c",
+      "question": "trong thang 6/2025, xet theo dthu, ngay nao ban dat nhat",
+      "operation": "bestday",
+      "expected": "2025-06-10",
+      "actual": "2025-06-10",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_788ab61d79d1",
+      "question": "Liệt kê 5 mặt hàng bán chạy nhất tháng 9/2025.",
+      "operation": "top_products",
+      "expected": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Thép cuộn phi 6 Hòa Phát",
+        "Băng keo điện Nano 20 yard",
+        "Thép Pomina D10 cây 11.7m"
+      ],
+      "actual": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Thép cuộn phi 6 Hòa Phát",
+        "Băng keo điện Nano 20 yard",
+        "Thép Pomina D10 cây 11.7m"
+      ],
+      "actual_type": "list",
+      "correct": true
+    },
+    {
+      "id": "q_7d414ba60371",
+      "question": "tong tien nhap hang thang 4/2025 la bnhiu",
+      "operation": "import_total",
+      "expected": 1018135000,
+      "actual": 1018135000,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_8e2acddfe818",
+      "question": "trung bình mỗi đơn tháng 11/2025 mang về nhiêu dthu",
+      "operation": "avg",
+      "expected": 1321748,
+      "actual": 1321748,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_8faae2f5f17e",
+      "question": "xem giup trung binh moi don tuan roi mang ve bn dthu nhi",
+      "operation": "avg",
+      "expected": 1169939,
+      "actual": 1169939,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_8fb58ebe7913",
+      "question": "thang 2/2026 dthu binh quan moi don la bn",
+      "operation": "avg",
+      "expected": 1365501,
+      "actual": 1365501,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_91f79e9456a1",
+      "question": "coi gium tuan trc, doanh thu ca chieu tang hay giam bnhiu % so vs ca sang",
+      "operation": "shift_growth_rev",
+      "expected": -51.21,
+      "actual": -51.21,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_9638b6ed00f0",
+      "question": "tuan roi ca sang ban duoc may don",
+      "operation": "shift_orders",
+      "expected": 137,
+      "actual": 137,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_9d0fc79b0bbf",
+      "question": "Trong tháng 9/2025, xét theo doanh thu, ngày nào bán đắt nhất nhỉ?",
+      "operation": "bestday",
+      "expected": "2025-09-15",
+      "actual": "2025-09-15",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_9eb743549bbc",
+      "question": "30 ngày gần nhất dthu được bao nhiêu?",
+      "operation": "rev",
+      "expected": 1127784900,
+      "actual": 1127784900,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_a05aeaae5493",
+      "question": "Tháng 2/2026 cửa hàng có bao nhiêu % đơn bị huỷ ạ?",
+      "operation": "cancelrate",
+      "expected": 2.71,
+      "actual": 2.71,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_a7da814c6e88",
+      "question": "từ đầu tháng này đến hết hôm nay, doanh thu thay đổi bnhiu % so vs cùng kỳ th trước",
+      "operation": "growth_mtd",
+      "expected": 19.85,
+      "actual": 19.85,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_a954a482d4bf",
+      "question": "Tháng 4/2026 cửa hàng có bao nhiêu % đơn bị huỷ vậy?",
+      "operation": "cancelrate",
+      "expected": 1.96,
+      "actual": 1.96,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_acfac98021c8",
+      "question": "trung binh moi don tuan roi mang ve bao nhieu dthu",
+      "operation": "avg",
+      "expected": 1344195,
+      "actual": 1344195,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_b331303a8b8c",
+      "question": "Cho mình hỏi mặt hàng bán chạy nhất tuần rồi là mặt hàng nào?",
+      "operation": "top_products_one",
+      "expected": "Băng keo điện Nano 20 yard",
+      "actual": "Băng keo điện Nano 20 yard",
+      "actual_type": "string",
+      "correct": true
+    },
+    {
+      "id": "q_bc6e400d302a",
+      "question": "doanh thu ngày nào cao nhất trong tháng 8 năm 2025",
+      "operation": "bestday",
+      "expected": "2025-08-07",
+      "actual": "2025-08-07",
+      "actual_type": "date",
+      "correct": true
+    },
+    {
+      "id": "q_bf80bd92e113",
+      "question": "Cho hỏi tháng 4/2025 tỉ lệ đơn bị huỷ là bao nhiêu phần trăm?",
+      "operation": "cancelrate",
+      "expected": 2.32,
+      "actual": 2.32,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_d00cf44a3dbd",
+      "question": "Từ đầu tháng này đến hết hôm nay, doanh thu hơn hay kém cùng kỳ tháng trước mấy % vậy?",
+      "operation": "growth_mtd",
+      "expected": -16.75,
+      "actual": -16.75,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_d42bb63de182",
+      "question": "liệt kê 3 mặt hàng hot nhất tháng 11/2025",
+      "operation": "top_products",
+      "expected": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Lưới B40 mạ kẽm khổ 1.5m"
+      ],
+      "actual": [
+        "Xi măng Hà Tiên PCB40 bao 50kg",
+        "Xi măng INSEE Power-S bao 50kg",
+        "Lưới B40 mạ kẽm khổ 1.5m"
+      ],
+      "actual_type": "list",
+      "correct": true
+    },
+    {
+      "id": "q_d8aed0de270b",
+      "question": "Trong tháng 5 năm 2025, số đơn có doanh thu ≥ 1.500.000 đồng là bao nhiêu vậy?",
+      "operation": "order_threshold",
+      "expected": 235,
+      "actual": 235,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_de9e64845a9f",
+      "question": "Doanh thu tháng 6/2025 bao nhiêu?",
+      "operation": "rev",
+      "expected": 1214839400,
+      "actual": 1214839400,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_e35d8fac5233",
+      "question": "Trong tháng 1 năm 2026, số khách mua ít nhất 3 đơn là bao nhiêu?",
+      "operation": "cust_min",
+      "expected": 128,
+      "actual": 128,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_e3679089fb30",
+      "question": "tỉ lệ huỷ đơn thangs 3/2026 là bao nhiêu % hả",
+      "operation": "cancelrate",
+      "expected": 2.31,
+      "actual": 2.31,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_e5e5eb7b1d8e",
+      "question": "ti le huy don thang nay la bao nhieu %",
+      "operation": "cancelrate",
+      "expected": 1.77,
+      "actual": 1.77,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_e735d1d1fa90",
+      "question": "check giùm tuần rồi ca chiều bán dc nhiêu tiền",
+      "operation": "shift_rev",
+      "expected": 78713200,
+      "actual": 78713200,
+      "actual_type": "number",
+      "correct": true
+    },
+    {
+      "id": "q_f063b216adce",
+      "question": "Từ đầu tháng này đến hết hôm nay, doanh thu thay đổi bao nhiêu % so với cùng kỳ tháng trước?",
+      "operation": "growth_mtd",
+      "expected": 52.86,
+      "actual": 52.86,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_f3d26f111d55",
+      "question": "xem giúp tuần rồi, số ddown ca chiều tăng hay giảm bao nhiu % so vs ca sáng",
+      "operation": "shift_growth_orders",
+      "expected": -55.17,
+      "actual": -55.17,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_f4c328691e9b",
+      "question": "dthu tu dau thang nay den het hom nay tang hay giam bn % so voi cung ky thang trc",
+      "operation": "growth_mtd",
+      "expected": -32.31,
+      "actual": -32.31,
+      "actual_type": "percent",
+      "correct": true
+    },
+    {
+      "id": "q_f7eb4c1dfb74",
+      "question": "tuan nay dthu duoc bao nhiu",
+      "operation": "rev",
+      "expected": 200921900,
+      "actual": 200921900,
+      "actual_type": "number",
+      "correct": true
+    }
+  ],
+  "train117_correct": 53,
+  "train117_tested": 53,
+  "rank_ties": []
+}

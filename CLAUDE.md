@@ -1,6 +1,10 @@
 @AGENTS.md
 @AGENTS.local.md
 
+Hướng dẫn Add Input Kaggle: luôn gửi **tên input + URL đầy đủ trên cùng một dòng**, mỗi input một dòng, để user copy; dùng owner thật trong hội thoại. Theo mục "Cách gửi input Kaggle cho user" trong `AGENTS.md`.
+
+Notebook Kaggle: ưu tiên **gắn sẵn mọi input được hỗ trợ vào `metadata.kaggle.dataSources` trong `.ipynb`**, pin đúng version và kiểm quyền truy cập, kèm GPU/Internet, để user import rồi Run All. Không chỉ sửa `kernel-metadata.json`; chỉ hướng dẫn Add Input thủ công cho phần không thể gắn sẵn, kèm tên + link và lý do.
+
 Thư viện Kaggle: tuân thủ mục thư viện trong `AGENTS.md`. Chỉ thêm gói nặng / cài lâu vào wheels; gói nhỏ, nhẹ (như `wrapt`) cài trực tiếp trong notebook, không yêu cầu rebuild wheels. vLLM luôn ở venv riêng; gói worker cần phải cài vào đúng venv.
 
 Tracking: mỗi track một file `.vscode/history_plan/<track>.md` (bảng run + kết quả + điều đã biết). Mỗi run Kaggle một dòng. Không tạo file plan, run card hay snapshot; không tạo lại `planning-research/`.

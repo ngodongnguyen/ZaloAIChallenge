@@ -23,7 +23,7 @@ train/
 *.db
 
 # Output and submission artifacts
-submission.jsonl
+submission*.jsonl
 result/
 results/
 *.log

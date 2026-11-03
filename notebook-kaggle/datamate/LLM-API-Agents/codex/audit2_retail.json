@@ -1,0 +1,153 @@
+{
+  "cases": [
+    {
+      "id": "q_3e36677e62a9",
+      "business_id": "dev_013",
+      "question": "Tháng 6/2026 nhóm sữa bột chiếm bao nhiêu % doanh thu?",
+      "archived_submission": {
+        "type": "percent",
+        "answer": 100.0
+      },
+      "solver_answer": {
+        "type": "percent",
+        "answer": 44.07
+      },
+      "source_expected": {
+        "type": "percent",
+        "answer": 44.07
+      },
+      "source_evidence": {
+        "period": [
+          "2026-06-01",
+          "2026-06-30"
+        ],
+        "category_revenue_vnd": 190537000,
+        "shop_revenue_vnd": 432382000,
+        "formula": "category sales revenue / shop sales revenue * 100"
+      },
+      "pass": true
+    },
+    {
+      "id": "q_ba2c318fc2be",
+      "business_id": "dev_013",
+      "question": "11/2025 tien cac don ban tai quay chiem may % tong doanh thu ca thang vay?",
+      "archived_submission": {
+        "type": "percent",
+        "answer": 0.0
+      },
+      "solver_answer": {
+        "type": "percent",
+        "answer": 58.72
+      },
+      "source_expected": {
+        "type": "percent",
+        "answer": 58.72
+      },
+      "source_evidence": {
+        "period": [
+          "2025-11-01",
+          "2025-11-30"
+        ],
+        "source_channel": "Tại tiệm (raw normalized value: tai tiem)",
+        "in_store_revenue_vnd": 268069000,
+        "shop_revenue_vnd": 456510000,
+        "formula": "Tại tiệm revenue / shop sales revenue * 100"
+      },
+      "pass": true
+    },
+    {
+      "id": "q_180163673aaa",
+      "business_id": "dev_008",
+      "question": "trog th11/2025 nv nào bán đc dthu cao nhứt nhỉ",
+      "archived_submission": {
+        "type": "number",
+        "answer": 1215273100
+      },
+      "solver_answer": {
+        "type": "string",
+        "answer": "nv005"
+      },
+      "source_expected": {
+        "type": "string",
+        "answer": "nv005"
+      },
+      "source_evidence": {
+        "period": [
+          "2025-11-01",
+          "2025-11-30"
+        ],
+        "employee_revenue_vnd": {
+          "NV001": 241515200,
+          "NV002": 244449600,
+          "NV003": 240580700,
+          "NV004": 228715700,
+          "NV005": 260011900
+        },
+        "winner": "NV005",
+        "winner_revenue_vnd": 260011900,
+        "rule": "employee with greatest valid-order revenue"
+      },
+      "pass": true
+    },
+    {
+      "id": "q_5b4680c1ccf2",
+      "business_id": "dev_008",
+      "question": "Tuan nay ban chay nhat la mat hang nao?",
+      "archived_submission": {
+        "type": "list",
+        "answer": [
+          "bia sài gòn special lon",
+          "coca cola lon",
+          "bia tiger lon",
+          "bia heineken lon",
+          "bia tiger bạc lon"
+        ]
+      },
+      "solver_answer": {
+        "type": "string",
+        "answer": "bia sài gòn special lon"
+      },
+      "source_expected": {
+        "type": "string",
+        "answer": "bia sài gòn special lon"
+      },
+      "source_evidence": {
+        "period": [
+          "2026-06-08",
+          "2026-06-14"
+        ],
+        "top_products_by_base_quantity": [
+          {
+            "name": "Bia Sài Gòn Special lon",
+            "base_quantity": 177.0,
+            "id": "SP0006"
+          },
+          {
+            "name": "Coca-Cola lon",
+            "base_quantity": 167.0,
+            "id": "SP0010"
+          },
+          {
+            "name": "Bia Tiger lon",
+            "base_quantity": 133.0,
+            "id": "SP0002"
+          },
+          {
+            "name": "Bia Heineken lon",
+            "base_quantity": 118.0,
+            "id": "SP0022"
+          },
+          {
+            "name": "Bia Tiger Bạc lon",
+            "base_quantity": 117.0,
+            "id": "SP0014"
+          }
+        ],
+        "rule": "singular best-selling item is the highest base-quantity item"
+      },
+      "pass": true
+    }
+  ],
+  "passed": 4,
+  "total": 4
+}

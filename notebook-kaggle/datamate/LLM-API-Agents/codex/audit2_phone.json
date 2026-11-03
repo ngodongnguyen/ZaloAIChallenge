@@ -1,0 +1,215 @@
+{
+  "scope": "dev_011/dev_012/dev_014 (153 public-test questions)",
+  "focused_regressions": [
+    {
+      "id": "q_34a5b4766a27",
+      "question": "Phiếu có thu tiền tháng 8 năm 2025 trung bình 1 phiếu bao nhiêu tiền hè?",
+      "intended_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "parsed_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "answer": {
+        "type": "number",
+        "answer": 218604
+      },
+      "direct_source_evidence": {
+        "rule": "mean paid ticket amount; zero-charge warranty tickets excluded",
+        "correct_period_rows": 450,
+        "correct_period_paid_rows": 441,
+        "correct_period_money_vnd": 96404500.0,
+        "misparsed_period_rows": 457,
+        "misparsed_period_paid_rows": 442,
+        "misparsed_period_money_vnd": 96512000.0
+      }
+    },
+    {
+      "id": "q_32b653051a42",
+      "question": "Máy cũ 8/25 bán đc mấy chiếc vậy?",
+      "intended_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "parsed_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "answer": {
+        "type": "number",
+        "answer": 59
+      },
+      "direct_source_evidence": {
+        "rule": "sum used-phone quantities on non-return sales orders",
+        "correct_period_sale_lines": 58,
+        "correct_period_units": 59.0,
+        "misparsed_period_sale_lines": 36,
+        "misparsed_period_units": 39.0
+      }
+    },
+    {
+      "id": "q_c3158f13ca1c",
+      "question": "Th9/2025 đến hết th11/2025 tiệm có bnhiu xe khách quen, tức xe vô sửa từ 2 lần trở lên z?",
+      "intended_window": [
+        "2025-09-01",
+        "2025-11-30"
+      ],
+      "parsed_window": [
+        "2025-09-01",
+        "2025-11-30"
+      ],
+      "answer": {
+        "type": "number",
+        "answer": 200
+      },
+      "direct_source_evidence": {
+        "rule": "count plates with at least two paid repair tickets in the inclusive period",
+        "correct_period_paid_ticket_rows": 1232,
+        "correct_period_distinct_plates": 964,
+        "correct_period_repeat_plates": 200,
+        "misparsed_period": [
+          "2025-09-01",
+          "2025-09-30"
+        ],
+        "misparsed_period_paid_ticket_rows": 375,
+        "misparsed_period_distinct_plates": 345,
+        "misparsed_period_repeat_plates": 27
+      }
+    },
+    {
+      "id": "q_1205eaa6091a",
+      "question": "Doanh thu T8/2025 so thang lien truoc, cao hay thap hon bao nhieu % nhi?",
+      "intended_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "parsed_window": [
+        "2025-08-01",
+        "2025-08-31"
+      ],
+      "answer": {
+        "type": "percent",
+        "answer": 16.03
+      },
+      "direct_source_evidence": {
+        "rule": "explicit T8/2025 versus the preceding full month; percent change",
+        "correct_period_rows": 450,
+        "correct_period_revenue_vnd": 96404500.0,
+        "comparison_period_rows": 401,
+        "comparison_period_revenue_vnd": 83087000.0,
+        "misparsed_period": [
+          "2026-08-01",
+          "2026-08-31"
+        ],
+        "misparsed_period_rows": 457,
+        "misparsed_period_revenue_vnd": 96512000.0,
+        "misparsed_comparison_period": [
+          "2026-07-01",
+          "2026-07-31"
+        ],
+        "misparsed_comparison_rows": 439,
+        "misparsed_comparison_revenue_vnd": 95817500.0
+      }
+    },
+    {
+      "id": "q_792e1070baaf",
+      "question": "T10/2025 máy Samsung chiếm bnhiu % tổng số máy bán ra?",
+      "intended_window": [
+        "2025-10-01",
+        "2025-10-31"
+      ],
+      "parsed_window": [
+        "2025-10-01",
+        "2025-10-31"
+      ],
+      "answer": {
+        "type": "percent",
+        "answer": 27.82
+      },
+      "direct_source_evidence": {
+        "rule": "Samsung units / all phone units, excluding accessories and returned orders",
+        "correct_period_phone_sale_lines": 122,
+        "correct_period_samsung_units": 37.0,
+        "correct_period_all_phone_units": 133.0,
+        "misparsed_period": [
+          "2026-09-01",
+          "2026-09-30"
+        ],
+        "misparsed_period_phone_sale_lines": 150,
+        "misparsed_period_samsung_units": 46.0,
+        "misparsed_period_all_phone_units": 160.0
+      }
+    },
+    {
+      "id": "q_ad512cd0cb75",
+      "question": "3/26 thợ mô làm ra nhiều tiền nhất rứa?",
+      "intended_window": [
+        "2026-03-01",
+        "2026-03-31"
+      ],
+      "parsed_window": [
+        "2026-03-01",
+        "2026-03-31"
+      ],
+      "answer": {
+        "type": "string",
+        "answer": "Đàm Lan An"
+      },
+      "direct_source_evidence": {
+        "rule": "highest technician repair-ticket revenue in the requested month",
+        "correct_period_ticket_rows": 458,
+        "correct_period_revenue_by_technician_vnd": {
+          "Hà Loan Đạt": 23009500.0,
+          "Lương Chi Đức": 22434500.0,
+          "Đoàn Bảo Phúc": 22328000.0,
+          "Đàm Lan An": 24247500.0
+        },
+        "misparsed_period": [
+          "2026-08-01",
+          "2026-08-31"
+        ],
+        "misparsed_period_ticket_rows": 457,
+        "misparsed_period_revenue_by_technician_vnd": {
+          "Lương Chi Đức": 23376000.0,
+          "Đoàn Bảo Phúc": 26215500.0,
+          "Đàm Lan An": 25180500.0,
+          "Hà Loan Đạt": 21740000.0
+        }
+      }
+    },
+    {
+      "id": "q_fd38dda74f47",
+      "question": "Tổng dthu T1/2026 đc bnhiu?",
+      "intended_window": [
+        "2026-01-01",
+        "2026-01-31"
+      ],
+      "parsed_window": [
+        "2026-01-01",
+        "2026-01-31"
+      ],
+      "answer": {
+        "type": "number",
+        "answer": 1823098500
+      },
+      "direct_source_evidence": {
+        "rule": "sum revenue (line totals) for valid orders in explicit T1/2026",
+        "correct_period_valid_orders": 433,
+        "correct_period_revenue_vnd": 1823098500.0,
+        "misparsed_period": [
+          "2026-09-01",
+          "2026-09-30"
+        ],
+        "misparsed_period_valid_orders": 420,
+        "misparsed_period_revenue_vnd": 1628303500.0
+      }
+    }
+  ],
+  "coverage": {
+    "questions": 153,
+    "abstain": 0
+  },
+  "source": "dataset/datamate/public_test/data/dev_011..dev_014 and rulebook.md"
+}

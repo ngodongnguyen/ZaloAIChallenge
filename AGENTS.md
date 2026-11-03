@@ -3,6 +3,19 @@
 Rules chung cho mọi agent làm việc trong repo này (Codex, Claude Code, Antigravity `agy`, DeepSeek Harness `dsh`).
 Cuộc thi có 2 track: **LifeMate** (track 1) và **DataMate** (track 2).
 
+## Cách gửi input Kaggle cho user (bắt buộc)
+
+Quy ước user yêu cầu ngày 2026-11-02, áp dụng cho **Codex, Claude Code, DeepSeek Harness (`dsh`) và Antigravity (`agy`)**:
+
+- Khi hướng dẫn Add Input trên Kaggle, **luôn gửi cả tên input và URL đầy đủ trên cùng một dòng**, mỗi input một dòng, để user dễ copy. Không chỉ gửi tên hoặc chỉ gửi link.
+- Ví dụ định dạng: `lifemate-asr-ft-gipformer https://www.kaggle.com/code/<owner>/lifemate-asr-ft-gipformer`.
+- Khi trả lời user, thay `<owner>` bằng owner thật lấy từ metadata local hoặc nguồn đã xác nhận; không bắt user tự ghép link. Notebook Output dùng URL `/code/<owner>/<slug>`; dataset dùng `/datasets/<owner>/<slug>`.
+- Nếu cần chọn version/checkpoint cụ thể, ghi chú ngay dưới input tương ứng. Phân biệt input bắt buộc với input khuyến nghị.
+- Trong file được git theo dõi, ví dụ vẫn dùng `<owner>` / `<user>` theo quy tắc bảo mật tài khoản bên dưới; link đầy đủ có owner thật được gửi trực tiếp trong hội thoại.
+- **Ưu tiên gắn sẵn mọi input cần thiết ngay trong file `.ipynb`** (dataset, Notebook Output/checkpoint, wheels nếu dùng và các input khác Kaggle hỗ trợ), kèm GPU/Internet phù hợp, để user **Import Notebook → Save & Run All**. Không chỉ thêm vào `kernel-metadata.json` vì Import không đọc file đó.
+- Lấy ID/version thật từ Kaggle, gắn vào `metadata.kaggle.dataSources` theo đúng loại nguồn; pin version có đủ file/checkpoint cần dùng và kiểm quyền truy cập của tài khoản chạy. Không đoán ID, không tự đổi input private thành public. Giữ `dataset_sources` / `kernel_sources` / `model_sources` trong metadata CLI nhất quán cho luồng push.
+- Chỉ yêu cầu Add Input thủ công khi Kaggle không hỗ trợ gắn sẵn, chưa có quyền truy cập hoặc chưa xác nhận được ID/version; khi đó nói rõ phần còn thiếu và vẫn gửi **tên + URL đầy đủ**. Không khẳng định import là chạy được nếu chưa kiểm các input bắt buộc.
+
 ## Ý nghĩa từng folder
 
 ### `.vscode/docs/` — Thông tin cuộc thi (CHỈ ĐỌC)
@@ -129,11 +142,11 @@ DataMate (`thanhkhil/zaloai-datamate-dataset`): như trên, thay phần tử `da
 - Mỗi notebook chỉ gắn dataset của track mình, không trộn 2 track.
 - Đồng thời giữ `"dataset_sources": ["thanhkhil/zaloai-<track>-dataset"]` trong `kernel-metadata.json` (cho `kaggle kernels push`).
 - Id ở trên là version 1 của 2 dataset (kiểm 2026-10-29). BTC ra version mới thì lấy lại id (trang dataset → request `GetDatasetBasics`: `datasetVersionId` = `sourceId`, `versionId` = `databundleVersionId`) rồi sửa ở đây và mọi notebook.
-- Không thêm input private (`build-wheels`, `lifemate-asr-cache`) vào khối này: account khác không gắn được.
+- Input private (`build-wheels`, cache, checkpoint) chỉ gắn sẵn khi đã xác nhận tài khoản chạy có quyền truy cập; notebook dùng chung nhiều account phải kiểm quyền từng account, không giả định account khác tự gắn được. Quy ước user 2026-11-02 ưu tiên gắn sẵn input để import là chạy.
 - Kiểm tra trước khi báo xong:
 
 ```bash
-python3 -c "import json,glob;[print(p, [d['datasetId'] for d in json.load(open(p))['metadata'].get('kaggle',{}).get('dataSources',[])] or 'THIẾU') for p in sorted(glob.glob('notebook-kaggle/*/*/*.ipynb'))]"
+python3 -c "import json,glob;[print(p, [d['datasetId'] for d in json.load(open(p))['metadata'].get('kaggle',{}).get('dataSources',[]) if d.get('sourceType')=='datasetVersion'] or 'THIẾU') for p in sorted(glob.glob('notebook-kaggle/*/*/*.ipynb'))]"
 ```
 
 ## Tận dụng Kaggle 2× T4 (bắt buộc khi viết notebook GPU)

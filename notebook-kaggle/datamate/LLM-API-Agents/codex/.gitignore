@@ -1,0 +1,5 @@
+# Generated predictions and question-level evidence are local artifacts.
+answers_*.json
+evidence_*.json
+report.json
+submission*.jsonl
