@@ -145,7 +145,7 @@ def main():
     # merge into a clean (non-quantized) base so the final model needs no bitsandbytes
     base = AutoModelForCausalLM.from_pretrained(args.base, torch_dtype=dtype)
     model = PeftModel.from_pretrained(base, args.out + "_adapter").merge_and_unload()
-    model.save_pretrained(args.out)
+    model.save_pretrained(args.out, max_shard_size="1GB")  # one 8 GB temp file stalled a ZFS host mid-write; 1 GB shards flush in small bursts
     tok.save_pretrained(args.out)
 
 

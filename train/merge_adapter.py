@@ -23,6 +23,6 @@ if Path(args.out).exists():  # a half-written model (config.json but no weights)
 
 base = AutoModelForCausalLM.from_pretrained(args.base, torch_dtype=torch.bfloat16)
 model = PeftModel.from_pretrained(base, args.adapter).merge_and_unload()
-model.save_pretrained(args.out)
+model.save_pretrained(args.out, max_shard_size="1GB")  # see sft.py: small shards instead of one 8 GB temp file
 AutoTokenizer.from_pretrained(args.base).save_pretrained(args.out)
 print("saved", args.out)
