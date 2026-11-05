@@ -276,3 +276,12 @@ Mục "Trạng thái": `done` / `running` / `planned` / `aborted`.
 - Kết quả holdout_all 287 (`asr_ft` + `lifemate-llm-para-q35e3`): 0.6644, hash 214/287; mốc một bản nghe 0.6623, hash 214/287. Không lợi ích đo được (nhiễu ±0.04-0.05), chi phí suy luận gấp 2-3 lần.
 - Đa dạng: 0/287 mẫu có 3 bản nghe khác nhau về từ hay chữ số, tức beam gần như chỉ cho một câu . Kiểm tra tay nbest3_holdout.jsonl: ba bản giống hệt từng ký tự, tức là LỖI CÀI ĐẶT (generate riêng của Whisper trả beam tốt nhất lặp lại), phép thử này KHÔNG có giá trị. Sửa bằng GenerationMixin.generate với decoder_input_ids tự dựng (beam khác nhau thật, ví dụ 'mô vào' / 'mua vào').
 - Đo lại holdout_all 287: 0.6714, hash 218/287 so với mốc 0.6623, 214/287. Từ sai sang đúng 7, từ đúng sang sai 3 (kiểm định dấu p ~0.34, chưa đủ bằng chứng). Chi phí: 18-20 s/mẫu so với 7-9 s (gần gấp đôi), GPU gần hết bộ nhớ khi giữ ASR + LLM với beam 3. Kết luận: tín hiệu dương nhỏ (+0.5-1 điểm kỳ vọng), không nộp trừ khi giới hạn thời gian của ban tổ chức cho phép; để quyết định ở bước Docker.
+
+## E25: Qwen3-14B làm teacher local (probe zero-shot)
+- Đã thử Qwen3-14B 4-bit tắt/bật thinking trên 60 mẫu unseen (gold transcript): 0.2364 / 0.3368, không vượt Qwen3.5-4B (0.3528). Kết luận: 14B không đủ mạnh làm teacher. Chi tiết trong docs/result.md.
+
+## E26: teacher local trên 72 mẫu khó
+- Qwen3.5-9B (4-bit, think, few-shot 3) 0.436 / 46 trên 72 mẫu mà bản 3 epoch sai, mạnh hơn Qwen3-14B (0.336); chọn 9B làm teacher, lọc đồng thuận greedy + T=0.6. Tập chọn thiên lệch bất lợi cho học sinh, chưa so được với holdout. Chi tiết trong docs/result.md.
+
+## E27: E22 với teacher 9B
+- Cùng 376 câu tổng hợp, nhãn do 9B (đồng thuận 2 lần, không hỏi lại) thay cho tự gán nhãn: 173 quỹ đạo, 346 dòng trong 5348 (6.5%), 1 epoch. Holdout unseen 0.6270 (E22 0.6100); web 57.03 (E22 56.31, trong nhiễu). Chưng cất theo cách này chưa giúp.

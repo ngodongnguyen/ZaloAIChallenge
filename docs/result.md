@@ -95,3 +95,34 @@ Lưu ý: hàng E2 dùng cách tính cũ (chưa kiểm tra `state_hash`), nên kh
 ## E24: n-best ASR voting (K=3), holdout_all 287
 - Lần đầu 0.6644 không có giá trị (ba bản nghe giống hệt do lỗi cài đặt, đã sửa).
 - Sau sửa: 0.6714 (hash 218/287) so với 0.6623 (214/287). Sai->đúng 7, đúng->sai 3 (p ~0.34, không đủ bằng chứng). Chậm gần gấp đôi (18-20 s/mẫu). Giữ như tùy chọn `--nbest 3`, chưa nộp web.
+
+## E25: Qwen3-14B làm teacher local? (probe zero-shot, 60 mẫu unseen, transcript gold)
+| Model | điểm | hash đúng |
+|---|---|---|
+| Qwen3.5-4B (mốc E23) | 0.3528 | 34/60 |
+| Qwen3-14B nf4, tắt thinking | 0.2364 | 27/60 |
+| Qwen3-14B nf4, bật thinking (THINK_TOKENS=1024) | 0.3368 | 32/60 |
+- Cờ mới trong `src/llm.py`: `LLM_4BIT=1`, `LLM_THINK=1` (template gốc, enable_thinking=True, quá hạn mức thì đóng </think> rồi sinh JSON). Mặc định tắt.
+- Thinking giúp 14B ít gọi thừa, nhưng không vượt 4B; 20-165 s/mẫu. Kết luận: 14B không đủ mạnh làm teacher (ngưỡng đặt ra ~0.55). Lỗi chính vẫn là banking/gold_price/reminders (0.00-0.19).
+
+## E26: teacher local trên 72 mẫu khó (unseen, bản 3 epoch sai dù có transcript gold; `cache/probe_hard.txt`)
+Cấu hình teacher: 4-bit, `LLM_THINK=1`, `FEWSHOT=3` (ví dụ gold gần nhất theo từ, loại mọi mẫu dùng 6 app holdout: `cache/fewshot_exclude.txt`).
+| Model | điểm | hash đúng | đúng hoàn toàn | hơn/kém bản 3 epoch (số mẫu) | hỏi lại (gold 7) | s/mẫu |
+|---|---|---|---|---|---|---|
+| Qwen3.5-4B 3 epoch (fine-tune) | 0.321 | 36/72 | 0 | - | - | - |
+| Qwen3-14B think + fs3 | 0.336 | 44/72 | 7 | 21 / 20 | 16 | ~70 |
+| Qwen3.5-9B think + fs3 | **0.436** | **46/72** | **13** | **27 / 17** | 8 | 67 |
+- Probe60 cũ không đo được teacher: bản 3 epoch đạt 0.904 (57/60) trên đó vì các mẫu lặp lại dạng câu có trong train.
+- Không few-shot, 14B hỏi lại 16/60 (gold 0) và thêm tham số tùy chọn: thiếu quy ước, không phải thiếu suy luận.
+- Qwen3.5-9B mạnh hơn Qwen3-14B. Ứng viên teacher: Qwen3.5-9B; cần kiểm tra bộ lọc đồng thuận có giữ đúng mẫu đúng không.
+- Bộ lọc đồng thuận (9B greedy vs T=0.6, cùng 72 mẫu khó): đồng ý 19, trong đó đúng hoàn toàn 8, điểm TB 0.65 (không đồng ý: 0.36). Giữ "đồng thuận + không hỏi lại": 16 mẫu, đúng 7, điểm TB 0.71; không lọc: 63 mẫu, đúng 12, điểm TB 0.48. Chọn lọc đồng thuận (RUNS=2).
+- Lưu ý khi đọc: tập 72 mẫu được chọn từ lỗi của bản 3 epoch (thiên lệch bất lợi cho học sinh) nên 0.436 so với 0.321 không so được với 0.66 của holdout; chưa có điểm 9B trên holdout_unseen/holdout_all.
+
+## E27: E22 với teacher Qwen3.5-9B (`scripts/run_e27.sh`, log `out/run_e27.log`)
+- Cùng 376 câu của E22; 9B 4-bit + thinking + FEWSHOT=3 (toàn bộ train) giải 2 lần (greedy, T=0.6), giữ khi đồng thuận, không lỗi, không hỏi lại. Ví dụ few-shot không đưa vào prompt SFT (`make_row`).
+- Train: sft_asr-para-cond-q35nc + 2 x quỹ đạo giữ lại, Qwen3.5-4B 1 epoch, holdout loại; COND_HINT=1, MONEY_HINT=0. So với E22 (web 56.31) và E20 (57.0); tiêu chí chuyển sang 3 epoch: web >= ~58.5.
+- Thử 3 câu: ~1 phút/câu (2 lần chạy), giữ 2, hỏi lại 1.
+- Kết quả rollout: 376 câu, giữ 173 (46%), không đồng thuận ~145, hỏi lại ~52, lỗi ~5; ~10.5 giờ (1.6 phút/câu). SFT 5348 mẫu (346 dòng nhãn giáo viên = 6.5%), train 276 bước ~6.3 giờ. Thought của giáo viên không đưa vào dữ liệu SFT.
+- Holdout unseen 187 (`asr_ft`): **0.6270** (tool-call 0.7405, hash 129/187), so với E22 0.6100, E20 0.5967, 3 epoch E19 0.6054. +0.017 so với E22, vẫn trong nhiễu (±0.04) nhưng là số unseen cao nhất từ trước.
+- Bản nộp `out/submission_asr-para-cond-teach9b.jsonl` (634 dòng, 0 call sai schema): hỏi lại 65/634 (E22 72, E20 88, 3 epoch 121), dùng app lạ ở 291 mẫu (E22 288, 3 epoch 269).
+- Web: **57.03** (E22 56.31, E20 57.0, 3 epoch 58.41). +0.7 so với E22, trong nhiễu (±1.8); chưa thấy lợi ích của chưng cất. Nhãn giáo viên chỉ chiếm 6.5% dữ liệu, mỗi quỹ đạo tốn ~1.6 phút nên khó tăng quy mô.

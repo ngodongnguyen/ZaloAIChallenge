@@ -96,6 +96,32 @@ def render_history(history):
     return out
 
 
+_FEWSHOT = None
+
+
+def fewshot_block(item, transcript):
+    """FEWSHOT=k (teacher/probe only, not used in SFT): the k train requests with the most word overlap, with their gold
+    calls, so a model that never saw this data learns its conventions (look up IDs instead of asking, no optional extras).
+    FEWSHOT_EXCLUDE: file of ids never shown (e.g. cache/holdout_all.txt, so held-out apps stay unseen)."""
+    import os
+    import re
+    global _FEWSHOT
+    k = int(os.environ.get("FEWSHOT", 0))
+    if not k:
+        return ""
+    if _FEWSHOT is None:
+        excl = set(open(os.environ["FEWSHOT_EXCLUDE"]).read().split()) if os.environ.get("FEWSHOT_EXCLUDE") else set()
+        rows = [json.loads(l) for l in open(os.environ.get("FEWSHOT_DATA", "data/train/train.jsonl"), encoding="utf-8")]
+        _FEWSHOT = [(r["id"], r["audio_text"], r["label"]["tool_calls"]) for r in rows if r["id"] not in excl]
+    words = lambda s: set(re.findall(r"\w+", str(s).lower()))
+    q = words(transcript)
+    scored = sorted(_FEWSHOT, key=lambda e: -len(q & words(e[1])) / (len(q | words(e[1])) or 1))
+    picked = [e for e in scored if e[0] != item.get("id")][:k]
+    lines = [f"- Yêu cầu: {t}\n  Các lệnh đúng: {json.dumps(c, ensure_ascii=False)}" for _, t, c in picked]
+    return ("## Ví dụ cách làm đúng (ứng dụng khác, chỉ để học quy ước: tra ID bằng tool read thay vì hỏi lại, "
+            "không thêm tham số tùy chọn người dùng không nói)\n" + "\n".join(lines) + "\n\n")
+
+
 def initial_messages(item, transcript, catalog):
     ctx = item["context"]
     tools = tools_for_item(item, catalog)
@@ -111,6 +137,7 @@ def initial_messages(item, transcript, catalog):
         f"* sys.ask_missing_info (meta): hỏi lại người dùng. Tham số: tool_name: string, params: array<string>\n\n"
         f"## Ngữ cảnh\n{json.dumps(meta, ensure_ascii=False)}\n\n"
         f"## Lịch sử hội thoại\n{json.dumps(render_history(item.get('history')), ensure_ascii=False)}\n\n"
+        f"{fewshot_block(item, transcript)}"
         f"## Yêu cầu của người dùng (từ giọng nói)\n{transcript}"
     )
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]

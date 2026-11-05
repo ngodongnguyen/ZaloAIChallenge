@@ -147,7 +147,12 @@ def make_row(sid, item, text, log, catalog):
         "tool_calls": [{"name": n, "arguments": a} for n, a, _ in log],
         "tool_results": [r for _, _, r in log],
     })
-    return {"id": sid, "messages": trajectory(sample, text, catalog)}
+    fs = os.environ.pop("FEWSHOT", None)  # a teacher's few-shot examples must not leak into the student's training prompt
+    try:
+        return {"id": sid, "messages": trajectory(sample, text, catalog)}
+    finally:
+        if fs is not None:
+            os.environ["FEWSHOT"] = fs
 
 
 def stage_roll(args):
