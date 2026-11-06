@@ -12,7 +12,8 @@ TOOL_RESULT_CHARS = 1500
 HISTORY_RESULT_CHARS = int(os.environ.get("HISTORY_RESULT_CHARS", 1500))  # was 500: cut off the options (e.g. flight ids) the gold call picks from; set 500 to run models trained before E13
 MONEY_HINT = os.environ.get("MONEY_HINT", "1") == "1"  # E14: amounts restated in millions; models trained before E14 need MONEY_HINT=0
 COND_HINT = os.environ.get("COND_HINT", "0") == "1"  # E18: code compares a spoken price threshold with the returned price; must match between training and inference
-RESULT_DIGEST = os.environ.get("RESULT_DIGEST", "0") == "1"  # E15: per-floor device summary in tool results; must match between training and inference
+TIME_HINT = os.environ.get("TIME_HINT", "0") == "1"  # E29: weekday/date table and minutes-until table from current_time; must match between training and inference
+RESULT_DIGEST =os.environ.get("RESULT_DIGEST", "0") == "1"  # E15: per-floor device summary in tool results; must match between training and inference
 TIME_BUDGET_S = float(os.environ.get("TIME_BUDGET_S", 26.0))  # hard limit per sample is 30s on the A30; local runs on a slower GPU raise it
 
 

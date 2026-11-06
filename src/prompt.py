@@ -2,7 +2,8 @@
 import json
 
 from condition import condition_hint
-from config import COND_HINT, HISTORY_RESULT_CHARS, MONEY_HINT, RESULT_DIGEST, TOOL_RESULT_CHARS
+from config import COND_HINT, HISTORY_RESULT_CHARS, MONEY_HINT, RESULT_DIGEST, TIME_HINT, TOOL_RESULT_CHARS
+from timehint import time_hint
 
 SYSTEM = """Bạn là trợ lý giọng nói tiếng Việt thực hiện hành động qua các công cụ (tool) của ứng dụng đã cài trên thiết bị.
 Mỗi lượt chỉ xuất MỘT đối tượng JSON, không giải thích:
@@ -136,6 +137,7 @@ def initial_messages(item, transcript, catalog):
         f"## Công cụ khả dụng\n{tool_txt}\n"
         f"* sys.ask_missing_info (meta): hỏi lại người dùng. Tham số: tool_name: string, params: array<string>\n\n"
         f"## Ngữ cảnh\n{json.dumps(meta, ensure_ascii=False)}\n\n"
+        f"{time_hint(ctx.get('current_time')) if TIME_HINT else ''}"
         f"## Lịch sử hội thoại\n{json.dumps(render_history(item.get('history')), ensure_ascii=False)}\n\n"
         f"{fewshot_block(item, transcript)}"
         f"## Yêu cầu của người dùng (từ giọng nói)\n{transcript}"
