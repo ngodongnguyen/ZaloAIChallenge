@@ -77,6 +77,7 @@ def main():
     ap.add_argument("--pred", required=True)
     ap.add_argument("--root", default=".")
     ap.add_argument("--split", default="train")
+    ap.add_argument("--detail", default=None, help="write per-sample score, hash match, gold and predicted calls to this jsonl")
     args = ap.parse_args()
 
     base = f"{args.root}/{args.split}"
@@ -95,6 +96,7 @@ def main():
             env.call(c["name"], c.get("arguments", {}))
         return env.get_state_hash()
 
+    detail = open(args.detail, "w", encoding="utf-8") if args.detail else None
     scores, empty_ok, empty_n, hash_ok, tool_scores = [], 0, 0, 0, []
     for line in open(args.pred, encoding="utf-8"):
         p = json.loads(line)
@@ -102,11 +104,16 @@ def main():
             continue
         s, _, _ = score(p["tool_calls"], gold[p["id"]], fuzzy)
         tool_scores.append(s)
-        if p.get("state_hash") != gold_hash(p["id"]):
+        ok = p.get("state_hash") == gold_hash(p["id"])
+        tool_s = s
+        if not ok:
             s = 0.0  # official rule: wrong final state scores 0
         else:
             hash_ok += 1
         scores.append(s)
+        if detail:
+            detail.write(json.dumps({"id": p["id"], "score": s, "tool_score": tool_s, "hash_ok": ok,
+                                     "gold": gold[p["id"]], "pred": p["tool_calls"]}, ensure_ascii=False) + "\n")
         if not gold[p["id"]]:
             empty_n += 1
             empty_ok += s

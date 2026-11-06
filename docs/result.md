@@ -126,3 +126,13 @@ Cấu hình teacher: 4-bit, `LLM_THINK=1`, `FEWSHOT=3` (ví dụ gold gần nh�
 - Holdout unseen 187 (`asr_ft`): **0.6270** (tool-call 0.7405, hash 129/187), so với E22 0.6100, E20 0.5967, 3 epoch E19 0.6054. +0.017 so với E22, vẫn trong nhiễu (±0.04) nhưng là số unseen cao nhất từ trước.
 - Bản nộp `out/submission_asr-para-cond-teach9b.jsonl` (634 dòng, 0 call sai schema): hỏi lại 65/634 (E22 72, E20 88, 3 epoch 121), dùng app lạ ở 291 mẫu (E22 288, 3 epoch 269).
 - Web: **57.03** (E22 56.31, E20 57.0, 3 epoch 58.41). +0.7 so với E22, trong nhiễu (±1.8); chưa thấy lợi ích của chưng cất. Nhãn giáo viên chỉ chiếm 6.5% dữ liệu, mỗi quỹ đạo tốn ~1.6 phút nên khó tăng quy mô.
+
+## E28: Qwen3.5-9B làm teacher đo trên cả 187 mẫu unseen (ai3, transcript gold)
+Cấu hình: 4-bit, `LLM_THINK=1`, `FEWSHOT=3` (loại 6 app holdout), `COND_HINT=1`, `MONEY_HINT=0`, `RESULT_DIGEST=0`, `TIME_BUDGET_S=400`, chạy 4 phần `cache/hu_part_00..03`, gộp ở `out/pred_unseen_t9b_gold.jsonl`.
+| Model (transcript gold, 187 unseen) | điểm | tool-call | hash đúng |
+|---|---|---|---|
+| Qwen3.5-4B 3 epoch fine-tune (mốc) | 0.7385 | - | - |
+| Qwen3.5-9B 4-bit, think, few-shot 3 (zero-shot, chưa fine-tune) | **0.5542** | 0.6680 | 135/187 |
+- Ngưỡng đặt trước: 9B >= ~0.78 thì mở rộng chưng cất; 0.70-0.75 thì dừng. Kết quả 0.5542 thấp hơn ngưỡng dừng 0.18 điểm so với học sinh.
+- Teacher yếu hơn học sinh đã fine-tune trên chính tập này, nên nhãn của teacher có chất lượng thấp hơn nhãn gold ở phần lớn mẫu; bộ lọc đồng thuận chỉ giữ được ~46% câu và nhãn giáo viên chiếm 6.5% dữ liệu (E27). Điểm 9B trên 72 mẫu khó (0.436, E26) hợp với bức tranh này.
+- Kết luận: không mở rộng chưng cất từ 9B. Hướng tiếp theo: Docker (hạn 16/11), giữ bản 3 epoch (web 58.41) làm bản nộp.
