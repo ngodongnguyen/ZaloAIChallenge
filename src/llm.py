@@ -1,6 +1,8 @@
+import json
 import os
 import sys
 import time
+from pathlib import Path
 
 from chat import needs_manual, prompt_text
 from config import LLM_MODEL, MAX_NEW_TOKENS
@@ -35,7 +37,10 @@ class LLM:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         self.torch = torch
-        self.tok = AutoTokenizer.from_pretrained(model_path)
+        adapter_cfg = Path(model_path) / "adapter_config.json"
+        base_id = json.load(open(adapter_cfg, encoding="utf-8"))["base_model_name_or_path"] if adapter_cfg.exists() else None
+        has_tok = (Path(model_path) / "tokenizer_config.json").exists()
+        self.tok = AutoTokenizer.from_pretrained(model_path if has_tok or not base_id else base_id)
         if torch.cuda.is_available():
             dev = "cuda"
             dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16  # T4 has no bf16
@@ -43,7 +48,11 @@ class LLM:
             dev, dtype = "mps", torch.float16
         else:
             dev, dtype = "cpu", torch.float32
-        if os.environ.get("LLM_4BIT") == "1" and dev == "cuda":  # probe/teach with models too big for bf16 (e.g. Qwen3-14B on 16 GB)
+        if base_id:  # a LoRA adapter directory (sft.py --no-merge or *_adapter): merge into its base here, nothing big is written to disk
+            from peft import PeftModel
+            base = AutoModelForCausalLM.from_pretrained(base_id, torch_dtype=dtype).to(dev)
+            self.model = PeftModel.from_pretrained(base, model_path).merge_and_unload().eval()
+        elif os.environ.get("LLM_4BIT") == "1" and dev == "cuda":  # probe/teach with models too big for bf16 (e.g. Qwen3-14B on 16 GB)
             from transformers import BitsAndBytesConfig
             q = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=dtype, bnb_4bit_use_double_quant=True)
             self.model = AutoModelForCausalLM.from_pretrained(model_path, quantization_config=q, device_map={"": 0}).eval()

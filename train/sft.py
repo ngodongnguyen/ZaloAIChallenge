@@ -1,6 +1,7 @@
 """LoRA SFT on multi-turn trajectories; loss only on assistant turns. Merges and saves the full model."""
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -100,6 +101,8 @@ def main():
     ap.add_argument("--fp16", action="store_true", help="use fp16 instead of bf16 (T4)")
     ap.add_argument("--qlora", action="store_true", help="4-bit base weights (needs bitsandbytes)")
     ap.add_argument("--holdout", default=None, help="file with sample ids (one per line) kept out for validation")
+    ap.add_argument("--no-merge", action="store_true", default=os.environ.get("SFT_NO_MERGE") == "1",
+                    help="save only the LoRA adapter (+ tokenizer, base config) in --out; src/llm.py merges it in memory at load time")
     args = ap.parse_args()
 
     seed_everything()
@@ -139,6 +142,13 @@ def main():
             seed=42, report_to="none", remove_unused_columns=False),
     )
     trainer.train()
+    if args.no_merge:  # the 8 GB merged save hung ai3 twice; the adapter is ~260 MB. config.json keeps run_e*.sh's "already trained" check working
+        from transformers import AutoConfig
+        model.save_pretrained(args.out)
+        tok.save_pretrained(args.out)
+        AutoConfig.from_pretrained(args.base).save_pretrained(args.out)
+        print("saved adapter", args.out)
+        return
     model.save_pretrained(args.out + "_adapter")
     del trainer, model
     torch.cuda.empty_cache()
