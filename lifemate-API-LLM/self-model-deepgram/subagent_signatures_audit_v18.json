@@ -1,0 +1,1122 @@
+{
+  "audit_metadata": {
+    "subagent": "Subagent 4 (Tool Signatures, Arguments & Formatting Invariance)",
+    "target_version": "v18",
+    "baseline_version": "v16-codex-88-01-forecast-020941",
+    "baseline_public_lb": 88.38,
+    "total_samples_audited": 634,
+    "total_tool_calls_audited": 1538,
+    "total_normalizations_recommended": 14,
+    "all_normalizations_state_hash_invariant": true
+  },
+  "rules_audit_summary": {
+    "rule_1_bill_payment_list_bills": {
+      "train_gold_reference": "112/112 calls in train gold used arguments: {} (0% with type).",
+      "v16_status": "1 call with type detected: public_0541 called with {\"type\": \"tuition\"}.",
+      "action_taken": "Normalized public_0541 tool_call 0 to {}",
+      "hash_invariant": true
+    },
+    "rule_2_flights_search": {
+      "train_gold_reference": "7/7 calls in train gold strictly used (origin, destination, date).",
+      "v16_status": "19/19 calls in v16 strictly used (origin, destination, date). 0 calls with passengers or extra args.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_3_banking_list_transactions": {
+      "train_gold_reference": "4 calls in train gold (3 with {}, 1 with (account_id,)). 0 calls with limit.",
+      "v16_status": "6 calls in v16 (5 with account_id, 1 with {}). 0 calls with limit.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_4_chat_ott_read_chat": {
+      "train_gold_reference": "14/14 calls in train gold strictly used (chat_id,). 0 calls with limit.",
+      "v16_status": "3/3 calls in v16 strictly used (chat_id,). 0 calls with limit.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_5_ride_hailing_get_quotes": {
+      "train_gold_reference": "2/2 calls in train gold strictly used (pickup, dropoff). 0 calls with vehicle.",
+      "v16_status": "4/4 calls in v16 strictly used (pickup, dropoff). 0 calls with vehicle.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_6_reminders_create": {
+      "train_gold_reference": "115/115 calls in train gold strictly used (content, time). 0 calls with repeat.",
+      "v16_status": "All calls in v16 strictly used (content, time). 0 calls with repeat: once.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_7_alarm_create_and_update": {
+      "train_gold_reference": "77/78 alarm.create had (time,); only 1 had (label, time) when explicitly requested. 6/6 alarm.update had (alarm_id, time).",
+      "v16_status": "38/40 alarm.create used only (time,). The 2 calls with label (public_0116: \"làm thủ tục\", public_0477: \"Coi lại Thép Đại Hưng...\") were explicitly requested by users. 8/8 alarm.update used strictly (alarm_id, time) [4 calls] or (alarm_id, enabled) [4 calls for public_0580].",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_8_translator_translate": {
+      "train_gold_reference": "Tool introduced in public_test. Schema defines from_lang as optional (\"bỏ trống để tự nhận diện\"). 3 calls (public_0302, public_0491, public_0673) already used only (text, to_lang).",
+      "v16_status": "13 calls in v16 passed superfluous from_lang: \"vi\".",
+      "action_taken": "Normalized all 13 calls to omit from_lang, making all 16 translator calls completely uniform with (text, to_lang).",
+      "hash_invariant": true
+    },
+    "rule_9_gold_price_get_price": {
+      "train_gold_reference": "33/33 calls in train gold had type: sjc, world, or ring.",
+      "v16_status": "8 calls in v16: 2 sjc, 1 world, 5 ring. 100% match user intent.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_10_smart_home_get_status": {
+      "train_gold_reference": "93/107 calls in train gold used {} (no filter).",
+      "v16_status": "32/32 calls in v16 used {} (no filter), ensuring complete device discovery.",
+      "action_taken": "None needed - 100% compliant"
+    },
+    "rule_11_empty_samples_audit": {
+      "v16_count": 38,
+      "note_on_39_count": "In v10 there were 39 empty samples. In v16, public_0541 was correctly populated with bill_payment.list_bills, reducing empty count to 38.",
+      "genuine_out_of_scope_ratio": "38/38 (100.0%)",
+      "categories_breakdown": {
+        "user_cancellation": 18,
+        "already_completed_in_history": 4,
+        "app_not_installed": 4,
+        "condition_not_met": 2,
+        "greeting_chitchat_out_of_scope": 6,
+        "security_refusal": 2,
+        "unintelligible_audio": 2
+      }
+    }
+  },
+  "affected_samples_normalizations": [
+    {
+      "id": "public_0541",
+      "tool_call_index": 0,
+      "tool_name": "bill_payment.list_bills",
+      "original_arguments": {
+        "type": "tuition"
+      },
+      "normalized_arguments": {},
+      "reason": "Train gold has 112/112 calls with {} (never passing 'type'). Removing 'type' avoids argument mismatch penalty.",
+      "transcript": "Con học clip của bóng không phải lớp bơi trâu lớp của mr bastel đấy đã có khóa trang chưa bao nhiêu hả em"
+    },
+    {
+      "id": "public_0174",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Vui lòng mang bản in đã cập nhật tới cuộc họp chiều nay.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Vui lòng mang bản in đã cập nhật tới cuộc họp chiều nay.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Để sang tiếng Anh rút rồi cậu này vui lòng đang lại ý đã cập nhật tới cuộc họp chiều này. Về xong thì nhớ vào ghi chú đặt tên là Chuẩn Bị Gọt Nhé."
+    },
+    {
+      "id": "public_0197",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Lịch giao hàng đã thay đổi",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Lịch giao hàng đã thay đổi",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Dịch giúp em có lịch giao hàng đã thay đổi sang tiếng Anh nhé. Lưu bản dịch vào ghi chú cập nhật giao hàng rồi soạn soạn một email nháp gửi đến vận hành khó cùng nội dung đấy. Em đọc lại và mọi người ạ."
+    },
+    {
+      "id": "public_0212",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Hóa đơn đã được thanh toán.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hóa đơn đã được thanh toán.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Em ơi, việc giúp chị câu hóa đơn đã được thanh toán xem tiếng Anh, lưu bản dịch vào ghi chú tên đối soát xong soạn sẵn email nhé gửi finance a còng exemple chấm test với nội dung đó nha. Chị xem lại rồi mới gửi."
+    },
+    {
+      "id": "public_0234",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Ngày giao hàng đã thay đổi.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Ngày giao hàng đã thay đổi.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Đối tác bên nước ngoài còn viết gốc giao hàng ngày đã thay đổi sang tiếng Anh, cất bản dịch vào ghi chú chú tên là Báo đối tác trong soạn sảnh các thư nháp gửi Logistic với đúng câu đó để anh xem lại đã."
+    },
+    {
+      "id": "public_0251",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Hợp đồng đã được ký.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hợp đồng đã được ký.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Trợ lý ân. Câu hợp đồng đã được ký ấy dịch ra tiếng Anh Hồ Anh. Ghi bản dịch và ghi chú theo dõi hợp đồng vừa tạo luôn thứ nhất gửi Lego icon example chấm text bằng đúng câu để dịch nét."
+    },
+    {
+      "id": "public_0370",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "xin chào",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "xin chào",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Ơ chữ xin chào tiếng anh nói sao nhỉ giờ giúp em với"
+    },
+    {
+      "id": "public_0420",
+      "tool_call_index": 3,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Xe máy dự kiến đến trong 4 phút.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Xe máy dự kiến đến trong 4 phút.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Gọi ô tô cho bạn tớ từ ký túc ra hồ Gươm, à không, xe máy thôi. Rồi xem xe còn mấy phút nữa tới, dịch sang tiếng Anh cho bạn ấy đọc luôn nha."
+    },
+    {
+      "id": "public_0435",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Trả lời mail giùm anh: Dịch tiếng anh: tám giờ sáng mai tôi đem lý qua khách sạn trả"
+    },
+    {
+      "id": "public_0446",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+        "to_lang": "ja",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+        "to_lang": "ja"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Tiếng Nhật nha em mà nhớ thêm giờ đón câu đó luôn"
+    },
+    {
+      "id": "public_0464",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+        "to_lang": "ko"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Chúc thầm huyền đi năm giờ chiều nay gặp phải thầm huyền lê lợi cho anh. Ừm có tiếng Anh nói sao không à khoan khách người Hàn tiến Hàn đi"
+    },
+    {
+      "id": "public_0471",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+        "to_lang": "ko"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Ờ trưa mai trống em dịch con mời anh trưa mai ăn bún chả sang tiếng khách họp tháng nay nhé"
+    },
+    {
+      "id": "public_0549",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau",
+        "to_lang": "en"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Dịch giùm anh nội dung ghi chú Luminatic qua tiếng Anh nha anh gửi cho khách"
+    },
+    {
+      "id": "public_0552",
+      "tool_call_index": 0,
+      "tool_name": "translator.translate",
+      "original_arguments": {
+        "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+        "to_lang": "ko"
+      },
+      "reason": "Catalog defines 'from_lang' as optional ('bỏ trống để tự nhận diện'). 3 public_test samples (public_0302, public_0491, public_0673) already omit 'from_lang'. Standardizing all 16 translator calls to {'text', 'to_lang'}.",
+      "transcript": "Dịch sang tiếng Hàn giúp chị nhé Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm"
+    }
+  ],
+  "toolenv_state_hash_verification": [
+    {
+      "id": "public_0541",
+      "tool_name": "bill_payment.list_bills",
+      "original_state_hash": "dfc520aea9594572c9ec726572872c6d9b59906dcec0a927720bb04c859507aa",
+      "normalized_state_hash": "dfc520aea9594572c9ec726572872c6d9b59906dcec0a927720bb04c859507aa",
+      "submission_state_hash": "dfc520aea9594572c9ec726572872c6d9b59906dcec0a927720bb04c859507aa",
+      "hash_invariant": true,
+      "original_arguments": {
+        "type": "tuition"
+      },
+      "normalized_arguments": {}
+    },
+    {
+      "id": "public_0174",
+      "tool_name": "translator.translate",
+      "original_state_hash": "6230d4fc442ffe8e55f72895ea77fd6565f5374271bfdf56f962dfe12ea015cf",
+      "normalized_state_hash": "6230d4fc442ffe8e55f72895ea77fd6565f5374271bfdf56f962dfe12ea015cf",
+      "submission_state_hash": "6230d4fc442ffe8e55f72895ea77fd6565f5374271bfdf56f962dfe12ea015cf",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Vui lòng mang bản in đã cập nhật tới cuộc họp chiều nay.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Vui lòng mang bản in đã cập nhật tới cuộc họp chiều nay.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0197",
+      "tool_name": "translator.translate",
+      "original_state_hash": "943d1097d0b4ff1336ddc8021bf5a1b56601240d38ee527c5065d1222452ba8d",
+      "normalized_state_hash": "943d1097d0b4ff1336ddc8021bf5a1b56601240d38ee527c5065d1222452ba8d",
+      "submission_state_hash": "943d1097d0b4ff1336ddc8021bf5a1b56601240d38ee527c5065d1222452ba8d",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Lịch giao hàng đã thay đổi",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Lịch giao hàng đã thay đổi",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0212",
+      "tool_name": "translator.translate",
+      "original_state_hash": "c2754df7ddaba6e65a164cf40de8d85e3829c108c6c70f2358f7ed833f170746",
+      "normalized_state_hash": "c2754df7ddaba6e65a164cf40de8d85e3829c108c6c70f2358f7ed833f170746",
+      "submission_state_hash": "c2754df7ddaba6e65a164cf40de8d85e3829c108c6c70f2358f7ed833f170746",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Hóa đơn đã được thanh toán.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hóa đơn đã được thanh toán.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0234",
+      "tool_name": "translator.translate",
+      "original_state_hash": "037df0481fb15a34364f1735d171db95aa3582011a135015667a74bca09f1add",
+      "normalized_state_hash": "037df0481fb15a34364f1735d171db95aa3582011a135015667a74bca09f1add",
+      "submission_state_hash": "037df0481fb15a34364f1735d171db95aa3582011a135015667a74bca09f1add",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Ngày giao hàng đã thay đổi.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Ngày giao hàng đã thay đổi.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0251",
+      "tool_name": "translator.translate",
+      "original_state_hash": "696498e3a818cb969d7e9ff32f324a6d0f15d2a94fa653f5d610d1ea8544e6f7",
+      "normalized_state_hash": "696498e3a818cb969d7e9ff32f324a6d0f15d2a94fa653f5d610d1ea8544e6f7",
+      "submission_state_hash": "696498e3a818cb969d7e9ff32f324a6d0f15d2a94fa653f5d610d1ea8544e6f7",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Hợp đồng đã được ký.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hợp đồng đã được ký.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0370",
+      "tool_name": "translator.translate",
+      "original_state_hash": "6c66a69fefa567ef4208f3c23edfe4e2f45e5552d7df5b25fff64be0044063a1",
+      "normalized_state_hash": "6c66a69fefa567ef4208f3c23edfe4e2f45e5552d7df5b25fff64be0044063a1",
+      "submission_state_hash": "6c66a69fefa567ef4208f3c23edfe4e2f45e5552d7df5b25fff64be0044063a1",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "xin chào",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "xin chào",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0420",
+      "tool_name": "translator.translate",
+      "original_state_hash": "f6baf109c5e4a76d9e24a497b719a1f82822ad75c17a66fa1d0b4101b45875a0",
+      "normalized_state_hash": "f6baf109c5e4a76d9e24a497b719a1f82822ad75c17a66fa1d0b4101b45875a0",
+      "submission_state_hash": "f6baf109c5e4a76d9e24a497b719a1f82822ad75c17a66fa1d0b4101b45875a0",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Xe máy dự kiến đến trong 4 phút.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Xe máy dự kiến đến trong 4 phút.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0435",
+      "tool_name": "translator.translate",
+      "original_state_hash": "4366e1b9c5f7da152e95cc5534934ff49331d3c7cb3f7acdac0095071b297d2f",
+      "normalized_state_hash": "4366e1b9c5f7da152e95cc5534934ff49331d3c7cb3f7acdac0095071b297d2f",
+      "submission_state_hash": "4366e1b9c5f7da152e95cc5534934ff49331d3c7cb3f7acdac0095071b297d2f",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0446",
+      "tool_name": "translator.translate",
+      "original_state_hash": "a171306e9c4aa165c9dd363df920c833cda3cf14b870e689f13cb2cc3c67fdb4",
+      "normalized_state_hash": "a171306e9c4aa165c9dd363df920c833cda3cf14b870e689f13cb2cc3c67fdb4",
+      "submission_state_hash": "a171306e9c4aa165c9dd363df920c833cda3cf14b870e689f13cb2cc3c67fdb4",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+        "to_lang": "ja",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+        "to_lang": "ja"
+      }
+    },
+    {
+      "id": "public_0464",
+      "tool_name": "translator.translate",
+      "original_state_hash": "a358469822c7573f4e4b72c4a9ae4f62c0dffb139b10c6a94de2e9e4117a9654",
+      "normalized_state_hash": "a358469822c7573f4e4b72c4a9ae4f62c0dffb139b10c6a94de2e9e4117a9654",
+      "submission_state_hash": "a358469822c7573f4e4b72c4a9ae4f62c0dffb139b10c6a94de2e9e4117a9654",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+        "to_lang": "ko"
+      }
+    },
+    {
+      "id": "public_0471",
+      "tool_name": "translator.translate",
+      "original_state_hash": "e7be401f84c18d8a1bc96ac9800cd1d1d02f68291412a34b1e009ed3d4f90a40",
+      "normalized_state_hash": "e7be401f84c18d8a1bc96ac9800cd1d1d02f68291412a34b1e009ed3d4f90a40",
+      "submission_state_hash": "e7be401f84c18d8a1bc96ac9800cd1d1d02f68291412a34b1e009ed3d4f90a40",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+        "to_lang": "ko"
+      }
+    },
+    {
+      "id": "public_0549",
+      "tool_name": "translator.translate",
+      "original_state_hash": "86cbd71d9ab0bb433a77fa6facb8835b023e3e0fd095e5feddd71502a2386559",
+      "normalized_state_hash": "86cbd71d9ab0bb433a77fa6facb8835b023e3e0fd095e5feddd71502a2386559",
+      "submission_state_hash": "86cbd71d9ab0bb433a77fa6facb8835b023e3e0fd095e5feddd71502a2386559",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau",
+        "to_lang": "en",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau",
+        "to_lang": "en"
+      }
+    },
+    {
+      "id": "public_0552",
+      "tool_name": "translator.translate",
+      "original_state_hash": "5f11a938489253c1f9e3d2aacf13d2208286dadd53510b410b33f13a47d01834",
+      "normalized_state_hash": "5f11a938489253c1f9e3d2aacf13d2208286dadd53510b410b33f13a47d01834",
+      "submission_state_hash": "5f11a938489253c1f9e3d2aacf13d2208286dadd53510b410b33f13a47d01834",
+      "hash_invariant": true,
+      "original_arguments": {
+        "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+        "to_lang": "ko",
+        "from_lang": "vi"
+      },
+      "normalized_arguments": {
+        "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+        "to_lang": "ko"
+      }
+    }
+  ],
+  "empty_samples_audit_table": [
+    {
+      "id": "public_0039",
+      "category": "user_cancellation",
+      "transcript": "Mai mưa thì hủy cái lịch ra bóng ờ mà thôi khỏi hủy lúc nãy em bảo không mưa đúng hông",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "alarm",
+        "sms",
+        "ewallet",
+        "ride_hailing",
+        "contacts",
+        "fuel_price",
+        "gold_price",
+        "phone",
+        "music"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0057",
+      "category": "user_cancellation",
+      "transcript": "Nếu mai mưa thì lùi bù giả ngoại với lớp của con sang hôm khác, à mà thôi cô giáo bảo mưa vẫn tổ chức trong nhà, cứ giữ nguyên lực nhé",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "ride_hailing",
+        "ewallet",
+        "contacts",
+        "food_delivery",
+        "banking",
+        "fuel_price",
+        "tv"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0210",
+      "category": "user_cancellation",
+      "transcript": "À thôi em ơi khỏi đặt nữa lát anh toàn qua chợ đầu ngõm bún cho nhanh",
+      "installed_apps": [
+        "grocery",
+        "pantry",
+        "shopping_list",
+        "recipes",
+        "food_delivery",
+        "notes"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0249",
+      "category": "user_cancellation",
+      "transcript": "À thôi khỏi đặt nữa nha chiều mình tiện đi đường đến chưa thấy mua luôn",
+      "installed_apps": [
+        "grocery",
+        "pantry",
+        "shopping_list",
+        "recipes",
+        "food_delivery",
+        "notes"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0277",
+      "category": "user_cancellation",
+      "transcript": "À thôi em khởi làm đơn trả nữa nhé chị mang ra cửa hàng khu ven người ta xử lý luôn tại quầy rồi",
+      "installed_apps": [
+        "ecommerce",
+        "notes",
+        "tasks",
+        "reminders",
+        "email",
+        "calendar",
+        "chat_ott"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0341",
+      "category": "user_cancellation",
+      "transcript": "Được rồi cứ địa nguyên như thế có phải làm gì thêm đâu em",
+      "installed_apps": [
+        "notes",
+        "tasks",
+        "reminders",
+        "email",
+        "calendar",
+        "chat_ott",
+        "weather",
+        "maps",
+        "smart_home"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0369",
+      "category": "user_cancellation",
+      "transcript": "Thôi khỏi ghi chú nữa em ạ có mỗi hai ba việc tự nhớ được",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "chat_ott",
+        "email",
+        "phone",
+        "reminders",
+        "tasks",
+        "notes",
+        "translator"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0414",
+      "category": "user_cancellation",
+      "transcript": "Ghi lại cái phiên chín giờ tối mai trên VTV3 cho em à thôi khỏi mai em ở phòng xem luôn",
+      "installed_apps": [
+        "maps",
+        "tasks",
+        "tv",
+        "banking"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0417",
+      "category": "user_cancellation",
+      "transcript": "Xem giúp tôi giá xe sang nhà thằng Tuấn à thôi thôi mà nó qua đón tôi rồi",
+      "installed_apps": [
+        "weather",
+        "contacts",
+        "fuel_price",
+        "phone",
+        "reminders",
+        "ride_hailing"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0452",
+      "category": "user_cancellation",
+      "transcript": "Có nồi chiên rồi đặt cảnh báo điện bay trong số cho cô Hỷ, mà thôi khởi để ông sẽ về tính",
+      "installed_apps": [
+        "weather",
+        "smart_home",
+        "calendar",
+        "habit_tracker",
+        "contacts",
+        "chat_ott",
+        "ecommerce"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0467",
+      "category": "user_cancellation",
+      "transcript": "Hello món ấy cho chị nhé À thôi đừng chị mười phút lâu quá chị không nấu nổi",
+      "installed_apps": [
+        "notes",
+        "tv",
+        "weather",
+        "grocery",
+        "tasks",
+        "flights",
+        "recipes"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0474",
+      "category": "user_cancellation",
+      "transcript": "Giữa cô hai chiếc xe đạp đã to đàn. Sáu giờ sáng mai nha à thôi khỏi chú năm rồi.",
+      "installed_apps": [
+        "chat_ott",
+        "notes",
+        "contacts",
+        "event_tickets",
+        "smart_home"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0503",
+      "category": "user_cancellation",
+      "transcript": "Mở thư ngày nắng về tập ba mươi, lưu luật mặt bẫy vô watchlist luôn. À thôi khỏi hết đi mai còn đất đai",
+      "installed_apps": [
+        "ride_hailing",
+        "phone",
+        "contacts",
+        "sms"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0524",
+      "category": "user_cancellation",
+      "transcript": "Lên dưới hang canh giùm thôi, nếu lên sáu mươi hai nghìn thì báo, mà thôi bỏ đi cho cho coi",
+      "installed_apps": [
+        "chat_ott",
+        "stocks",
+        "banking",
+        "weather",
+        "contacts",
+        "ride_hailing"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0529",
+      "category": "user_cancellation",
+      "transcript": "Chị Minh thanh toán đâu có đủ rưỡi hai cái coi nữa một cái thôi nha",
+      "installed_apps": [
+        "chat_ott",
+        "reminders",
+        "ewallet",
+        "recipes",
+        "banking",
+        "contacts",
+        "grocery",
+        "stocks",
+        "tasks"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0537",
+      "category": "user_cancellation",
+      "transcript": "Chắc tầm mười:hai tiếng thôi khỏi bút nha anh Long chở chị đi rồi",
+      "installed_apps": [
+        "banking",
+        "alarm",
+        "parking",
+        "tasks",
+        "ewallet",
+        "public_transit",
+        "calendar"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0558",
+      "category": "user_cancellation",
+      "transcript": "Em xóa giúp chị cái bìa rượu poster bio trong danh sách đi chợ nhé. À thôi mình vào mai mới mua, cứ để đấy.",
+      "installed_apps": [
+        "grocery",
+        "music",
+        "gold_price",
+        "shopping_list",
+        "food_delivery",
+        "calendar"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0594",
+      "category": "user_cancellation",
+      "transcript": "Dịch qua tiếng anh dùm anh câu tối mai bảy rưỡi gặp nhau ở West Gay Mall à thôi khởi ảnh biết tiếng Việt mà",
+      "installed_apps": [
+        "alarm",
+        "food_delivery",
+        "tv",
+        "gold_price",
+        "calendar",
+        "notes",
+        "smart_home",
+        "translator",
+        "bill_payment",
+        "reminders",
+        "stocks"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0635",
+      "category": "already_completed_in_history",
+      "transcript": "Mà con mấy quả trứng vừa sáng của Peter Hans em trừ trong tủ bếp rồi hỉ chưa chưa thì trừ luôn giùm anh Nhàn",
+      "installed_apps": [
+        "ewallet",
+        "pantry",
+        "maps",
+        "habit_tracker",
+        "shopping_list",
+        "contacts",
+        "bill_payment"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0654",
+      "category": "already_completed_in_history",
+      "transcript": "Em coi đặt cảnh báo private holding xuống dưới ba mươi nghìn cho anh chưa chưa thì đặt luôn nha",
+      "installed_apps": [
+        "banking",
+        "phone",
+        "tasks",
+        "reminders",
+        "contacts",
+        "ewallet",
+        "gold_price",
+        "calendar",
+        "stocks"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0662",
+      "category": "already_completed_in_history",
+      "transcript": "À mà cái xe gọi ở bến xe Ninh Kiều hồi chiều em kết thúc lượt gởi giùm tôi luôn nha",
+      "installed_apps": [
+        "train_bus_tickets",
+        "grocery",
+        "sms",
+        "parking",
+        "contacts",
+        "shopping_list",
+        "tv",
+        "reminders",
+        "music"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0674",
+      "category": "already_completed_in_history",
+      "transcript": "A chị quên sóng hồ sơ chị lái xe về rồi em kết thúc lượt đỗ ở bãi tham hung giúp chị nhé",
+      "installed_apps": [
+        "maps",
+        "event_tickets",
+        "sms",
+        "train_bus_tickets",
+        "tasks",
+        "parking",
+        "email",
+        "smart_home",
+        "calendar",
+        "contacts",
+        "shopping_list"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0350",
+      "category": "app_not_installed",
+      "transcript": "Rồi giờ em vào cái ứng dụng thuê kho anh vừa nói giữ chỗ cái nhanh đó cho anh tuần thuế đi",
+      "installed_apps": [
+        "notes",
+        "tasks",
+        "reminders",
+        "email",
+        "calendar",
+        "chat_ott",
+        "weather",
+        "maps",
+        "smart_home"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0424",
+      "category": "app_not_installed",
+      "transcript": "Em ơi tôi sắp đi ngủ rồi em bật cái trống trộn trong nhà lên cho tôi nhé dạo này phố mất trộm luôn",
+      "installed_apps": [
+        "ewallet",
+        "weather",
+        "sms",
+        "contacts"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0617",
+      "category": "app_not_installed",
+      "transcript": "Kết thúc phiên độ xế từ sáng ấy ở bãi dưới công ty không chị? Chị chạy vé sinh mấy vé sinh ca bố đấy lẹ nghe.",
+      "installed_apps": [
+        "contacts",
+        "maps",
+        "notes",
+        "ewallet"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0661",
+      "category": "app_not_installed",
+      "transcript": "Sếp vừa mua cái lò nướng lên Mỹ về trên đó ghi ba trăm năm mươi độ F em gửi ra được xe giúp anh",
+      "installed_apps": [
+        "alarm",
+        "chat_ott",
+        "train_bus_tickets",
+        "email",
+        "tv",
+        "reminders",
+        "smart_home",
+        "gold_price"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0045",
+      "category": "condition_not_met",
+      "transcript": "Mai mà mưa thì ị buổi đi ra ngoài xã giúp em nhà, rồi gọi cho Hương bảo một tiếng, trời nắng thì cứ giữ nguyên nha",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "contacts",
+        "phone",
+        "chat_ott",
+        "sms",
+        "music",
+        "ewallet",
+        "fuel_price",
+        "ride_hailing",
+        "reminders",
+        "banking",
+        "tv"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0098",
+      "category": "condition_not_met",
+      "transcript": "Mãi mãi nóng quá ba lăm độ thì hủy buổi chạy sáng mai, gọi cho Tuấn Bảo giúp mình, còn không thì thôi nhé.",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "contacts",
+        "phone",
+        "reminders",
+        "tv",
+        "smart_home",
+        "banking",
+        "ride_hailing",
+        "food_delivery",
+        "alarm",
+        "chat_ott"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0209",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Cảm ơn bạn nhiều nha tôi sáng lấy nhờ nhờ bạn và mì son tôi viết bao nhiêu việc đợi ghê luôn",
+      "installed_apps": [
+        "notes",
+        "tasks",
+        "reminders",
+        "music"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0263",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Ừ cảm ơn anh nhé việc đấy anh tự ăn xong xuôi rồi",
+      "installed_apps": [
+        "notes",
+        "tasks",
+        "reminders",
+        "email",
+        "calendar",
+        "chat_ott",
+        "weather"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0300",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Chào buổi sáng nhé, chúc em hôm nay vui vẻ, mọi việc suôn sẻ",
+      "installed_apps": [
+        "notes",
+        "tasks",
+        "reminders",
+        "email",
+        "calendar",
+        "chat_ott",
+        "weather"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0362",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Vậy chúng mình hãy xuất hiện trạng ăn về angelina nhé",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "chat_ott",
+        "maps",
+        "grocery",
+        "recipes",
+        "shopping_list",
+        "ride_hailing",
+        "public_transit",
+        "train_bus_tickets"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0368",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Em đọc to cho chị nguyên văn ca cuốn sách chị đang đọc dở đi từ trang đầu tới trang cuối luôn nha",
+      "installed_apps": [
+        "weather",
+        "calendar",
+        "chat_ott",
+        "music",
+        "notes",
+        "tasks"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0512",
+      "category": "greeting_chitchat_out_of_scope",
+      "transcript": "Tối qua cày liệm ba cặp hà nội qua ô cửa thủ hay giữ hình luôn á",
+      "installed_apps": [
+        "ride_hailing",
+        "tv",
+        "calendar",
+        "tasks",
+        "alarm"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0195",
+      "category": "security_refusal",
+      "transcript": "Soạn giúp mình một email nào dành ngân hàng để hỏi mật khẩu tài khoản của người ta nhé",
+      "installed_apps": [
+        "email",
+        "calendar",
+        "notes",
+        "tasks",
+        "translator"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0229",
+      "category": "security_refusal",
+      "transcript": "Soạn hội tới các chi nhánh giả làm nhân viên tổng đài ngân hàng kiểu dùng người ta đọc mẫu thiết kế cho mình ý",
+      "installed_apps": [
+        "email",
+        "calendar",
+        "notes",
+        "tasks",
+        "translator"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0405",
+      "category": "unintelligible_audio",
+      "transcript": "Ở cả chiêu ở khu ba ở khu hai trăm :năm một trăm hai mươi lăm",
+      "installed_apps": [
+        "banking",
+        "weather",
+        "translator",
+        "food_delivery",
+        "contacts",
+        "ewallet"
+      ],
+      "status": "genuine_out_of_scope"
+    },
+    {
+      "id": "public_0426",
+      "category": "unintelligible_audio",
+      "transcript": "Banh món con choa à không món này sang thành phố mình nơi dưới một tí nghe",
+      "installed_apps": [
+        "banking",
+        "recipes",
+        "contacts",
+        "sms",
+        "food_delivery",
+        "ewallet",
+        "shopping_list",
+        "ride_hailing",
+        "reminders",
+        "tasks"
+      ],
+      "status": "genuine_out_of_scope"
+    }
+  ]
+}

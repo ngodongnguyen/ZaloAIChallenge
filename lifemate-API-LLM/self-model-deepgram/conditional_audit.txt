@@ -1,0 +1,281 @@
+Total conditional samples detected: 46
+
+======================================================================
+[public_0003] Transcript: Nếu mai mới thì rơi chạy vụ sáng mai muộn hai tiếng. Nhanh ép em ép bao giờ mới trở hư nhé, không bơi thì thôi
+   weather.get_forecast({'date': '2026-11-15'}) -> forecast: rain=True, cond=mưa rào, temp=31
+   calendar.list_events({'date_from': '2026-11-15', 'date_to': '2026-11-15'}) -> events: ['chạy bộ']
+   contacts.search({'query': 'Hương'}) -> ok=True
+   calendar.update_event({'event_id': 'evt_01', 'start': '2026-11-15T10:00:00+07:00', 'end': '2026-11-15T11:00:00+07:00'}) -> ok=True
+   sms.send({'contact_id': 'c_01', 'content': 'Mai chạy bộ lúc 10 giờ nhé'}) -> ok=True
+
+======================================================================
+[public_0005] Transcript: Mai mà mưa thì hủy đá bóng sáng gọi bảo lan nhỉ
+   weather.get_forecast({'date': '2026-11-09'}) -> forecast: rain=False, cond=nắng, temp=29
+
+======================================================================
+[public_0006] Transcript: Cái còn lại nếu mai mưa thì chờ muộn nửa tiếng không mưa thì giữ nghiêng
+   weather.get_forecast({'date': '2026-11-04'}) -> forecast: rain=False, cond=nhiều mây, temp=30
+
+======================================================================
+[public_0016] Transcript: Chuyển cho Trần Văn Tuấn bằng tiền mạng tháng này nếu thiếu thì lấy từ tiền tiết kiệm nhé
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 849936}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   bill_payment.list_bills({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_03', 'amount': 220000}) -> balance: 629936
+
+======================================================================
+[public_0020] Transcript: Còn cái kia mai mà trời mưa thì cho reo sớm hơn hai mươi phút trời khô ráo thì cứ để vậy
+   weather.get_forecast({'date': '2026-11-16'}) -> forecast: rain=True, cond=mưa rào, temp=34
+   alarm.update({'alarm_id': 'alm_01', 'time': '2026-11-16T05:55:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0035] Transcript: Mai nếu khó mưa thì vỏ lịch đá bóng sáng mai đi, gọi cho lam báo luôn, còn trời không mưa thì cứ để nguyên
+   weather.get_forecast({'date': '2026-11-11'}) -> forecast: rain=True, cond=mưa rào, temp=29
+   calendar.list_events({'date_from': '2026-11-11', 'date_to': '2026-11-11'}) -> events: ['đá bóng']
+   contacts.search({'query': 'Lan'}) -> ok=True
+   calendar.cancel_event({'event_id': 'evt_01'}) -> ok=True
+   sys.ask_missing_info({'tool_name': 'phone.call', 'params': ['contact_id']}) -> ok=True
+
+======================================================================
+[public_0037] Transcript: Tiền nước thì trả bằng ví điện tử, ví không đủ thì trừ vào ngân hàng, xong rồi dán SMS cho cô giáo Mai là mình đã đóng rồi nhé
+   bill_payment.list_bills({}) -> ok=True
+   ewallet.get_balance({}) -> balance: 127183
+   contacts.search({'query': 'cô giáo Mai'}) -> ok=True
+   bill_payment.pay({'bill_id': 'bill_03', 'source': 'bank'}) -> ok=True
+   sms.send({'contact_id': 'c_04', 'content': 'Mình đã đóng tiền nước rồi nhé'}) -> ok=True
+
+======================================================================
+[public_0038] Transcript: Nếu ví dụ thì trả tiền chuyển thành mạnh ví và dán SMS cho bố là đóng rồi, còn thiếu thì trả bằng ngân hàng và dán kém tán cho tối nay nạp ví.
+   bill_payment.list_bills({}) -> ok=True
+   ewallet.get_balance({}) -> balance: 452159
+   bill_payment.pay({'bill_id': 'bill_02', 'source': 'ewallet'}) -> ok=True
+   contacts.search({'query': 'bố'}) -> ok=True
+   sms.send({'contact_id': 'c_01', 'content': 'Con đóng tiền truyền hình rồi'}) -> ok=True
+
+======================================================================
+[public_0039] Transcript: Mai mưa thì hủy cái lịch ra bóng ờ mà thôi khỏi hủy lúc nãy em bảo không mưa đúng hông
+
+======================================================================
+[public_0043] Transcript: Vàng SJC mà mua vào hôm nay dưới một trăm ba mươi hai triệu thì sẽ mai chín giờ dắt tôi đi mua vàng nha
+   reminders.create({'content': 'đi mua vàng', 'time': '2026-11-08T09:00:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0044] Transcript: Vàng SJC nay bán ra trên trăm hai sáu triệu thì nhắc anh chín giờ sáng mai bán vàng. Chưa tới thì chuyển Nguyễn Thị Lan hai triệu từ tài khoản thanh toán tiền góp mua vàng.
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 8900000}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_02', 'amount': 2000000, 'note': 'góp mua vàng'}) -> balance: 6900000
+
+======================================================================
+[public_0045] Transcript: Mai mà mưa thì ị buổi đi ra ngoài xã giúp em nhà, rồi gọi cho Hương bảo một tiếng, trời nắng thì cứ giữ nguyên nha
+   weather.get_forecast({'date': '2026-11-24'}) -> forecast: rain=False, cond=nắng, temp=29
+
+======================================================================
+[public_0048] Transcript: Nếu mai mưa thì hủy cái lịch đá bóng và nhóm SMS cho Hương giúp chị, còn mai không mưa thì đặt ô tô bốn chỗ từ nhà tới đó đón sớm nửa tiếng.
+   weather.get_forecast({'date': '2026-11-06'}) -> forecast: rain=True, cond=mưa rào, temp=33
+   calendar.list_events({'date_from': '2026-11-06', 'date_to': '2026-11-06'}) -> events: ['đá bóng']
+   calendar.cancel_event({'event_id': 'evt_01'}) -> ok=True
+   contacts.search({'query': 'Hương'}) -> ok=True
+   sms.send({'contact_id': 'c_04', 'content': 'Mai hủy lịch đá bóng vì trời mưa nhé'}) -> ok=True
+
+======================================================================
+[public_0057] Transcript: Nếu mai mưa thì lùi bù giả ngoại với lớp của con sang hôm khác, à mà thôi cô giáo bảo mưa vẫn tổ chức trong nhà, cứ giữ nguyên lực nhé
+
+======================================================================
+[public_0067] Transcript: Anh muốn tắt hết đèn trên tầng hai mà phòng nào quản năm bật thì đừng tắt đèn, rồi bật điều hòa phòng ngủ hai mươi lăm độ nhé
+   smart_home.get_status({'floor': 2}) -> ok=True
+   smart_home.light_set({'device_id': 'light_bedroom', 'power': 'off'}) -> ok=True
+   smart_home.light_set({'device_id': 'light_bedroom2', 'power': 'off'}) -> ok=True
+   smart_home.climate_set({'device_id': 'ac_bedroom', 'mode': 'cool', 'temperature': 25}) -> ok=True
+
+======================================================================
+[public_0068] Transcript: Giá vàng nhẫn mua vào hôm nay mà trên một trăm mười sáu triệu, thì tám giờ tối nay nước em là mang nhận ra tiệm bán, còn thấp hơn thì chuyển hai triệu từ tài khoản thanh toán cho chủ nhà sẵn hôm đó mua vàng.
+   gold_price.get_price({'type': 'ring'}) -> price: [{'type': 'ring', 'buy': 116600000, 'sell': 118600000, 'unit': 'VND/lượng'}]
+   reminders.create({'content': 'mang nhẫn ra tiệm bán', 'time': '2026-11-20T20:00:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0069] Transcript: Trưa nắng nóng quá bật hết quẹt trong nhà lên số ba cho tôi, phòng nào điều hòa đang chạy rồi thì thôi nhé
+   smart_home.get_status({}) -> ok=True
+   smart_home.fan_set({'device_id': 'fan_living', 'power': 'on', 'speed': 3}) -> ok=True
+   smart_home.fan_set({'device_id': 'fan_office', 'power': 'on', 'speed': 3}) -> ok=True
+
+======================================================================
+[public_0081] Transcript: Giá vàng thế giới mà trên bốn nghìn một trăm đô một once thì tám giờ sáng thứ bảy này nhắc chị ra tiệm bán buffet. Trước tới thì chuyển ba triệu trừ tài khoản thanh toán cho Trần Văn Tuấn tiền góp mua vàng.
+   gold_price.get_price({'type': 'world'}) -> price: [{'type': 'world', 'usd_per_oz': 4146}]
+   reminders.create({'content': 'ra tiệm bán vàng', 'time': '2026-11-07T08:00:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0083] Transcript: Giá ở TC. Mua vào hôm nay mà từ một trăm mười tám triệu trở lên thì hai giờ chiều mai nhắc tôi bàn với con chuyện bán giàn, còn thấp hơn khi chuyển hai triệu cho thảm Hùng từ tài khoản thanh toán góp mua giàn.
+   gold_price.get_price({'type': 'sjc'}) -> price: [{'type': 'sjc', 'buy': 118600000, 'sell': 120600000, 'unit': 'VND/lượng'}]
+   reminders.create({'content': 'bàn với con chuyện bán vàng', 'time': '2026-11-12T14:00:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0094] Transcript: Mai mưa thì hủy vụ đi chơi công viên nhắn SMS để sử dụng biết. Còn hôm mưa thì đập ô tô bốn chỗ từ nhà ra chỗ hẹn sớm hơn giờ hẹn nửa tiếng.
+   weather.get_forecast({'date': '2026-11-26'}) -> forecast: rain=False, cond=có mây, temp=29
+   calendar.list_events({'date_from': '2026-11-26', 'date_to': '2026-11-26'}) -> events: ['đi chơi công viên', 'họp team']
+   ride_hailing.book({'pickup': '56 Trần Quang Khải, Quận 1, TP.HCM', 'dropoff': 'Công viên Gia Định, Hoàng Minh Giám, Gò Vấp, TP.HCM', 'vehicle': 'car4', 'schedule_time': '2026-11-26T07:30:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0102] Transcript: Ngày mai mà có mưa thì bỏ gạch đá bóng buổi sáng đi để báo cho lan luôn giùm tôi còn không mưa thì cứ để về
+   weather.get_forecast({'date': '2026-11-20'}) -> forecast: rain=False, cond=nhiều mây, temp=28
+
+======================================================================
+[public_0104] Transcript: Trượt cho ván tuẫn đụng tiền điện thoại tháng nay. Li Minh đụng tiền truyền hình. Nếu tài khoản thanh toán còn giữ ba trăm nghìn thì lấy luôn tiết kiệm cho cả hai nhé.
+   bill_payment.list_bills({}) -> ok=True
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 237330}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_02', 'beneficiary_id': 'ben_01', 'amount': 202000}) -> balance: 49798000
+   banking.transfer({'from_account_id': 'acc_02', 'beneficiary_id': 'ben_03', 'amount': 155000}) -> balance: 49643000
+
+======================================================================
+[public_0109] Transcript: Nếu vàng SJC bán ra nay vượt một trăm hai mươi tám triệu thì chỉ nhờ sáng mai nhắc tôi đi bán còn không thì trích tài khoản thanh toán gửi Lê Minh hai triệu góp mua vàng
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 8900000}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_03', 'amount': 2000000, 'note': 'góp mua vàng'}) -> balance: 6900000
+
+======================================================================
+[public_0110] Transcript: Nếu ví đủ thì trả tiền nước bằng ví và nhắn tin cho bố là đã đóng, còn không thì trả bằng ngân hàng và nhắc mình tránh cho tối nay nạp ví.
+   bill_payment.list_bills({}) -> ok=True
+   ewallet.get_balance({}) -> balance: 121948
+   bill_payment.pay({'bill_id': 'bill_03', 'source': 'bank'}) -> ok=True
+   reminders.create({'content': 'nạp ví', 'time': '2026-11-23T21:00:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0111] Transcript: Nếu vàng SJC bán ra link khoảng một trăm ba mươi mốt triệu thì tám giờ tối nay nhắc em trọn lời. Còn chưa tới khi lấy tài khoản thanh toán chuyện anh Trần mang vốn ba triệu rưỡi để anh ấy mua chung vàng giùm em ạ.
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 8900000}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_01', 'amount': 3500000, 'note': 'mua chung vàng'}) -> balance: 5400000
+
+======================================================================
+[public_0115] Transcript: Ờ. Dụng ngân hàng trẻ giúp anh dẫn hóa đơn đến hạn trong năm ngày tới, trừ hóa đơn nào trên năm trăm nghìn thì tạm để đó chưa trả nhỉ?
+   bill_payment.list_bills({}) -> ok=True
+   bill_payment.pay({'bill_id': 'bill_02', 'source': 'bank'}) -> ok=True
+   bill_payment.pay({'bill_id': 'bill_03', 'source': 'bank'}) -> ok=True
+
+======================================================================
+[public_0125] Transcript: Giá nhẫn vàng bán hôm nay trên một trăm mười lăm triệu thì nhắc tôi bảy giờ sáng mai mang nhẫn đi bán không thì chuyển một triệu rưỡi từ tài khoản thanh toán Cho chủ nhà Phạm Hùng trên điện nước
+   gold_price.get_price({'type': 'ring'}) -> price: [{'type': 'ring', 'buy': 112100000, 'sell': 114100000, 'unit': 'VND/lượng'}]
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 8900000}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_02', 'amount': 1500000, 'note': 'tiền điện nước'}) -> balance: 7400000
+
+======================================================================
+[public_0126] Transcript: May mà mưa thì bỏ lịch hợp tiêm, nhắn SMS cho Tuấn biết. Còn trời không mưa thì gọi ô tô bốn chỗ từ nhà ra chỗ hẹn, đón sớm nửa tiếng.
+   weather.get_forecast({'date': '2026-11-08'}) -> forecast: rain=True, cond=mưa rào, temp=32
+   calendar.list_events({'date_from': '2026-11-08', 'date_to': '2026-11-08'}) -> events: ['họp team', 'họp phụ huynh']
+   calendar.cancel_event({'event_id': 'evt_01'}) -> ok=True
+   contacts.search({'query': 'Tuấn'}) -> ok=True
+   sms.send({'contact_id': 'c_04', 'content': 'Mai hủy lịch họp team vì trời mưa nhé'}) -> ok=True
+
+======================================================================
+[public_0130] Transcript: Nếu mai mưa thì hệ lịch đã bắn sáng mai rồi báo cho lan nhé không mưa thì thôi
+   weather.get_forecast({'date': '2026-11-14'}) -> forecast: rain=True, cond=mưa rào, temp=34
+   calendar.list_events({'date_from': '2026-11-14', 'date_to': '2026-11-14'}) -> events: ['đá bóng', 'đá bóng']
+   contacts.search({'query': 'Lan'}) -> ok=True
+   calendar.cancel_event({'event_id': 'evt_01'}) -> ok=True
+   sys.ask_missing_info({'tool_name': 'phone.call', 'params': ['contact_id']}) -> ok=True
+
+======================================================================
+[public_0139] Transcript: May mà mưa thì hủy buổi gặp với khách hàng rồi nhắn SMS cho sếp Dũng còn trời không mưa thì đặt xe bảy chỗ từ nhà tới chỗ hẹn đón trước bốn mươi lăm phút
+   weather.get_forecast({'date': '2026-11-24'}) -> forecast: rain=False, cond=nhiều mây, temp=31
+   calendar.list_events({'date_from': '2026-11-24', 'date_to': '2026-11-24'}) -> events: ['gặp khách hàng']
+   ride_hailing.book({'pickup': 'nhà', 'dropoff': 'Tòa nhà Ngọc Viễn, 2 Hải Triều, Quận 1, TP.HCM', 'vehicle': 'car7', 'schedule_time': '2026-11-24T14:15:00+07:00'}) -> ok=True
+
+======================================================================
+[public_0146] Transcript: Nhắn tin thường cho cô giáo mai là đến rồi thì gọi tôi nha
+   contacts.search({'query': 'Cô giáo Mai'}) -> ok=True
+   sms.send({'contact_id': 'c_04', 'content': 'Đến rồi thì gọi tôi nha.'}) -> ok=True
+
+======================================================================
+[public_0155] Transcript: Nếu mai trời mưa thì hãy cái lịch đi chơi không yên sẽ mai cho tôi
+   weather.get_forecast({'date': '2026-11-18'}) -> forecast: rain=True, cond=mưa rào, temp=30
+   calendar.list_events({'date_from': '2026-11-18', 'date_to': '2026-11-18'}) -> events: ['đi chơi công viên']
+   calendar.cancel_event({'event_id': 'evt_01'}) -> ok=True
+
+======================================================================
+[public_0161] Transcript: Giá vé XJC mua vào hôm nay mà trên một trăm ba mươi hai triệu thì nhắc chị hai giờ chiều nay mang vàng đi bán. Chưa tới thì chuyển bốn triệu từ tài khoản thanh toán cho Trần Văn Tuấn nhờ mua giúp chị nhé.
+   gold_price.get_price({'type': 'sjc'}) -> price: [{'type': 'sjc', 'buy': 131400000, 'sell': 133400000, 'unit': 'VND/lượng'}]
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 12500000}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_01', 'beneficiary_id': 'ben_02', 'amount': 4000000, 'note': 'Mua giúp chị'}) -> balance: 8500000
+
+======================================================================
+[public_0163] Transcript: Mai mưa thì hủy trận đá bóng, nhắn SMS cho mình bên công ty biết không mưa thì gọi xe máy từ nhà ra sân đón trước hai chục phút.
+   weather.get_forecast({'date': '2026-11-18'}) -> forecast: rain=True, cond=mưa rào, temp=32
+   calendar.list_events({'date_from': '2026-11-18', 'date_to': '2026-11-18'}) -> events: ['cà phê với gia đình', 'đá bóng']
+   contacts.search({'query': 'sếp'}) -> ok=True
+   calendar.cancel_event({'event_id': 'evt_02'}) -> ok=True
+   sms.send({'contact_id': 'c_05', 'content': 'Mai trời mưa nên trận đá bóng bị hủy.'}) -> ok=True
+
+======================================================================
+[public_0164] Transcript: Chuyển cho miễn thị lan đúng bằng tiền mạng tháng này nếu tài khoản tích toán không đủ thì dùng tiết kiệm nhé
+   bill_payment.list_bills({}) -> ok=True
+   banking.get_balance({}) -> accounts: [{'id': 'acc_01', 'name': 'Tài khoản thanh toán', 'balance': 160790}, {'id': 'acc_02', 'name': 'Tài khoản tiết kiệm', 'balance': 50000000}]
+   banking.list_beneficiaries({}) -> ok=True
+   banking.transfer({'from_account_id': 'acc_02', 'beneficiary_id': 'ben_02', 'amount': 217000, 'note': 'Tiền internet tháng này'}) -> balance: 49783000
+
+======================================================================
+[public_0186] Transcript: Trời hà nội lúc này mà trên ba mươi độ thì bật giúp chị cái quạt phòng khách nhé
+   weather.get_current({'location': 'Hà Nội'}) -> current: temp=31, cond=có mây
+   smart_home.fan_set({'device_id': 'fan_living', 'power': 'on'}) -> ok=True
+
+======================================================================
+[public_0266] Transcript: Em ơi anh qua việc viết hợp với máu xem nếu anh từ giờ đi xe buýt thì bắt chuyến nào nhé
+   public_transit.find_routes({'origin': 'nhà', 'destination': 'Viện Huyết học và Truyền máu, Hà Nội'}) -> ok=True
+
+======================================================================
+[public_0274] Transcript: Ừ, thế trừ đi ba cân tôi lấy ra nấu cổ, xong mà còn dưới mức đáy thì khi gạo vào danh sách đi chợ, mua bù đúng ba cân nhé
+   pantry.consume({'item_id': 'pan_01', 'quantity': 3}) -> ok=True
+   shopping_list.add({'name': 'gạo ST25', 'quantity': 3}) -> ok=True
+
+======================================================================
+[public_0323] Transcript: Rồi giờ em có giá chiến đấu đi, hai người mà vẫn dưới mức anh nói thì chốt luôn thay chỗ nha
+   flights.search({'origin': 'Hà Nội', 'destination': 'TP.HCM', 'date': '2026-10-02'}) -> ok=True
+   flights.book({'flight_id': 'fl_03', 'passengers': 2}) -> ok=True
+
+======================================================================
+[public_0330] Transcript: Tối nay nhà anh bốn người nấu canh đậu cà chua mưa em mới không thích cần những gì trong tủ bếp còn thiếu món nào thì đặt mưa đủ số lần giúp anh nhé
+   pantry.list_items({}) -> ok=True
+   recipes.search({'query': 'canh đậu cà chua', 'servings': 4}) -> ok=True
+   grocery.search({'query': 'đậu hũ non'}) -> ok=True
+   grocery.add_to_cart({'product_id': 'gro_06', 'quantity': 2}) -> ok=True
+   grocery.checkout({}) -> ok=True
+
+======================================================================
+[public_0333] Transcript: Ừ, hôm nay tôi lấy ba cân ra nấu cổ, em trừ đi nhé. Trừ xong mà còn dưới hai cân thì đặt thêm gà st25 cho đủ hai cân, còn đủ thì thôi khỏi đặt.
+   pantry.consume({'item_id': 'pan_05', 'quantity': 3}) -> ok=True
+   grocery.search({'query': 'gạo ST25'}) -> ok=True
+   grocery.add_to_cart({'product_id': 'gro_06', 'quantity': 1}) -> ok=True
+   grocery.checkout({}) -> ok=True
+
+======================================================================
+[public_0335] Transcript: Em tra chuyến xe buýt đi, cứ tính năm giờ là lên xe luôn rồi trộn thời gian xe chạy. Nếu tới nơi trước sáu giờ tối thì trời sang giờ xe tới luận hợp một tiếng trong thủ rồi đổi lịch tin tên lịch hình gặp đối tác ở trung tâm văn hóa Tây Hồ luôn nha
+   maps.get_route({'origin': '25 Láng Hạ, Đống Đa, Hà Nội', 'destination': 'Trung tâm văn hóa Tây Hồ', 'mode': 'transit'}) -> ok=True
+   public_transit.find_routes({'origin': '25 Láng Hạ, Đống Đa, Hà Nội', 'destination': 'Trung tâm văn hóa Tây Hồ'}) -> ok=True
+   calendar.list_events({'date_from': '2026-10-11', 'date_to': '2026-10-11'}) -> events: ['Gặp đối tác tại văn phòng']
+   calendar.update_event({'event_id': 'evt_04', 'title': 'Gặp đối tác tại Trung tâm Văn hóa Tây Hồ', 'start': '2026-10-11T17:40:00+07:00', 'end': '2026-10-11T18:40:00+07:00', 'location': 'Trung tâm Văn hóa Tây Hồ'}) -> ok=True
+
+======================================================================
+[public_0340] Transcript: OK. Để đặt cho mình chuyến bay với chuyến tàu đó. Mỗi cái hộp vé thôi. Mà nếu từ lúc hạ cảnh tới lúc tàu chạy được ít nhất tiếng rưỡi thì nghi ngờ lịch sử giờ tàu tới nơi giúp mình nha.
+   flights.search({'origin': 'Hà Nội', 'destination': 'Đà Nẵng', 'date': '2026-10-20'}) -> ok=True
+   train_bus_tickets.search({'origin': 'Đà Nẵng', 'destination': 'Diêu Trì', 'date': '2026-10-20', 'type': 'train'}) -> ok=True
+   flights.book({'flight_id': 'fl_05', 'passengers': 1}) -> ok=True
+   train_bus_tickets.book({'trip_id': 'trip_09', 'seats': 1}) -> ok=True
+   calendar.create_event({'title': 'Tàu SE7 đến ga Diêu Trì', 'start': '2026-10-20T18:30:00+07:00', 'location': 'Ga Diêu Trì'}) -> ok=True
+
+======================================================================
+[public_0345] Transcript: Em mở tin nhắn của cô Hyden Senting với nhóc nói gì nếu cô báo hủy buổi học bù thì xóa cái lịch đó đi cho chị nhé
+   chat_ott.list_chats({}) -> ok=True
+   chat_ott.read_chat({'chat_id': 'chat_01'}) -> ok=True
+   calendar.cancel_event({'event_id': 'evt_03'}) -> ok=True
+
+======================================================================
+[public_0348] Transcript: Rồi giờ em thêm cái đèn đó và dô sát đi xăm xem vé Nếu vẫn dưới mí chị nói chị đặt luôn hai cái màu hố phát cho chị
+   ecommerce.search({'query': 'đèn ngủ màu hổ phách'}) -> ok=True
+   shopping_list.add({'name': 'Đèn ngủ cảm ứng màu hổ phách', 'quantity': 2}) -> ok=True
+   ecommerce.add_to_cart({'product_id': 'prod_08', 'quantity': 2}) -> ok=True
+   ecommerce.checkout({}) -> ok=True
+
+======================================================================
+[public_0349] Transcript: Ừm. Em xem hôm đó có mưa không. Nếu không mưa thì chuyển chỗ sang công viên Yên Sở luôn nhé. Giờ giấc cứ giữ nguyên.
+   weather.get_forecast({'location': 'Hà Nội', 'date': '2026-10-08'}) -> forecast: rain=False, cond=có mây, temp=34
+   calendar.update_event({'event_id': 'evt_03', 'location': 'Công viên Yên Sở'}) -> ok=True

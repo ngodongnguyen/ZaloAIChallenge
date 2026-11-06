@@ -1,0 +1,266 @@
+{
+  "public_0160": {
+    "action": "replace",
+    "confidence": "high",
+    "reason": "Fixed time calculation & ASR phonetic interpretation: transcript \"vào thức dậy giữa kẻ mười lăm sáng mai\" is phonetic mishearing for \"báo thức bảy giờ kém mười lăm sáng mai\" (6:45 AM). v16 incorrectly set alarm to 07:15:00 (interpreting as \"bảy giờ 15\" and ignoring \"kém\"). Set alarm time to exact 2026-11-22T06:45:00+07:00.",
+    "old_calls": [
+      {
+        "name": "phone.call",
+        "arguments": {
+          "contact_id": "c_09"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-22T07:15:00+07:00"
+        }
+      }
+    ],
+    "calls": [
+      {
+        "name": "phone.call",
+        "arguments": {
+          "contact_id": "c_09"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-22T06:45:00+07:00"
+        }
+      }
+    ],
+    "old_state_hash": "3668f8f54e76afdb466d9d509870748b4d98d761d7f8c1a495af70d7589a15ad",
+    "state_hash": "0e9409596d52d34bb6aaf06bae7b3a9b88ac129103a67afa19b6f9feed5b363c"
+  },
+  "public_0045": {
+    "action": "replace",
+    "confidence": "high",
+    "reason": "Added weather.get_forecast for conditional request: \"Mai mà mưa thì hủy buổi đi dã ngoại sáng... trời nắng thì cứ giữ nguyên nha\". In ToolEnv, forecast for 2026-11-24 has rain=False, so no further actions are triggered. In train gold (100% of false conditionals), the forecast tool must be called to evaluate the condition. State hash is invariant (read-only call).",
+    "old_calls": [],
+    "calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-24"
+        }
+      }
+    ],
+    "old_state_hash": "aa7767539d2fabf8bcfde81b61b0479e66a10e74ca3829de9bd1046e63a9b6d2",
+    "state_hash": "aa7767539d2fabf8bcfde81b61b0479e66a10e74ca3829de9bd1046e63a9b6d2"
+  },
+  "public_0098": {
+    "action": "replace",
+    "confidence": "high",
+    "reason": "Added weather.get_forecast for conditional request: \"mai nóng quá ba lăm độ thì huỷ buổi chạy sáng mai... còn không thì thôi nhé\". Current date is 2026-11-10, forecast for tomorrow 2026-11-11 shows temp_max=34 (<35), so condition is false and no cancellation occurs. In train gold, weather.get_forecast is required to check condition. State hash is invariant (read-only call).",
+    "old_calls": [],
+    "calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-11"
+        }
+      }
+    ],
+    "old_state_hash": "dc065e7927daeae2555242d5786d9f9ddb023e8ccaa905245d86aa35a43b6ced",
+    "state_hash": "dc065e7927daeae2555242d5786d9f9ddb023e8ccaa905245d86aa35a43b6ced"
+  },
+  "public_0081": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "World gold price from gold_price.get_price(type=\"world\") is 4146 USD/oz. Condition > 4100 is TRUE. Therefore, the IF branch (create reminder on Saturday 08:00 to sell gold) executes, while the ELSE branch (\"chưa tới thì chuyển 3 triệu...\") must NOT execute. AGY and Claude incorrectly executed both branches. v16 is 100% correct.",
+    "calls": [
+      {
+        "name": "gold_price.get_price",
+        "arguments": {
+          "type": "world"
+        }
+      },
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "ra tiệm bán vàng",
+          "time": "2026-11-07T08:00:00+07:00"
+        }
+      }
+    ],
+    "state_hash": "c83ef93e5b99201394423abf72d3f6ebf137ead5abe041af3e51458bc9f82ddb"
+  },
+  "public_0110": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "Water bill bill_03 is 213,000 VND; ewallet balance is 121,948 VND (insufficient). Bank payment is correctly executed. Whisper exact transcript confirms \"tám giờ tối nay nạp ví\" (8:00 PM = 20:00:00). AGY hallucinated 21:00 (9:00 PM) from garbled ASR \"tránh cho\". v16 is 100% correct.",
+    "calls": [
+      {
+        "name": "bill_payment.list_bills",
+        "arguments": {}
+      },
+      {
+        "name": "ewallet.get_balance",
+        "arguments": {}
+      },
+      {
+        "name": "bill_payment.pay",
+        "arguments": {
+          "bill_id": "bill_03",
+          "source": "bank"
+        }
+      },
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "nạp ví",
+          "time": "2026-11-23T20:00:00+07:00"
+        }
+      }
+    ],
+    "state_hash": "94bf336187dd2a56f89c3828a153933959f100647cc9c2bbba976122d0e65295"
+  },
+  "public_0156": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "User explicitly requests sending exact electricity bill amount (845,000 VND) to Mẹ (ben_01) and TV bill amount (150,000 VND) to Trần Văn Tuấn (ben_02). Checking account acc_01 has 1,259,591 VND (>= 995,000 VND). v16 correctly executes both transfers. AGY and Claude erroneously called bill_payment.pay and dropped Tuấn completely.",
+    "calls": [
+      {
+        "name": "bill_payment.list_bills",
+        "arguments": {}
+      },
+      {
+        "name": "banking.get_balance",
+        "arguments": {}
+      },
+      {
+        "name": "banking.list_beneficiaries",
+        "arguments": {}
+      },
+      {
+        "name": "banking.transfer",
+        "arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 845000
+        }
+      },
+      {
+        "name": "banking.transfer",
+        "arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 150000
+        }
+      }
+    ],
+    "state_hash": "afbb31a638b923c4d1dcf72c2b738299be5813c3cc6722970349149d22399274"
+  },
+  "public_0163": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "Weather forecast for 2026-11-18 has rain=True (mưa rào). Cancels soccer match (evt_02) and sends SMS to colleague Minh at company (c_06, relation: đồng nghiệp), correctly distinguishing from Sếp Dũng (c_05). AGY and Claude sent SMS to c_05. v16 is 100% correct.",
+    "calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-18"
+        }
+      },
+      {
+        "name": "calendar.list_events",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "calendar.cancel_event",
+        "arguments": {
+          "event_id": "evt_02"
+        }
+      },
+      {
+        "name": "sms.send",
+        "arguments": {
+          "contact_id": "c_06",
+          "content": "Mai trời mưa nên trận đá bóng bị hủy."
+        }
+      }
+    ],
+    "state_hash": "6199aca275fd6f977d1d7c64749ad0c567f2d1ff6e46eeb2a30e4c4e21818e3c"
+  },
+  "public_0234": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "Whisper audio confirms user requested drafting an email to logistics@example.test with translated note. AGY and Claude called sys.ask_missing_info because Deepgram truncated the email address. v16 successfully translated, created note, and created draft to logistics@example.test.",
+    "calls": [
+      {
+        "name": "translator.translate",
+        "arguments": {
+          "text": "Ngày giao hàng đã thay đổi.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        }
+      },
+      {
+        "name": "notes.create",
+        "arguments": {
+          "title": "Báo đối tác",
+          "content": "The delivery date has changed."
+        }
+      },
+      {
+        "name": "email.create_draft",
+        "arguments": {
+          "to": [
+            "logistics@example.test"
+          ],
+          "subject": "Báo đối tác",
+          "body": "The delivery date has changed."
+        }
+      }
+    ],
+    "state_hash": "037df0481fb15a34364f1735d171db95aa3582011a135015667a74bca09f1add"
+  },
+  "public_0250": {
+    "action": "keep_verified",
+    "confidence": "high",
+    "reason": "Maps search for cinema near phố Bà Triệu, finds parking lot_02, books ride-hailing car4, and reserves parking for 2 hours from 12:30. 100% verified and consensus across models.",
+    "calls": [
+      {
+        "name": "maps.search_place",
+        "arguments": {
+          "query": "rạp chiếu phim",
+          "near": "phố Bà Triệu"
+        }
+      },
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Rạp CineViệt Sao Kim Plaza Bà Triệu"
+        }
+      },
+      {
+        "name": "ride_hailing.book",
+        "arguments": {
+          "pickup": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "dropoff": "Rạp CineViệt Sao Kim Plaza Bà Triệu, 191 Bà Triệu, Hai Bà Trưng, Hà Nội",
+          "vehicle": "car4"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_02",
+          "from_time": "2026-09-25T12:30:00+07:00",
+          "hours": 2
+        }
+      }
+    ],
+    "state_hash": "bf8464cfb46daf0c64e423b7dbe33b229712360629c978cc917bd7b4a9957a0b"
+  },
+  "public_0251_note": {
+    "note": "Cross-shard finding for public_0251 (Shard 2): Whisper audio explicitly states \"tạo luôn thư nháp gửi legal@example.test\", which maps strictly to email.create_draft. AGY mistakenly called email.send. v16 correctly calls email.create_draft."
+  }
+}

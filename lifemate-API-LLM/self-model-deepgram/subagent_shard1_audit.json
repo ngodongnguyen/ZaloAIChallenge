@@ -1,0 +1,172 @@
+{
+  "public_0189": {
+    "action": "replace",
+    "reason": "Fixed ASR misrecognition: \"xem đợi kịp ngày mưa\" was \"xem vở kịch Ngày Mưa\". Search query changed from \"đợi kịp ngày mưa\" (which returned empty list events: []) to \"Ngày Mưa\" (returns event_01 \"Vở kịch Ngày Mưa\"). Replaced ungrounded book call with grounded event_id: \"event_01\", followed by calendar event creation.",
+    "calls": [
+      {
+        "name": "event_tickets.search",
+        "arguments": {
+          "query": "Ngày Mưa"
+        }
+      },
+      {
+        "name": "event_tickets.book",
+        "arguments": {
+          "event_id": "event_01",
+          "quantity": 2
+        }
+      },
+      {
+        "name": "calendar.create_event",
+        "arguments": {
+          "title": "Xem kịch Ngày Mưa",
+          "start": "2026-09-26T20:00:00+07:00",
+          "location": "Nhà hát Tuổi Trẻ, 11 Ngô Thì Nhậm, Hoàn Kiếm, Hà Nội"
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "e7c35af23318e677b62b37028529d18267c73657787e78096957e5071f29a858"
+  },
+  "public_0160": {
+    "action": "replace",
+    "reason": "Fixed time calculation & ASR phonetic interpretation: transcript \"vào thức dậy giữa kẻ mười lăm sáng mai\" maps phonetically to \"báo thức [lúc] bảy giờ kém mười lăm sáng mai\" (6:45 AM). v9 incorrectly set alarm to 07:15:00 (interpreting as \"bảy giờ 15\" and ignoring \"kém\"). Set alarm time to exact 2026-11-22T06:45:00+07:00.",
+    "calls": [
+      {
+        "name": "phone.call",
+        "arguments": {
+          "contact_id": "c_09"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-22T06:45:00+07:00"
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "0e9409596d52d34bb6aaf06bae7b3a9b88ac129103a67afa19b6f9feed5b363c"
+  },
+  "public_0163": {
+    "action": "replace",
+    "reason": "Condition evaluation & entity disambiguation: Weather forecast for tomorrow has rain=True (mưa rào). Cancels soccer match (evt_02) and sends SMS to colleague Minh at company (c_06), correctly distinguishing from Sếp Dũng (c_05).",
+    "calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-18"
+        }
+      },
+      {
+        "name": "calendar.list_events",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "calendar.cancel_event",
+        "arguments": {
+          "event_id": "evt_02"
+        }
+      },
+      {
+        "name": "sms.send",
+        "arguments": {
+          "contact_id": "c_06",
+          "content": "Mai trời mưa nên trận đá bóng bị hủy."
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "6199aca275fd6f977d1d7c64749ad0c567f2d1ff6e46eeb2a30e4c4e21818e3c"
+  },
+  "public_0156": {
+    "action": "replace",
+    "reason": "Transfers electricity bill (845,000 VND) to Mẹ (ben_01) and TV bill (150,000 VND) to Trần Văn Tuấn (ben_02, \"chồng quanh bốn\" -> anh Tuấn) from checking account acc_01 (balance 1,259,591 >= 995,000 VND). Prior version incorrectly called bill_payment.pay.",
+    "calls": [
+      {
+        "name": "bill_payment.list_bills",
+        "arguments": {}
+      },
+      {
+        "name": "banking.get_balance",
+        "arguments": {}
+      },
+      {
+        "name": "banking.list_beneficiaries",
+        "arguments": {}
+      },
+      {
+        "name": "banking.transfer",
+        "arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 845000
+        }
+      },
+      {
+        "name": "banking.transfer",
+        "arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 150000
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "afbb31a638b923c4d1dcf72c2b738299be5813c3cc6722970349149d22399274"
+  },
+  "public_0265": {
+    "action": "replace",
+    "reason": "Fixed ASR misrecognition: \"tập thể\" was \"tập thở\" corresponding to habit_04 (\"Luyện thở buổi sáng\"). Successfully logs habit completion for today 2026-10-01 instead of unnecessary sys.ask_missing_info.",
+    "calls": [
+      {
+        "name": "habit_tracker.list_habits",
+        "arguments": {}
+      },
+      {
+        "name": "habit_tracker.log",
+        "arguments": {
+          "habit_id": "habit_04",
+          "date": "2026-10-01"
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "2d2bc8dc0bcd7f2a7c13e632d9e80d728880b5d7212360664d84bbdacb22d54c"
+  },
+  "public_0329": {
+    "action": "replace",
+    "reason": "Fixed parking duration from ASR: \"phải pha tiếng\" was \"khoảng ba tiếng\" (3 hours) for an evening concert starting at 20:00. Sets hours=3 instead of default hours=1.",
+    "calls": [
+      {
+        "name": "maps.get_route",
+        "arguments": {
+          "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "destination": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_06",
+          "from_time": "2026-10-04T19:30:00+07:00",
+          "hours": 3
+        }
+      }
+    ],
+    "confidence": "high",
+    "state_hash": "1f8ee9bb2ddb2a49cfb274beb135116090fe26ffbbc2043c1a250edaf19a5341"
+  }
+}

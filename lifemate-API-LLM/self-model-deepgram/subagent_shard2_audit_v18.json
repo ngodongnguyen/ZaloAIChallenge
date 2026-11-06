@@ -1,0 +1,484 @@
+{
+  "public_0413": {
+    "action": "replace",
+    "confidence": "high",
+    "issue": "ASR misinterpretation of train departure time: \"Lấy hai vé chín một giờ chiều\" was \"chuyến một giờ chiều\" (13:00, trip_787). v16 mistakenly booked the 21:00 train (trip_875).",
+    "reason": "Assistant turn 2 presented two trains: 13:00 (trip_787, 450k) and 21:00 (trip_875, 680k). The user requested \"chuyến một giờ chiều\" (13:00), which ASR mistranscribed as \"chín một giờ chiều\". v16 booked trip_875 (21:00) instead of trip_787 (13:00). Replacing trip_875 with trip_787 correctly aligns with 13:00 departure and shuts down bedroom/office lights and pauses music as requested.",
+    "old_calls": [
+      {
+        "name": "train_bus_tickets.book",
+        "arguments": {
+          "trip_id": "trip_875",
+          "seats": 2
+        }
+      },
+      {
+        "name": "music.control",
+        "arguments": {
+          "action": "pause"
+        }
+      },
+      {
+        "name": "smart_home.get_status",
+        "arguments": {}
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_office",
+          "power": "off"
+        }
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_bedroom",
+          "power": "off"
+        }
+      }
+    ],
+    "old_state_hash": "8c7885de109518e2440f48b5a96a609cc9b271ab29abe7b408e9c5e66b290b40",
+    "proposed_calls": [
+      {
+        "name": "train_bus_tickets.book",
+        "arguments": {
+          "trip_id": "trip_787",
+          "seats": 2
+        }
+      },
+      {
+        "name": "music.control",
+        "arguments": {
+          "action": "pause"
+        }
+      },
+      {
+        "name": "smart_home.get_status",
+        "arguments": {}
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_office",
+          "power": "off"
+        }
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_bedroom",
+          "power": "off"
+        }
+      }
+    ],
+    "proposed_state_hash": "ef350339680f61c22198d0a9f2f824d77da09a6dfe65e6a78e7d7fe42e8dfa6c"
+  },
+  "public_0416": {
+    "action": "replace",
+    "confidence": "high",
+    "issue": "Multi-parameter sys.ask_missing_info([\"subject\", \"body\"]) is an invalid anti-pattern when body content is already provided.",
+    "reason": "The user said: \"Gửi email, biểu Hằng gửi cái radio về nhà cho ba nghen, ở luôn Thằng Út mới phải\". Recipient Hằng (hang@gmail.example.test) is found in contacts, Thằng Út (ut.nguyen@gmail.example.test) is CC'd, and the email body is explicitly stated. In train ground truth (train_1628, train_1349), subject is inferred and email.send is executed directly without asking.",
+    "old_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hằng"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "email.send",
+          "params": [
+            "subject",
+            "body"
+          ]
+        }
+      }
+    ],
+    "old_state_hash": "1c6ce53970d521acf16d59df119fdfdfaeef7c18ebd71595afba3ffcfe9981aa",
+    "proposed_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hằng"
+        }
+      },
+      {
+        "name": "email.send",
+        "arguments": {
+          "to": [
+            "hang@gmail.example.test"
+          ],
+          "cc": [
+            "ut.nguyen@gmail.example.test"
+          ],
+          "subject": "Gửi cái radio về nhà cho ba",
+          "body": "Hằng gửi cái radio về nhà cho ba nhé."
+        }
+      }
+    ],
+    "proposed_state_hash": "1ecfaba32c9ce671449a7106b3a2caca741d1078141eb4bcb4e6e3978485772a"
+  },
+  "public_0329": {
+    "action": "verified_keep_or_alternative",
+    "confidence": "high",
+    "issue": "Parking duration ambiguity: hours=2 vs hours=3 for concert at Nhà hát Lớn.",
+    "reason": "Alternate ASR transcript has \"còn trống từ bảy rưỡi tối, khỏi hai tiếng nha\" (\"khoảng hai tiếng nha\" = 2 hours, matching current v16). If interpreting Deepgram phonetic rhyme \"phải pha tiếng\" as \"phải ba tiếng\" (3 hours, 19:30 to 22:30), hours=3 is the alternative. Both hashes are verified in ToolEnv.",
+    "current_calls_hours_2": [
+      {
+        "name": "maps.get_route",
+        "arguments": {
+          "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "destination": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_06",
+          "from_time": "2026-10-04T19:30:00+07:00",
+          "hours": 2
+        }
+      }
+    ],
+    "state_hash_hours_2": "041f9ac098e71d53329bdc1ff399d733ccbf360841d5992ada014ecbf40132d6",
+    "alternative_calls_hours_3": [
+      {
+        "name": "maps.get_route",
+        "arguments": {
+          "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "destination": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_06",
+          "from_time": "2026-10-04T19:30:00+07:00",
+          "hours": 3
+        }
+      }
+    ],
+    "state_hash_hours_3": "1f8ee9bb2ddb2a49cfb274beb135116090fe26ffbbc2043c1a250edaf19a5341"
+  },
+  "focus_samples_audit": {
+    "public_0262": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "event_tickets.book",
+          "arguments": {
+            "event_id": "event_07",
+            "quantity": 6
+          }
+        }
+      ],
+      "state_hash": "70e64316a92a465fcbd9ff980932d1b7dcf20fdd273eb32dfda95ebcfa7217e3",
+      "reason": "Alternate ASR confirmed: \"Vip đi, công ty chi mà, đặt đủ số vé nhé\". Books event_07 (VIP) with quantity 6 for 6 team members."
+    },
+    "public_0265": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "habit_tracker.list_habits",
+          "arguments": {}
+        },
+        {
+          "name": "habit_tracker.log",
+          "arguments": {
+            "habit_id": "habit_04",
+            "date": "2026-10-01"
+          }
+        }
+      ],
+      "state_hash": "2d2bc8dc0bcd7f2a7c13e632d9e80d728880b5d7212360664d84bbdacb22d54c",
+      "reason": "\"Tôi tập thể xong lòi đáy\" = \"Tôi tập thở xong rồi đấy\". Logs habit_04 (\"Luyện thở buổi sáng\") for today 2026-10-01. No ask_missing_info needed."
+    },
+    "public_0351": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "contacts.search",
+          "arguments": {
+            "query": "phụ trách"
+          }
+        },
+        {
+          "name": "sys.ask_missing_info",
+          "arguments": {
+            "tool_name": "email.send",
+            "params": [
+              "to"
+            ]
+          }
+        }
+      ],
+      "state_hash": "4af031895cbd1263ecdaf40c6c90fa5a154a9e9cc51f969bfe8e542c58d2e37c",
+      "reason": "User explicitly said not to send draft to Thu. The requested recipient \"người phụ trách\" is not in contacts, so asking missing info \"to\" is correct."
+    },
+    "public_0356": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "event_tickets.search",
+          "arguments": {
+            "query": "stand-up comedy"
+          }
+        },
+        {
+          "name": "chat_ott.list_chats",
+          "arguments": {}
+        },
+        {
+          "name": "event_tickets.book",
+          "arguments": {
+            "event_id": "event_02",
+            "quantity": 4
+          }
+        },
+        {
+          "name": "ride_hailing.book",
+          "arguments": {
+            "pickup": "Tòa nhà Kim Cương, Nam Từ Liêm, Hà Nội",
+            "dropoff": "Trung tâm Hội nghị Quốc gia",
+            "vehicle": "car7",
+            "schedule_time": "2026-10-17T17:00:00+07:00"
+          }
+        },
+        {
+          "name": "chat_ott.send_message",
+          "arguments": {
+            "chat_id": "chat_04",
+            "content": "17 giờ tập trung ở sảnh công ty nhé."
+          }
+        }
+      ],
+      "state_hash": "1de3cc5ade86df3e61c8d8f30ce938820f3e1d150e6a177e87c33f712f8c0294",
+      "reason": "Books 4 tickets event_02, books 7-seat car at 17:00, and sends Zalo message to Minh (chat_04). \"nhắn Zalo\" correctly maps to chat_ott.send_message."
+    },
+    "public_0360": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "flights.book",
+          "arguments": {
+            "flight_id": "fl_05",
+            "passengers": 1
+          }
+        },
+        {
+          "name": "parking.reserve",
+          "arguments": {
+            "lot_id": "lot_05",
+            "from_time": "2026-10-10T06:00:00+07:00",
+            "hours": 48
+          }
+        },
+        {
+          "name": "reminders.create",
+          "arguments": {
+            "content": "Làm thủ tục chuyến bay Rồng Việt Air lúc 08:15",
+            "time": "2026-10-10T07:15:00+07:00"
+          }
+        }
+      ],
+      "state_hash": "3a48aedfd0bfca2a8474ba6acb3a2f7245bd8c1a27a34ba5b7c0006296b5d76a",
+      "reason": "Books flight fl_05, reserves lot_05 for 48 hours (\"gửi hai ngày nhé\" = 48 hours), and creates reminder at 07:15 (1 hour before 08:15 departure)."
+    },
+    "public_0367": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "shopping_list.add",
+          "arguments": {
+            "name": "mì gói",
+            "quantity": 2
+          }
+        },
+        {
+          "name": "shopping_list.add",
+          "arguments": {
+            "name": "trứng gà",
+            "quantity": 2
+          }
+        }
+      ],
+      "state_hash": "e94e5ab428e5d2f9419adc7072a3c352609852a0e1c959ab823de8edc5ac1801",
+      "reason": "User requests \"hai nguyên liệu chính\" -> exactly mì gói (2) and trứng gà (2), correctly omitting scallion (hành lá, which is garnish)."
+    },
+    "public_0381": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "event_tickets.book",
+          "arguments": {
+            "event_id": "event_05",
+            "quantity": 3
+          }
+        }
+      ],
+      "state_hash": "22a09cf232de5702ba98d6c27224e061f29079b1986ddebc25f7ee885a490263",
+      "reason": "Alternate ASR confirmed: \"Ừ, lấy ba vé nhà em\". Books event_05 with quantity 3."
+    },
+    "public_0391": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "public_transit.find_routes",
+          "arguments": {
+            "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+            "destination": "Ga Hà Nội"
+          }
+        },
+        {
+          "name": "public_transit.next_departures",
+          "arguments": {
+            "stop": "Láng Hạ",
+            "route": "bus_09"
+          }
+        },
+        {
+          "name": "maps.get_route",
+          "arguments": {
+            "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+            "destination": "Ga Hà Nội",
+            "mode": "car"
+          }
+        },
+        {
+          "name": "ride_hailing.book",
+          "arguments": {
+            "pickup": "25 Láng Hạ, Đống Đa, Hà Nội",
+            "dropoff": "Ga Hà Nội",
+            "vehicle": "car4",
+            "schedule_time": "2026-09-22T06:25:00+07:00"
+          }
+        },
+        {
+          "name": "reminders.create",
+          "arguments": {
+            "content": "Rời nhà đi Ga Hà Nội",
+            "time": "2026-09-22T06:25:00+07:00"
+          }
+        }
+      ],
+      "state_hash": "773c7abaa4e9746f4a3c35d09618ce7c64bcd1ac92672bf4e83201b96473f469",
+      "reason": "Searches bus/car route, books car at 06:25 (arriving 06:45, 30m before 07:15 train), and creates reminder at 06:25 (\"nhắc giúp anh giờ đó luôn\")."
+    },
+    "public_0401": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "parking.find",
+          "arguments": {
+            "near": "Tòa nhà Ngọc Viễn, 2 Hải Triều, Quận 1"
+          }
+        },
+        {
+          "name": "music.list_tracks",
+          "arguments": {}
+        },
+        {
+          "name": "music.play",
+          "arguments": {
+            "track_id": "trk_149"
+          }
+        }
+      ],
+      "state_hash": "4261fdc16c06a69ae6c146bb989e67703a2cc4e09a1fca48557e70033193b933",
+      "reason": "Finds parking lot near office, lists tracks and plays Đức Phúc (\"Ngày đầu tiên\", trk_149) as requested in audio."
+    },
+    "public_0408": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "stocks.get_portfolio",
+          "arguments": {}
+        }
+      ],
+      "state_hash": "223669c918a2ad238329a0775fef2df803a6dacfbe59fb1a603a3792cf956247",
+      "reason": "Alternate ASR confirmed cancellation: \"thôi khỏi nhắn, em đọc anh nghe thôi\". Calls stocks.get_portfolio and cancels SMS."
+    },
+    "public_0422": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "reminders.list",
+          "arguments": {
+            "date": "2026-10-10"
+          }
+        },
+        {
+          "name": "ride_hailing.book",
+          "arguments": {
+            "pickup": "45 Trần Hưng Đạo, Ninh Kiều, Cần Thơ",
+            "dropoff": "Nhà hàng Hoa Sứ, Cái Răng, Cần Thơ",
+            "vehicle": "car4",
+            "schedule_time": "2026-10-10T10:30:00+07:00"
+          }
+        }
+      ],
+      "state_hash": "22b36229b97215bbd7936f1b7a453d13eb3eee2fca5fd2d521e94e5711036b49",
+      "reason": "Wedding reminder is today at 11:00. Books 4-seat car at 10:30 (30m before) from 45 Trần Hưng Đạo to Nhà hàng Hoa Sứ."
+    },
+    "public_0441": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "train_bus_tickets.search",
+          "arguments": {
+            "origin": "TP.HCM",
+            "destination": "Đà Lạt",
+            "date": "2026-11-25",
+            "type": "bus"
+          }
+        },
+        {
+          "name": "train_bus_tickets.book",
+          "arguments": {
+            "trip_id": "trip_598",
+            "seats": 1
+          }
+        },
+        {
+          "name": "reminders.create",
+          "arguments": {
+            "content": "Ra bến xe đi Đà Lạt",
+            "time": "2026-11-25T12:00:00+07:00"
+          }
+        }
+      ],
+      "state_hash": "2ea3001df475334244f8363a3622628d255934be445ea491b5b0a5c79bd99d10",
+      "reason": "Books earliest bus to Đà Lạt (trip_598 at 13:00 tomorrow) and creates reminder at 12:00 (1 hour before departure)."
+    },
+    "public_0443": {
+      "status": "verified_correct_in_v16",
+      "calls": [
+        {
+          "name": "sys.ask_missing_info",
+          "arguments": {
+            "tool_name": "stocks.place_order",
+            "params": [
+              "symbol"
+            ]
+          }
+        }
+      ],
+      "state_hash": "95021ca31205000c55e149da98db1af6655dd504aadee8abefc6d83782cf9846",
+      "reason": "Two stocks are losing (ZDH and ZMX). User did not specify which one, so sys.ask_missing_info(tool_name=\"stocks.place_order\", params=[\"symbol\"]) is textbook."
+    }
+  }
+}

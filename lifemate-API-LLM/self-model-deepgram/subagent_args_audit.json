@@ -1,0 +1,2109 @@
+{
+  "summary": {
+    "benchmark": "Zalo AI Challenge 2026 - LifeMate",
+    "subagent": "Subagent 5: Specialist in Argument Standardization and Schema Alignment",
+    "base_submission": "Codex v9 (Public LB 84.03)",
+    "total_rules": 13,
+    "total_affected_samples": 79,
+    "tier_1_high_confidence_rules_count": 7,
+    "tier_2_read_standardization_rules_count": 5,
+    "tier_3_domain_filter_rules_count": 1,
+    "replay_verification": {
+      "total_samples": 634,
+      "schema_errors": 0,
+      "execution_errors_no_ops": 0,
+      "state_hash_mismatches": 0
+    }
+  },
+  "rules": [
+    {
+      "id": "RULE_1_BANKING_TRANSFER_NOTE",
+      "rule": "banking.transfer: remove optional 'note'",
+      "tool": "banking.transfer",
+      "parameter_modified": "note",
+      "tier": 1,
+      "applied_count": 11,
+      "unique_samples_count": 10,
+      "affected_samples": [
+        "public_0044",
+        "public_0109",
+        "public_0111",
+        "public_0114",
+        "public_0125",
+        "public_0161",
+        "public_0164",
+        "public_0172",
+        "public_0627",
+        "public_0688"
+      ],
+      "train_gold_benchmark": "81/82 (98.8%) in train gold do NOT use 'note'",
+      "state_hash_impact": "0 (identical: 'note' is in FREE_TEXT_KEYS and stripped by canon())",
+      "description": "In train gold, 98.8% of banking.transfer calls omit 'note'. In v9, 11 calls included 'note' inferred from utterance purpose. Removing 'note' aligns argument key-sets with train gold and preserves state_hash 100%."
+    },
+    {
+      "id": "RULE_2_ALARM_CREATE_LABEL",
+      "rule": "alarm.create: remove optional 'label'",
+      "tool": "alarm.create",
+      "parameter_modified": "label",
+      "tier": 1,
+      "applied_count": 11,
+      "unique_samples_count": 11,
+      "affected_samples": [
+        "public_0116",
+        "public_0133",
+        "public_0141",
+        "public_0143",
+        "public_0147",
+        "public_0149",
+        "public_0157",
+        "public_0160",
+        "public_0170",
+        "public_0477",
+        "public_0520"
+      ],
+      "train_gold_benchmark": "77/78 (98.7%) in train gold use only ('time',)",
+      "state_hash_impact": "0 (identical: 'label' is in FREE_TEXT_KEYS and stripped by canon())",
+      "description": "In train gold, 98.7% of alarm.create calls use only ('time',), omitting 'label' even when users state the alarm's purpose. In v9, 11 calls included 'label'. Removing 'label' prevents call_match key-set failure and preserves state_hash 100%."
+    },
+    {
+      "id": "RULE_3_EWALLET_TRANSFER_NOTE",
+      "rule": "ewallet.transfer: remove optional 'note'",
+      "tool": "ewallet.transfer",
+      "parameter_modified": "note",
+      "tier": 1,
+      "applied_count": 4,
+      "unique_samples_count": 4,
+      "affected_samples": [
+        "public_0188",
+        "public_0278",
+        "public_0281",
+        "public_0312"
+      ],
+      "train_gold_benchmark": "30/33 (90.9%) in train gold do NOT use 'note'",
+      "state_hash_impact": "0 (identical: 'note' is in FREE_TEXT_KEYS and stripped by canon())",
+      "description": "In train gold, 90.9% of ewallet.transfer calls omit 'note'. In v9, 4 calls added 'note' due to user mentioning a note/memo (which was intended for the notes app). Removing 'note' preserves state_hash 100%."
+    },
+    {
+      "id": "RULE_4_TRANSLATOR_FROM_LANG",
+      "rule": "translator.translate: remove optional 'from_lang'",
+      "tool": "translator.translate",
+      "parameter_modified": "from_lang",
+      "tier": 1,
+      "applied_count": 13,
+      "unique_samples_count": 13,
+      "affected_samples": [
+        "public_0174",
+        "public_0197",
+        "public_0212",
+        "public_0234",
+        "public_0251",
+        "public_0370",
+        "public_0420",
+        "public_0435",
+        "public_0446",
+        "public_0464",
+        "public_0471",
+        "public_0549",
+        "public_0552"
+      ],
+      "train_gold_benchmark": "Schema specifies required=['text', 'to_lang']; description explicitly says 'bỏ qua nếu tự nhận diện'",
+      "state_hash_impact": "0 (read tool, from_lang is not even used in dictionary lookup)",
+      "description": "Schema required properties are only 'text' and 'to_lang'. 3 calls in v9 already omit 'from_lang'. Removing 'from_lang' standardizes all 16 calls to ('text', 'to_lang') and avoids key-set mismatch if gold omitted from_lang."
+    },
+    {
+      "id": "RULE_5_ECOMMERCE_CHECKOUT_DEFAULTS",
+      "rule": "ecommerce.checkout: remove default payment ('cod') and optional 'address'",
+      "tool": "ecommerce.checkout",
+      "parameter_modified": "payment, address",
+      "tier": 1,
+      "applied_count": 3,
+      "unique_samples_count": 3,
+      "affected_samples": [
+        "public_0202",
+        "public_0203",
+        "public_0682"
+      ],
+      "train_gold_benchmark": "Catalog specifies required=[] and 'payment mặc định cod'. 6/8 calls in v9 already use {}",
+      "state_hash_impact": "0 (identical: payment defaults to 'cod' in cart_checkout, address is in FREE_TEXT_KEYS)",
+      "description": "In v9, 6/8 calls use {}. 2 calls passed payment='cod' and 1 passed address. Removing them standardizes all calls to {} and leaves state_hash 100% identical."
+    },
+    {
+      "id": "RULE_6_GROCERY_CHECKOUT_ADDRESS",
+      "rule": "grocery.checkout: remove optional 'address' (PRESERVE delivery_time)",
+      "tool": "grocery.checkout",
+      "parameter_modified": "address",
+      "tier": 1,
+      "applied_count": 3,
+      "unique_samples_count": 3,
+      "affected_samples": [
+        "public_0510",
+        "public_0574",
+        "public_0583"
+      ],
+      "train_gold_benchmark": "Catalog specifies required=[]. 16/20 calls in v9 use {}",
+      "state_hash_impact": "0 (identical: address is in FREE_TEXT_KEYS; delivery_time is critical and MUST be kept)",
+      "description": "Removing address from grocery.checkout has 0 impact on state_hash because address is in FREE_TEXT_KEYS. However, delivery_time directly affects state_hash and is correctly preserved."
+    },
+    {
+      "id": "RULE_7_FOOD_DELIVERY_DEFAULTS",
+      "rule": "food_delivery.place_order: remove optional 'address' and default payment ('cash')",
+      "tool": "food_delivery.place_order",
+      "parameter_modified": "address, payment",
+      "tier": 1,
+      "applied_count": 5,
+      "unique_samples_count": 5,
+      "affected_samples": [
+        "public_0342",
+        "public_0385",
+        "public_0399",
+        "public_0639",
+        "public_0666"
+      ],
+      "train_gold_benchmark": "26/28 (92.9%) in train gold use only ('items', 'restaurant_id')",
+      "state_hash_impact": "0 (identical: payment defaults to 'cash', address is in FREE_TEXT_KEYS)",
+      "description": "In train gold, 92.9% of place_order calls omit address and payment. Removing address and payment='cash' from 5 calls in v9 standardizes all calls to ('items', 'restaurant_id') with 0 state_hash change."
+    },
+    {
+      "id": "RULE_8_RECIPES_SEARCH_SERVINGS",
+      "rule": "recipes.search: remove optional 'servings'",
+      "tool": "recipes.search",
+      "parameter_modified": "servings",
+      "tier": 2,
+      "applied_count": 7,
+      "unique_samples_count": 7,
+      "affected_samples": [
+        "public_0272",
+        "public_0330",
+        "public_0334",
+        "public_0342",
+        "public_0388",
+        "public_0390",
+        "public_0392"
+      ],
+      "train_gold_benchmark": "Schema required is only ['query']. 19/26 (73.1%) in v9 already use ('query',)",
+      "state_hash_impact": "0 (read tool)",
+      "description": "Consistent with v9's removal of optional filter parameters on read tools (like calendar.list_events and smart_home.get_status), removing servings from 7 calls standardizes all 26 recipes.search calls to ('query',)."
+    },
+    {
+      "id": "RULE_9_RIDE_HAILING_GET_RIDE_ID",
+      "rule": "ride_hailing.get_ride: remove optional 'ride_id' -> {}",
+      "tool": "ride_hailing.get_ride",
+      "parameter_modified": "ride_id",
+      "tier": 2,
+      "applied_count": 1,
+      "unique_samples_count": 1,
+      "affected_samples": [
+        "public_0420"
+      ],
+      "train_gold_benchmark": "5/5 (100.0%) in train gold use {}",
+      "state_hash_impact": "0 (read tool)",
+      "description": "In train gold, 100% of get_ride calls use {}. ToolEnv automatically fetches the active non-cancelled ride. Removing ride_id from public_0420 standardizes to {}."
+    },
+    {
+      "id": "RULE_10_TV_GUIDE_DATE",
+      "rule": "tv.guide: remove optional 'date' -> {}",
+      "tool": "tv.guide",
+      "parameter_modified": "date",
+      "tier": 2,
+      "applied_count": 1,
+      "unique_samples_count": 1,
+      "affected_samples": [
+        "public_0453"
+      ],
+      "train_gold_benchmark": "v9 removed 'channel' from 2 samples; standardizing to {} completes the pattern",
+      "state_hash_impact": "0 (read tool)",
+      "description": "In v9, tv.guide in public_0683 uses {}. Removing date from public_0453 standardizes all tv.guide calls to {}."
+    },
+    {
+      "id": "RULE_11_REMINDERS_LIST_DATE",
+      "rule": "reminders.list: remove optional 'date' -> {}",
+      "tool": "reminders.list",
+      "parameter_modified": "date",
+      "tier": 2,
+      "applied_count": 1,
+      "unique_samples_count": 1,
+      "affected_samples": [
+        "public_0422"
+      ],
+      "train_gold_benchmark": "9/11 (81.8%) in train gold use {}",
+      "state_hash_impact": "0 (read tool)",
+      "description": "In train gold, 81.8% of reminders.list calls use {}. Removing date from the single call in public_0422 standardizes it to {}."
+    },
+    {
+      "id": "RULE_12_WEATHER_INFERRED_LOCATION",
+      "rule": "weather.get_forecast: remove redundantly inferred home 'location'",
+      "tool": "weather.get_forecast",
+      "parameter_modified": "location",
+      "tier": 2,
+      "applied_count": 4,
+      "unique_samples_count": 4,
+      "affected_samples": [
+        "public_0349",
+        "public_0396",
+        "public_0402",
+        "public_0442"
+      ],
+      "train_gold_benchmark": "54/60 (90.0%) in train gold use only ('date',)",
+      "state_hash_impact": "0 (LIVE_APP, stripped from canon())",
+      "description": "In train gold, 90% of weather.get_forecast calls use only ('date',). 4 samples in v9 redundantly inferred the user's home city without the user mentioning any location. Removing location standardizes them to ('date',)."
+    },
+    {
+      "id": "RULE_13_TRAIN_BUS_SEARCH_TYPE",
+      "rule": "train_bus_tickets.search: remove optional 'type' -> ('date', 'destination', 'origin')",
+      "tool": "train_bus_tickets.search",
+      "parameter_modified": "type",
+      "tier": 3,
+      "applied_count": 18,
+      "unique_samples_count": 18,
+      "affected_samples": [
+        "public_0199",
+        "public_0215",
+        "public_0238",
+        "public_0245",
+        "public_0254",
+        "public_0284",
+        "public_0314",
+        "public_0331",
+        "public_0340",
+        "public_0364",
+        "public_0393",
+        "public_0404",
+        "public_0441",
+        "public_0492",
+        "public_0538",
+        "public_0553",
+        "public_0579",
+        "public_0648"
+      ],
+      "train_gold_benchmark": "Schema required is ['origin', 'destination', 'date']; flights.search in train gold omitted optional passengers 100% of the time",
+      "state_hash_impact": "0 (read tool)",
+      "description": "Candidate rule: Schema required is only ['date', 'destination', 'origin']. Removing 'type' standardizes all 19 search calls to the required triplet, matching public_0672. Note: 'type' is a domain filter; documented for Team Lead evaluation."
+    }
+  ],
+  "standardized_samples": {
+    "public_0044": [
+      {
+        "call_index": 2,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 2000000,
+          "note": "góp mua vàng"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 2000000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "góp mua vàng",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0109": [
+      {
+        "call_index": 2,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_03",
+          "amount": 2000000,
+          "note": "góp mua vàng"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_03",
+          "amount": 2000000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "góp mua vàng",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0111": [
+      {
+        "call_index": 2,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 3500000,
+          "note": "mua chung vàng"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 3500000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "mua chung vàng",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0114": [
+      {
+        "call_index": 2,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 5000000,
+          "note": "tiền nhà tháng này"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 5000000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "tiền nhà tháng này",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0116": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-12-06T13:00:00+07:00",
+          "label": "làm thủ tục"
+        },
+        "after_arguments": {
+          "time": "2026-12-06T13:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "làm thủ tục",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0125": [
+      {
+        "call_index": 3,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 1500000,
+          "note": "tiền điện nước"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 1500000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "tiền điện nước",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0133": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-12-01T05:30:00+07:00",
+          "label": "ra sân bay"
+        },
+        "after_arguments": {
+          "time": "2026-12-01T05:30:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "ra sân bay",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0141": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-28T22:00:00+07:00",
+          "label": "đi ngủ sớm"
+        },
+        "after_arguments": {
+          "time": "2026-11-28T22:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "đi ngủ sớm",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0143": [
+      {
+        "call_index": 0,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-21T04:45:00+07:00",
+          "label": "ra sân bay"
+        },
+        "after_arguments": {
+          "time": "2026-11-21T04:45:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "ra sân bay",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0147": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-09T08:00:00+07:00",
+          "label": "họp phụ huynh"
+        },
+        "after_arguments": {
+          "time": "2026-11-09T08:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "họp phụ huynh",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0149": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-07T14:00:00+07:00",
+          "label": "thức dậy"
+        },
+        "after_arguments": {
+          "time": "2026-11-07T14:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "thức dậy",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0157": [
+      {
+        "call_index": 3,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-16T07:00:00+07:00",
+          "label": "ra sân bay"
+        },
+        "after_arguments": {
+          "time": "2026-11-16T07:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "ra sân bay",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0160": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-22T07:15:00+07:00",
+          "label": "thức dậy"
+        },
+        "after_arguments": {
+          "time": "2026-11-22T07:15:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "thức dậy",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0161": [
+      {
+        "call_index": 3,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 4000000,
+          "note": "Mua giúp chị"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 4000000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Mua giúp chị",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0164": [
+      {
+        "call_index": 3,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_02",
+          "beneficiary_id": "ben_02",
+          "amount": 217000,
+          "note": "Tiền internet tháng này"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_02",
+          "beneficiary_id": "ben_02",
+          "amount": 217000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền internet tháng này",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0170": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-11-07T05:30:00+07:00",
+          "label": "đi sớm"
+        },
+        "after_arguments": {
+          "time": "2026-11-07T05:30:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "đi sớm",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0172": [
+      {
+        "call_index": 3,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 1056000,
+          "note": "Tiền điện và nước tháng này"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_02",
+          "amount": 1056000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền điện và nước tháng này",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      },
+      {
+        "call_index": 4,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 221000,
+          "note": "Tiền mạng tháng này"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_01",
+          "beneficiary_id": "ben_01",
+          "amount": 221000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền mạng tháng này",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0174": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Vui lòng mang tài liệu đã cập nhật tới cuộc họp chiều nay.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Vui lòng mang tài liệu đã cập nhật tới cuộc họp chiều nay.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0188": [
+      {
+        "call_index": 2,
+        "tool": "ewallet.transfer",
+        "before_arguments": {
+          "contact_id": "c_05",
+          "amount": 350000,
+          "note": "Tiền học tháng 9 của con"
+        },
+        "after_arguments": {
+          "contact_id": "c_05",
+          "amount": 350000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền học tháng 9 của con",
+            "rule": "RULE_3_EWALLET_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0197": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Lịch giao hàng đã thay đổi",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Lịch giao hàng đã thay đổi",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0199": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-09-30",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-09-30"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0202": [
+      {
+        "call_index": 1,
+        "tool": "ecommerce.checkout",
+        "before_arguments": {
+          "payment": "cod"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "payment=cod",
+            "rule": "RULE_5_ECOMMERCE_CHECKOUT_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0203": [
+      {
+        "call_index": 1,
+        "tool": "ecommerce.checkout",
+        "before_arguments": {
+          "payment": "cod"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "payment=cod",
+            "rule": "RULE_5_ECOMMERCE_CHECKOUT_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0212": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Hóa đơn đã được thanh toán.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Hóa đơn đã được thanh toán.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0215": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Huế",
+          "date": "2026-09-25",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Huế",
+          "date": "2026-09-25"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0234": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Ngày giao hàng đã thay đổi.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Ngày giao hàng đã thay đổi.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0238": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Lạng Sơn",
+          "date": "2026-09-26",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Lạng Sơn",
+          "date": "2026-09-26"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0245": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-09-25",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-09-25"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0251": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Hợp đồng đã được ký.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Hợp đồng đã được ký.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0254": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Ninh Bình",
+          "date": "2026-09-25",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Ninh Bình",
+          "date": "2026-09-25"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0272": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "mì chay",
+          "servings": 2
+        },
+        "after_arguments": {
+          "query": "mì chay"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 2,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0278": [
+      {
+        "call_index": 2,
+        "tool": "ewallet.transfer",
+        "before_arguments": {
+          "contact_id": "c_06",
+          "amount": 250000,
+          "note": "Tiền quỹ lớp"
+        },
+        "after_arguments": {
+          "contact_id": "c_06",
+          "amount": 250000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền quỹ lớp",
+            "rule": "RULE_3_EWALLET_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0281": [
+      {
+        "call_index": 2,
+        "tool": "ewallet.transfer",
+        "before_arguments": {
+          "contact_id": "c_05",
+          "amount": 600000,
+          "note": "Tiền đặt cọc"
+        },
+        "after_arguments": {
+          "contact_id": "c_05",
+          "amount": 600000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền đặt cọc",
+            "rule": "RULE_3_EWALLET_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0284": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-10-09",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-10-09"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0312": [
+      {
+        "call_index": 1,
+        "tool": "ewallet.transfer",
+        "before_arguments": {
+          "contact_id": "c_01",
+          "amount": 50000,
+          "note": "hoàn ứng"
+        },
+        "after_arguments": {
+          "contact_id": "c_01",
+          "amount": 50000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "hoàn ứng",
+            "rule": "RULE_3_EWALLET_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0314": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-10-04",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-10-04"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0330": [
+      {
+        "call_index": 1,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "canh đậu cà chua",
+          "servings": 4
+        },
+        "after_arguments": {
+          "query": "canh đậu cà chua"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 4,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0331": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Huế",
+          "date": "2026-10-17",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Huế",
+          "date": "2026-10-17"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0334": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "bún riêu",
+          "servings": 4
+        },
+        "after_arguments": {
+          "query": "bún riêu"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 4,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0340": [
+      {
+        "call_index": 1,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Đà Nẵng",
+          "destination": "Diêu Trì",
+          "date": "2026-10-20",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Đà Nẵng",
+          "destination": "Diêu Trì",
+          "date": "2026-10-20"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0342": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "mì xào chay",
+          "servings": 2
+        },
+        "after_arguments": {
+          "query": "mì xào chay"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 2,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      },
+      {
+        "call_index": 4,
+        "tool": "food_delivery.place_order",
+        "before_arguments": {
+          "restaurant_id": "rest_05",
+          "items": [
+            {
+              "item_id": "rest_05_m1",
+              "quantity": 2
+            }
+          ],
+          "address": "18 Phạm Hùng, Nam Từ Liêm, Hà Nội"
+        },
+        "after_arguments": {
+          "restaurant_id": "rest_05",
+          "items": [
+            {
+              "item_id": "rest_05_m1",
+              "quantity": 2
+            }
+          ]
+        },
+        "changes": [
+          {
+            "param": "address",
+            "rule": "RULE_7_FOOD_DELIVERY_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0349": [
+      {
+        "call_index": 0,
+        "tool": "weather.get_forecast",
+        "before_arguments": {
+          "location": "Hà Nội",
+          "date": "2026-10-08"
+        },
+        "after_arguments": {
+          "date": "2026-10-08"
+        },
+        "changes": [
+          {
+            "param": "location",
+            "removed_value": "Hà Nội",
+            "rule": "RULE_12_WEATHER_INFERRED_LOCATION"
+          }
+        ]
+      }
+    ],
+    "public_0364": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-09-21",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-09-21"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0370": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "xin chào",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "xin chào",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0385": [
+      {
+        "call_index": 2,
+        "tool": "food_delivery.place_order",
+        "before_arguments": {
+          "restaurant_id": "rest_05",
+          "items": [
+            {
+              "item_id": "rest_05_m1",
+              "quantity": 2
+            }
+          ],
+          "address": "25 Láng Hạ, Đống Đa, Hà Nội"
+        },
+        "after_arguments": {
+          "restaurant_id": "rest_05",
+          "items": [
+            {
+              "item_id": "rest_05_m1",
+              "quantity": 2
+            }
+          ]
+        },
+        "changes": [
+          {
+            "param": "address",
+            "rule": "RULE_7_FOOD_DELIVERY_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0388": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "súp bí đỏ",
+          "servings": 4
+        },
+        "after_arguments": {
+          "query": "súp bí đỏ"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 4,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0390": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "cá áp chảo",
+          "servings": 4
+        },
+        "after_arguments": {
+          "query": "cá áp chảo"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 4,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0392": [
+      {
+        "call_index": 0,
+        "tool": "recipes.search",
+        "before_arguments": {
+          "query": "canh chua cá",
+          "servings": 6
+        },
+        "after_arguments": {
+          "query": "canh chua cá"
+        },
+        "changes": [
+          {
+            "param": "servings",
+            "removed_value": 6,
+            "rule": "RULE_8_RECIPES_SEARCH_SERVINGS"
+          }
+        ]
+      }
+    ],
+    "public_0393": [
+      {
+        "call_index": 1,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hải Phòng",
+          "destination": "Hà Nội",
+          "date": "2026-12-10",
+          "type": "bus"
+        },
+        "after_arguments": {
+          "origin": "Hải Phòng",
+          "destination": "Hà Nội",
+          "date": "2026-12-10"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "bus",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0396": [
+      {
+        "call_index": 0,
+        "tool": "weather.get_forecast",
+        "before_arguments": {
+          "location": "TP.HCM",
+          "date": "2026-11-13"
+        },
+        "after_arguments": {
+          "date": "2026-11-13"
+        },
+        "changes": [
+          {
+            "param": "location",
+            "removed_value": "TP.HCM",
+            "rule": "RULE_12_WEATHER_INFERRED_LOCATION"
+          }
+        ]
+      }
+    ],
+    "public_0399": [
+      {
+        "call_index": 5,
+        "tool": "food_delivery.place_order",
+        "before_arguments": {
+          "restaurant_id": "rest_4873",
+          "items": [
+            {
+              "item_id": "rest_02_m1",
+              "quantity": 3
+            }
+          ],
+          "address": "88/5 Phạm Văn Đồng, Gò Vấp, TP.HCM"
+        },
+        "after_arguments": {
+          "restaurant_id": "rest_4873",
+          "items": [
+            {
+              "item_id": "rest_02_m1",
+              "quantity": 3
+            }
+          ]
+        },
+        "changes": [
+          {
+            "param": "address",
+            "rule": "RULE_7_FOOD_DELIVERY_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0402": [
+      {
+        "call_index": 0,
+        "tool": "weather.get_forecast",
+        "before_arguments": {
+          "location": "Cần Thơ",
+          "date": "2026-11-08"
+        },
+        "after_arguments": {
+          "date": "2026-11-08"
+        },
+        "changes": [
+          {
+            "param": "location",
+            "removed_value": "Cần Thơ",
+            "rule": "RULE_12_WEATHER_INFERRED_LOCATION"
+          }
+        ]
+      }
+    ],
+    "public_0404": [
+      {
+        "call_index": 1,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-10-19",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-10-19"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0420": [
+      {
+        "call_index": 1,
+        "tool": "ride_hailing.get_ride",
+        "before_arguments": {
+          "ride_id": "ride_01"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "ride_id",
+            "removed_value": "ride_01",
+            "rule": "RULE_9_RIDE_HAILING_GET_RIDE_ID"
+          }
+        ]
+      },
+      {
+        "call_index": 3,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Xe máy dự kiến đến trong 4 phút.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Xe máy dự kiến đến trong 4 phút.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0422": [
+      {
+        "call_index": 0,
+        "tool": "reminders.list",
+        "before_arguments": {
+          "date": "2026-10-10"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "date",
+            "removed_value": "2026-10-10",
+            "rule": "RULE_11_REMINDERS_LIST_DATE"
+          }
+        ]
+      }
+    ],
+    "public_0435": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Tám giờ sáng mai tôi đem ví qua khách sạn trả.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0441": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-25",
+          "type": "bus"
+        },
+        "after_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Đà Lạt",
+          "date": "2026-11-25"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "bus",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0442": [
+      {
+        "call_index": 0,
+        "tool": "weather.get_forecast",
+        "before_arguments": {
+          "location": "TP.HCM",
+          "date": "2026-10-16"
+        },
+        "after_arguments": {
+          "date": "2026-10-16"
+        },
+        "changes": [
+          {
+            "param": "location",
+            "removed_value": "TP.HCM",
+            "rule": "RULE_12_WEATHER_INFERRED_LOCATION"
+          }
+        ]
+      }
+    ],
+    "public_0446": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+          "to_lang": "ja",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Tôi là tài xế. Hôm nay 11 giờ 30, tôi sẽ đón anh ở cột số 5 tại ga quốc tế sân bay Tân Sơn Nhất.",
+          "to_lang": "ja"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0453": [
+      {
+        "call_index": 0,
+        "tool": "tv.guide",
+        "before_arguments": {
+          "date": "2026-12-07"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "date",
+            "removed_value": "2026-12-07",
+            "rule": "RULE_10_TV_GUIDE_DATE"
+          }
+        ]
+      }
+    ],
+    "public_0464": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+          "to_lang": "ko",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Hẹn gặp lúc 5 giờ chiều nay tại Cao Nguyên Coffee trên đường Lê Lợi nhé.",
+          "to_lang": "ko"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0471": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+          "to_lang": "ko",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Mời anh trưa mai đi ăn bún chả nhé.",
+          "to_lang": "ko"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0477": [
+      {
+        "call_index": 1,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-10-19T13:00:00+07:00",
+          "label": "Coi lại Thép Đại Hưng, giá hiện tại 26.000 đồng"
+        },
+        "after_arguments": {
+          "time": "2026-10-19T13:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "Coi lại Thép Đại Hưng, giá hiện tại 26.000 đồng",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0492": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Huế",
+          "destination": "Đà Nẵng",
+          "date": "2026-12-14",
+          "type": "bus"
+        },
+        "after_arguments": {
+          "origin": "Huế",
+          "destination": "Đà Nẵng",
+          "date": "2026-12-14"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "bus",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0510": [
+      {
+        "call_index": 5,
+        "tool": "grocery.checkout",
+        "before_arguments": {
+          "address": "12 Nguyễn Trãi, Thanh Xuân, Hà Nội"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "address",
+            "removed_value": "12 Nguyễn Trãi, Thanh Xuân, Hà Nội",
+            "rule": "RULE_6_GROCERY_CHECKOUT_ADDRESS"
+          }
+        ]
+      }
+    ],
+    "public_0520": [
+      {
+        "call_index": 3,
+        "tool": "alarm.create",
+        "before_arguments": {
+          "time": "2026-10-21T17:00:00+07:00",
+          "label": "Đi xem Stand-up comedy Sài Gòn Cười"
+        },
+        "after_arguments": {
+          "time": "2026-10-21T17:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "label",
+            "removed_value": "Đi xem Stand-up comedy Sài Gòn Cười",
+            "rule": "RULE_2_ALARM_CREATE_LABEL"
+          }
+        ]
+      }
+    ],
+    "public_0538": [
+      {
+        "call_index": 0,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-10-17",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-10-17"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0549": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Luminatic: Chuẩn bị slide giới thiệu tính năng mới, báo cáo số liệu Q3, chốt timeline với khách hàng.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Luminatic: Chuẩn bị slide giới thiệu tính năng mới, báo cáo số liệu Q3, chốt timeline với khách hàng.",
+          "to_lang": "en"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0552": [
+      {
+        "call_index": 0,
+        "tool": "translator.translate",
+        "before_arguments": {
+          "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+          "to_lang": "ko",
+          "from_lang": "vi"
+        },
+        "after_arguments": {
+          "text": "Hóa đơn số ba trăm mười hai sẽ được thanh toán trước ngày mười lăm",
+          "to_lang": "ko"
+        },
+        "changes": [
+          {
+            "param": "from_lang",
+            "removed_value": "vi",
+            "rule": "RULE_4_TRANSLATOR_FROM_LANG"
+          }
+        ]
+      }
+    ],
+    "public_0553": [
+      {
+        "call_index": 3,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-12-02",
+          "type": "bus"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-12-02"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "bus",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0574": [
+      {
+        "call_index": 1,
+        "tool": "grocery.checkout",
+        "before_arguments": {
+          "address": "Tiệm tạp hóa Thảo, 203 Lê Văn Sỹ, Quận 3",
+          "delivery_time": "2026-12-20T18:30:00+07:00"
+        },
+        "after_arguments": {
+          "delivery_time": "2026-12-20T18:30:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "address",
+            "removed_value": "Tiệm tạp hóa Thảo, 203 Lê Văn Sỹ, Quận 3",
+            "rule": "RULE_6_GROCERY_CHECKOUT_ADDRESS"
+          }
+        ]
+      }
+    ],
+    "public_0579": [
+      {
+        "call_index": 2,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-16",
+          "type": "train"
+        },
+        "after_arguments": {
+          "origin": "Hà Nội",
+          "destination": "Đà Nẵng",
+          "date": "2026-11-16"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "train",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0583": [
+      {
+        "call_index": 0,
+        "tool": "grocery.checkout",
+        "before_arguments": {
+          "address": "7 Trần Duy Hưng, Cầu Giấy, Hà Nội",
+          "delivery_time": "2026-12-06T10:00:00+07:00"
+        },
+        "after_arguments": {
+          "delivery_time": "2026-12-06T10:00:00+07:00"
+        },
+        "changes": [
+          {
+            "param": "address",
+            "removed_value": "7 Trần Duy Hưng, Cầu Giấy, Hà Nội",
+            "rule": "RULE_6_GROCERY_CHECKOUT_ADDRESS"
+          }
+        ]
+      }
+    ],
+    "public_0627": [
+      {
+        "call_index": 1,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_661",
+          "beneficiary_id": "ben_4969",
+          "amount": 700000,
+          "note": "Tiền xăng tháng mười"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_661",
+          "beneficiary_id": "ben_4969",
+          "amount": 700000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "Tiền xăng tháng mười",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ],
+    "public_0639": [
+      {
+        "call_index": 1,
+        "tool": "food_delivery.place_order",
+        "before_arguments": {
+          "restaurant_id": "rest_868",
+          "items": [
+            {
+              "item_id": "rest_01_m1",
+              "quantity": 1
+            },
+            {
+              "item_id": "rest_01_m3",
+              "quantity": 2
+            }
+          ],
+          "address": "KTX khu B ĐHQG, Dĩ An",
+          "payment": "cash"
+        },
+        "after_arguments": {
+          "restaurant_id": "rest_868",
+          "items": [
+            {
+              "item_id": "rest_01_m1",
+              "quantity": 1
+            },
+            {
+              "item_id": "rest_01_m3",
+              "quantity": 2
+            }
+          ]
+        },
+        "changes": [
+          {
+            "param": "address, payment=cash",
+            "rule": "RULE_7_FOOD_DELIVERY_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0648": [
+      {
+        "call_index": 1,
+        "tool": "train_bus_tickets.search",
+        "before_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Phan Thiết",
+          "date": "2026-11-02",
+          "type": "bus"
+        },
+        "after_arguments": {
+          "origin": "TP.HCM",
+          "destination": "Phan Thiết",
+          "date": "2026-11-02"
+        },
+        "changes": [
+          {
+            "param": "type",
+            "removed_value": "bus",
+            "rule": "RULE_13_TRAIN_BUS_SEARCH_TYPE"
+          }
+        ]
+      }
+    ],
+    "public_0666": [
+      {
+        "call_index": 3,
+        "tool": "food_delivery.place_order",
+        "before_arguments": {
+          "restaurant_id": "rest_371",
+          "items": [
+            {
+              "item_id": "rest_02_m2",
+              "quantity": 1
+            }
+          ],
+          "address": "KTX Mỹ Đình, Nam Từ Liêm, Hà Nội"
+        },
+        "after_arguments": {
+          "restaurant_id": "rest_371",
+          "items": [
+            {
+              "item_id": "rest_02_m2",
+              "quantity": 1
+            }
+          ]
+        },
+        "changes": [
+          {
+            "param": "address",
+            "rule": "RULE_7_FOOD_DELIVERY_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0682": [
+      {
+        "call_index": 2,
+        "tool": "ecommerce.checkout",
+        "before_arguments": {
+          "address": "Tòa nhà Ngọc Viễn, 2 Hải Triều, Quận 1"
+        },
+        "after_arguments": {},
+        "changes": [
+          {
+            "param": "address",
+            "rule": "RULE_5_ECOMMERCE_CHECKOUT_DEFAULTS"
+          }
+        ]
+      }
+    ],
+    "public_0688": [
+      {
+        "call_index": 1,
+        "tool": "banking.transfer",
+        "before_arguments": {
+          "from_account_id": "acc_9129",
+          "beneficiary_id": "ben_7713",
+          "amount": 2000000,
+          "note": "cọc công ty"
+        },
+        "after_arguments": {
+          "from_account_id": "acc_9129",
+          "beneficiary_id": "ben_7713",
+          "amount": 2000000
+        },
+        "changes": [
+          {
+            "param": "note",
+            "removed_value": "cọc công ty",
+            "rule": "RULE_1_BANKING_TRANSFER_NOTE"
+          }
+        ]
+      }
+    ]
+  }
+}

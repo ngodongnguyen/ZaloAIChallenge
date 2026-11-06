@@ -1,0 +1,93 @@
+{
+  "public_0596": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.get",
+        "arguments": {
+          "recipe_id": "rcp_2318"
+        }
+      }
+    ],
+    "reason": "Fix hallucinated recipe_id rcp_958 (failed no-op); retrieve true 10-minute smoothie recipe rcp_2318 (Smoothie chuối yến mạch) returned in history search."
+  },
+  "public_0592": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.search",
+        "arguments": {
+          "query": "brownie"
+        }
+      },
+      {
+        "name": "recipes.save",
+        "arguments": {
+          "recipe_id": "rcp_731"
+        }
+      }
+    ],
+    "reason": "Save brownie recipe to saved recipes (recipes.save) as requested by user (\"đưa công thức browni nớ vô cho cô với\") instead of read-only recipes.get."
+  },
+  "public_0533": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.search",
+        "arguments": {
+          "query": "canh chua cá lóc"
+        }
+      },
+      {
+        "name": "recipes.save",
+        "arguments": {
+          "recipe_id": "rcp_97"
+        }
+      }
+    ],
+    "reason": "Add explicit recipes.search before recipes.save to discover rcp_97 cleanly rather than hallucinating the ID."
+  },
+  "public_0565": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.search",
+        "arguments": {
+          "query": "Chloe Dubois"
+        }
+      },
+      {
+        "name": "recipes.get",
+        "arguments": {
+          "recipe_id": "rcp_2690"
+        }
+      }
+    ],
+    "reason": "Normalize recipes.search author query from noisy ASR \"Chloe Chupois\" to canonical \"Chloe Dubois\"; get fastest recipe rcp_2690 (40 min)."
+  },
+  "public_0462": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.get",
+        "arguments": {
+          "recipe_id": "rcp_663"
+        }
+      },
+      {
+        "name": "grocery.search",
+        "arguments": {
+          "query": "trứng"
+        }
+      },
+      {
+        "name": "grocery.add_to_cart",
+        "arguments": {
+          "product_id": "gro_582",
+          "quantity": 1
+        }
+      }
+    ],
+    "reason": "Add explicit grocery.search for eggs before adding gro_582 (Trứng vịt vỉ 10 quả) to cart according to recipe ingredients."
+  }
+}

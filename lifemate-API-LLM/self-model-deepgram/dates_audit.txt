@@ -1,0 +1,307 @@
+[public_0003] curr_time=2026-11-14T10:45:00+07:00
+   transcript: Nếu mai mới thì rơi chạy vụ sáng mai muộn hai tiếng. Nhanh ép em ép bao giờ mới trở hư nhé, không bơi thì thôi
+   call: weather.get_forecast date=2026-11-15
+   call: calendar.list_events date_from=2026-11-15
+   call: calendar.list_events date_to=2026-11-15
+   call: calendar.update_event start=2026-11-15T10:00:00+07:00
+   call: calendar.update_event end=2026-11-15T11:00:00+07:00
+---
+[public_0007] curr_time=2026-11-17T16:40:00+07:00
+   transcript: À ừ. Bạn đặt cho mình cái báo thức để ra sân bay nhé. Trước chơi các chuyến mình chắc khoảng một tiếng rưỡi kia là ra sân bay.
+   call: alarm.create time=2026-12-05T17:30:00+07:00
+---
+[public_0008] curr_time=2026-11-18T21:15:00+07:00
+   transcript: Bạn ơi chuyến đi Hà Nội mình đặt đấy máy bay hả canh xong nửa tiếng thì báo thức giúp mình để vợ về nhà nhé
+   call: alarm.create time=2026-11-27T21:40:00+07:00
+---
+[public_0015] curr_time=2026-11-27T07:30:00+07:00
+   transcript: Gửi cho Minh Uyên đi rồi nạp báo thức sau giờ sáng mai chúng tôi với
+   call: alarm.create time=2026-11-28T06:00:00+07:00
+---
+[public_0017] curr_time=2026-11-12T20:30:00+07:00
+   transcript: Ờ đặt giúp tôi báo thức sáu rưỡi sáng mai nhé à với lại gọi cho lan
+   call: alarm.create time=2026-11-13T06:30:00+07:00
+---
+[public_0023] curr_time=2026-11-19T08:00:00+07:00
+   transcript: Gọi luôn cho cô ấy đi rồi đặt báo thức năm rưỡi chiều nay để tôi nhớ đi gửi hàng nhé
+   call: alarm.create time=2026-11-19T17:30:00+07:00
+---
+[public_0025] curr_time=2026-11-28T17:45:00+07:00
+   transcript: Ơi đặt giúp tôi vé đi Hà Nội ngày mười một tháng mười hai chuyến rẻ nhất xong mười hai giờ hãy báo thức trước ba tiếng mà nhắn Zalo cô Mai báo giờ bay nhé
+   call: flights.search date=2026-12-11
+   call: alarm.create time=2026-12-11T16:00:00+07:00
+---
+[public_0028] curr_time=2026-11-11T16:30:00+07:00
+   transcript: Đọc vé đi ban hành, ngày hai mươi chín tháng mười một, bảy buổi sáng trượt mười hai giờ, lại chuyện rẻ nhất, hẹn báo thức trượt hai tiếng và nhận Zalo cho anh chuẩn bỏ giờ bay nhẹ.
+   call: flights.search date=2026-11-29
+   call: alarm.create time=2026-11-29T07:00:00+07:00
+---
+[public_0031] curr_time=2026-11-20T19:15:00+07:00
+   transcript: Chuyện sáng sớm đi Đà Nẵng mình mới đặt nó đặt báo thức chú dài bay bốn tiếng nhé
+   call: alarm.create time=2026-12-06T02:00:00+07:00
+---
+[public_0032] curr_time=2026-11-18T21:10:00+07:00
+   transcript: Ơ à nhờ bạn nhắc Cho mình đổ xăng lúc năm giờ chiều mai nhé
+   call: reminders.create time=2026-11-19T17:00:00+07:00
+---
+[public_0033] curr_time=2026-11-11T14:30:00+07:00
+   transcript: Báo thức bảy giờ sáng mai giúp chị với chuyển ví cho sếp Dũng ít tiền nhé
+   call: alarm.create time=2026-11-12T07:00:00+07:00
+---
+[public_0034] curr_time=2026-11-28T19:10:00+07:00
+   transcript: Năm giờ rưỡi sáng mai gởi em dậy đi ra sân bay nhé à trưởng khoa vị trà mẹ tiên đi chợ hồi em luôn
+   call: alarm.create time=2026-11-29T05:30:00+07:00
+---
+[public_0035] curr_time=2026-11-10T12:00:00+07:00
+   transcript: Mai nếu khó mưa thì vỏ lịch đá bóng sáng mai đi, gọi cho lam báo luôn, còn trời không mưa thì cứ để nguyên
+   call: weather.get_forecast date=2026-11-11
+   call: calendar.list_events date_from=2026-11-11
+   call: calendar.list_events date_to=2026-11-11
+---
+[public_0036] curr_time=2026-11-22T17:10:00+07:00
+   transcript: Lịch đã bảo mai rời muộn thêm nửa tiếng và bỏ thức trước đó một tiếng rồi nhắn SMS cho mình giờ mới giúp mình
+   call: calendar.list_events date_from=2026-11-23
+   call: calendar.list_events date_to=2026-11-23
+   call: calendar.update_event start=2026-11-23T09:30:00+07:00
+   call: calendar.update_event end=2026-11-23T10:30:00+07:00
+   call: alarm.create time=2026-11-23T08:30:00+07:00
+---
+[public_0043] curr_time=2026-11-07T09:15:00+07:00
+   transcript: Vàng SJC mà mua vào hôm nay dưới một trăm ba mươi hai triệu thì sẽ mai chín giờ dắt tôi đi mua vàng nha
+   call: reminders.create time=2026-11-08T09:00:00+07:00
+---
+[public_0052] curr_time=2026-11-17T09:45:00+07:00
+   transcript: Tối hôm trước ngày mai của tôi đặt lịch báo thức lúc chuyến giờ để tôi soạn đồ nhé
+   call: alarm.create time=2026-11-27T21:00:00+07:00
+---
+[public_0054] curr_time=2026-11-25T12:00:00+07:00
+   transcript: Nhắc tôi tắt bếp lúc chín giờ kém mười lăm tối mai nghĩa
+   call: reminders.create time=2026-11-26T20:45:00+07:00
+---
+[public_0062] curr_time=2026-11-04T07:40:00+07:00
+   transcript: Lịch đưa con đi khám răng chiều mai giờ sớm lên một tiếng nhé báo thức đặt trước đó bốn mươi lăm phút rồi nhắn SMS cho là giờ mới
+   call: calendar.list_events date_from=2026-11-05
+   call: calendar.list_events date_to=2026-11-05
+   call: calendar.update_event start=2026-11-05T13:00:00+07:00
+   call: calendar.update_event end=2026-11-05T14:00:00+07:00
+   call: alarm.create time=2026-11-05T12:15:00+07:00
+---
+[public_0068] curr_time=2026-11-20T16:15:00+07:00
+   transcript: Giá vàng nhẫn mua vào hôm nay mà trên một trăm mười sáu triệu, thì tám giờ tối nay nước em là mang nhận ra tiệm bán, còn thấp hơn thì chuyển hai triệu từ tài khoản thanh toán cho chủ nhà sẵn hôm đó mua vàng.
+   call: reminders.create time=2026-11-20T20:00:00+07:00
+---
+[public_0074] curr_time=2026-11-14T18:00:00+07:00
+   transcript: Đặt giùm anh cái báo thức sáu:bốn mươi lăm tối nay để gọi đám anh rồi chuyển quý cho Tuấn phần tiền ăn tối hôm qua
+   call: alarm.create time=2026-11-14T18:45:00+07:00
+---
+[public_0078] curr_time=2026-11-26T07:45:00+07:00
+   transcript: Chuyến bay vô Sài Gòn tôi đặt rồi đó đặt báo thức trước giờ cách cảnh hai tiếng rưỡi nha
+   call: alarm.create time=2026-12-09T06:30:00+07:00
+---
+[public_0081] curr_time=2026-11-03T11:30:00+07:00
+   transcript: Giá vàng thế giới mà trên bốn nghìn một trăm đô một once thì tám giờ sáng thứ bảy này nhắc chị ra tiệm bán buffet. Trước tới thì chuyển ba triệu trừ tài khoản thanh toán cho Trần Văn Tuấn tiền góp mua vàng.
+   call: reminders.create time=2026-11-07T08:00:00+07:00
+---
+[public_0082] curr_time=2026-11-21T21:30:00+07:00
+   transcript: Lịch cà phê với Minh ngày kia lùi mười lăm phút giúp mình, báo thức thì đọc trước đó hai tiếng, rồi nhắn SMS cho Minh giờ mới luôn
+   call: calendar.list_events date_from=2026-11-23
+   call: calendar.list_events date_to=2026-11-23
+   call: calendar.update_event start=2026-11-23T08:45:00+07:00
+   call: calendar.update_event end=2026-11-23T09:45:00+07:00
+   call: alarm.create time=2026-11-23T06:45:00+07:00
+---
+[public_0083] curr_time=2026-11-11T17:00:00+07:00
+   transcript: Giá ở TC. Mua vào hôm nay mà từ một trăm mười tám triệu trở lên thì hai giờ chiều mai nhắc tôi bàn với con chuyện bán giàn, còn thấp hơn khi chuyển hai triệu cho thảm Hùng từ tài khoản thanh toán góp mua giàn.
+   call: reminders.create time=2026-11-12T14:00:00+07:00
+---
+[public_0086] curr_time=2026-11-10T10:40:00+07:00
+   transcript: Mai tôi đi khám sớm đặt báo thức năm giờ mười lăm sáng mai rồi gọi cho mình giúp tôi
+   call: alarm.create time=2026-11-11T05:15:00+07:00
+---
+[public_0087] curr_time=2026-11-11T16:40:00+07:00
+   transcript: Trượng giao bay chừng em đặt bốn mươi lăm phút thì bảo thức nhắc em gọi cho mè nha
+   call: alarm.create time=2026-11-17T18:15:00+07:00
+---
+[public_0095] curr_time=2026-11-04T13:40:00+07:00
+   transcript: Nhắc tôi đổ xăng chín giờ sáng mai với nhắn SMS cho minh là mai gửi mình file nhé
+   call: reminders.create time=2026-11-05T09:00:00+07:00
+---
+[public_0098] curr_time=2026-11-10T11:30:00+07:00
+   transcript: Mãi mãi nóng quá ba lăm độ thì hủy buổi chạy sáng mai, gọi cho Tuấn Bảo giúp mình, còn không thì thôi nhé.
+   call: weather.get_forecast date=2026-11-11
+---
+[public_0101] curr_time=2026-11-22T16:30:00+07:00
+   transcript: Đặt báo thức sáu rưỡi sáng mai xong gọi cho Minh giúp
+   call: alarm.create time=2026-11-23T06:30:00+07:00
+---
+[public_0102] curr_time=2026-11-19T08:10:00+07:00
+   transcript: Ngày mai mà có mưa thì bỏ gạch đá bóng buổi sáng đi để báo cho lan luôn giùm tôi còn không mưa thì cứ để về
+   call: weather.get_forecast date=2026-11-20
+---
+[public_0108] curr_time=2026-11-27T21:10:00+07:00
+   transcript: Nhắc tôi độ sáng năm:không chiều mai nhé rồi nhấn m cho mình là mai gửi mình file nhé
+   call: reminders.create time=2026-11-28T17:00:00+07:00
+---
+[public_0113] curr_time=2026-11-13T21:30:00+07:00
+   transcript: Đặt một vé đi Đà Nẵng ngày hai mươi tám chuyến lẻ nhất sau mười hai giờ trưa báo thức trước giờ bay ba tiếng tránh giao lưu cho tống giờ bay
+   call: flights.search date=2026-11-28
+   call: alarm.create time=2026-11-28T16:00:00+07:00
+---
+[public_0116] curr_time=2026-11-21T13:15:00+07:00
+   transcript: Em muốn có báo thức trước giờ cất cánh, chuyện em đã đặt đúng một tiếng, đặt tên là làm thủ tục, nhé
+   call: alarm.create time=2026-12-06T13:00:00+07:00
+---
+[public_0119] curr_time=2026-11-04T13:15:00+07:00
+   transcript: Đặt cho tôi bảo thức năm giờ sáng mai à không, năm rưỡi thôi
+   call: alarm.create time=2026-11-05T05:30:00+07:00
+---
+[public_0122] curr_time=2026-11-17T11:30:00+07:00
+   transcript: Đặt báo thức sáu rưỡi sáng mai nha Rồi chuyển ví cho Tuấn tước tiền
+   call: alarm.create time=2026-11-18T06:30:00+07:00
+---
+[public_0128] curr_time=2026-11-24T21:40:00+07:00
+   transcript: Mày đá bóng nên đặt báo thức hai giờ chiều mai cho tôi, với chuyển ví cho Minh Tiền thuê xong phần tôi nhịp nhàng.
+   call: alarm.create time=2026-11-25T14:00:00+07:00
+---
+[public_0130] curr_time=2026-11-13T19:15:00+07:00
+   transcript: Nếu mai mưa thì hệ lịch đã bắn sáng mai rồi báo cho lan nhé không mưa thì thôi
+   call: weather.get_forecast date=2026-11-14
+   call: calendar.list_events date_from=2026-11-14
+   call: calendar.list_events date_to=2026-11-14
+---
+[public_0133] curr_time=2026-11-24T12:30:00+07:00
+   transcript: Vé ra Hà Nội tôi gặt đó vài mấy giờ thì báo thức trước ba tiếng rưỡi cho tôi nhé
+   call: alarm.create time=2026-12-01T05:30:00+07:00
+---
+[public_0141] curr_time=2026-11-28T11:10:00+07:00
+   transcript: Đặt bỏ thức mười giờ tối nay nhắc mình đi ngủ sớm rồi gửi vị trà hương tiền trà sữa hôm trước nhé
+   call: alarm.create time=2026-11-28T22:00:00+07:00
+---
+[public_0143] curr_time=2026-11-20T21:10:00+07:00
+   transcript: Báo thức bốn:bốn mươi lăm sáng mai để kịp ra sân bay với chuyển ví cho tôi ít tiền đi chợ nhé.
+   call: alarm.create time=2026-11-21T04:45:00+07:00
+---
+[public_0147] curr_time=2026-11-08T16:00:00+07:00
+   transcript: Đặt báo thức lúc tám giờ sáng mai trước buổi họp phụ huynh rồi chuyển viết cho cô giáo mai tiền quyền lớp của con luôn nhé
+   call: alarm.create time=2026-11-09T08:00:00+07:00
+---
+[public_0149] curr_time=2026-11-07T12:45:00+07:00
+   transcript: Thức hai giờ chiều nay gọi tôi dậy với chuyện ví trẻ bác ba hàng xóm tiền rau bác mua giùm nha
+   call: alarm.create time=2026-11-07T14:00:00+07:00
+---
+[public_0157] curr_time=2026-11-11T16:40:00+07:00
+   transcript: Đặt giùm tôi hai vé ra Hà Nội ngày mười sáu, lấy chuyến rẽ nhất trước mười hai giờ trưa, báo thức trước giờ bay hai tiếng, rồi nhắn Zalo cho Hương giờ bay nghen
+   call: flights.search date=2026-11-16
+   call: alarm.create time=2026-11-16T07:00:00+07:00
+---
+[public_0160] curr_time=2026-11-21T07:40:00+07:00
+   transcript: Gọi Cho anh ấy đi với lại đặt thêm vào thức dậy giữa kẻ mười lăm sáng mai giúp em nhé
+   call: alarm.create time=2026-11-22T07:15:00+07:00
+---
+[public_0170] curr_time=2026-11-06T20:45:00+07:00
+   transcript: Mai trời mưa nên đặt bảo thức năm rưỡi sáng mai cho tôi đi sớm rồi chuyển vị cho sếp dụng tiền liên hoan phần tối hen
+   call: alarm.create time=2026-11-07T05:30:00+07:00
+---
+[public_0187] curr_time=2026-09-24T09:00:00+07:00
+   transcript: Đặt cho tôi một ghế chuyến RV hai mươi mốt đi Đà Nẵng phía bảy tuần sau rồi giữ luôn chỗ ở bãi khu hai mươi tám sân bay Nội Bài. Tính từ trước chờ bay hai tiếng tôi giữ xe ba ngày.
+   call: flights.search date=2026-10-03
+   call: parking.reserve from_time=2026-10-03T05:15:00+07:00
+---
+[public_0189] curr_time=2026-09-24T09:00:00+07:00
+   transcript: Lấy cho anh hai vé xem đợi kịp ngày mưa rồi hi vọng lịch luôn là tham gia tối thứ bảy này đi xem nhé
+   call: calendar.create_event start=2026-09-26T20:00:00+07:00
+---
+[public_0199] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Thứ tư tuần sau anh vào Vincom Park, em đặt xe anh một vé tàu EV3 chuyến sáng nhí rồi giữ luôn một chỗ gửi xe ở bãi ga Hà Nội từ năm giờ sáng hôm đó. Anh gửi ba nghìn.
+   call: train_bus_tickets.search date=2026-09-30
+   call: parking.reserve from_time=2026-09-30T05:00:00+07:00
+---
+[public_0213] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Em ơi đã giúp chị hai vé chuyến RV một năm bản đi Đà Lạt cứ năm tuần sau nhé. Rồi giữ luôn một chỗ ở bãi khu B năm sân bay Nội Bài từ chín giờ sáng hôm đó. Chị gửi xe năm ngày.
+   call: flights.search date=2026-10-01
+   call: parking.reserve from_time=2026-10-01T09:00:00+07:00
+---
+[public_0214] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Chị muốn đặt ba vé xem hẹn Sài Gòn cười cho cả nhà xong ghi vào lệnh giúp chị là tám giờ tối thứ sáu mùng chín tháng mười đi xem nhé.
+   call: calendar.create_event start=2026-10-09T20:00:00+07:00
+---
+[public_0238] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Tối mai chị đi tàu đêm lên nạn Sơn thăm mẹ em đặt cho chị một bé tàu LB hai nhé rồi giữ giúp chị một chỗ ở 7B mười hai ngoài ga Hà Nội tám rưỡi. Tối mai chị gửi xe ba ngày.
+   call: train_bus_tickets.search date=2026-09-26
+   call: parking.reserve from_time=2026-09-26T20:30:00+07:00
+---
+[public_0244] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Ừ giữ chợ đó cho chị từ bảy rưỡi sáng mai nhé chắc tầm hai tiếng là khi xong
+   call: parking.reserve from_time=2026-09-26T07:30:00+07:00
+---
+[public_0253] curr_time=2026-09-25T09:00:00+07:00
+   transcript: Lấy cho anh bốn vé liên hoan xin gán ghép, trong khi phẫu thuật giúp anh là bảy rưỡi tối thứ ba ở mùng tối đón mời đi xem phim.
+   call: calendar.create_event start=2026-10-06T19:30:00+07:00
+---
+[public_0267] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Chiều mai chị có lớp ở trung tâm văn hóa Tây Hồ. Em xem đường về nhà qua đấy rồi so với đi xe buýt xem sao. Xong nhắc chị năm giờ mười chiều mai ra khỏi nhà nhà.
+   call: reminders.create time=2026-10-02T17:10:00+07:00
+---
+[public_0270] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Mở bài nhịp mở đầu cho anh cái ông đánh nhớ hôm nay là làm phim tập trung buổi sáng rồi nhé
+   call: habit_tracker.log date=2026-10-01
+---
+[public_0271] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Ừ thế em đánh dấu hôm nay chị làm xong rồi nhé
+   call: habit_tracker.log date=2026-10-01
+---
+[public_0273] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Thế thì chủ nhật này mùng bốn tháng mười nhé
+   call: reminders.create time=2026-10-04T08:00:00+07:00
+---
+[public_0276] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Ừ thế tạo cho chị cái việc cần chuẩn bị đi tiền đó là tới cung thiên nhi hẹn tám giờ sáng thứ bảy mùng mười tám tháng mười nhớ ghi chặt số tuyến tạo tên Việt nhé
+   call: tasks.add due=2026-10-18T08:00:00+07:00
+---
+[public_0280] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Thứ năm tuần sau, tôi bay vào Đà Nẵng dự đám cưới. Làm cho tôi một chỗ chuyến GX năm một ba chín giờ sáng nhé, rồi giữ luôn chỗ đỗ ở bãi xe sang bên Nội Bài từ bảy giờ sáng hôm ấy. Tôi để xe ở đây bốn ngày.
+   call: flights.search date=2026-10-08
+   call: parking.reserve from_time=2026-10-08T07:00:00+07:00
+---
+[public_0287] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Đặt cho em một vé chuyến RV sáu một hai đi Đà Nẵng sáng thứ bảy tuần sau nha. Gọi luôn cái xe bốn chỗ bốn giờ sáng hôm đó đón em ra sân bay Hà Nội với tờ lịch trình công tác lúc sáu giờ sáng hôm đó nữa.
+   call: flights.search date=2026-10-10
+   call: ride_hailing.book schedule_time=2026-10-10T04:00:00+07:00
+   call: calendar.create_event start=2026-10-10T06:00:00+07:00
+---
+[public_0296] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Xong rồi giờ em thêm cho anh một việc đi biên bản cuộc họp với bên vận chuyển nhé năm giờ ngày năm giờ chiều thứ tư lần sau
+   call: tasks.add due=2026-10-07T17:00:00+07:00
+---
+[public_0311] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Lấy cho anh hai vía đem khoa học ở cung thiếu nhi tối thứ bảy này nhé rồi hẹn sẵn bọn ô tô bốn chợ món ở nhà lúc sáu giờ tối hôm đó chọn tới đấy xong nhánh Zalo Cho may anh là anh giữ được hai vía rồi dẫn đón anh reton
+   call: ride_hailing.book schedule_time=2026-10-03T18:00:00+07:00
+---
+[public_0314] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Đặt cho anh ba vé tàu SD3 tối chủ nhật này đi Đà Nẵng đến rồi giữ luôn một vé chỗ viễn xe ở ghe Hà Nội từ xưa sáu. Từ sáu giờ tối hơn đó. Gửi một tiếng thôi anh chỉ đưa bố mẹ với em gái ra tàu.
+   call: train_bus_tickets.search date=2026-10-04
+   call: parking.reserve from_time=2026-10-04T18:00:00+07:00
+---
+[public_0326] curr_time=2026-10-01T09:00:00+07:00
+   transcript: Ừ thấy em thêm lịch thêm vào lịch cho anh Việt mang kiện hàng ra chạy kiện trễ bàn phím ra bưu cục dưới mười giờ tám phía sáu tuần sau
+   call: calendar.create_event start=2026-10-09T10:00:00+07:00
+---
+[public_0331] curr_time=2026-10-05T09:00:00+07:00
+   transcript: Thứ bảy, tuần sau chị đưa tờ banh từ Hà Nội vô Huế. Em xem chuyến tàu này tới Huế trước mười một giờ trưa của nhà mạch thì đặt cho chị hai bé rồi tàu lịch đúng theo giờ tàu tới luôn nha.
+   call: train_bus_tickets.search date=2026-10-17
+   call: calendar.create_event start=2026-10-18T10:20:00+07:00
+---
+[public_0332] curr_time=2026-10-05T09:00:00+07:00
+   transcript: Tám giờ sáng thứ hai tuần sau em đi xe buýt từ nhà ra mấy chị em coi tiếng nam nhìn rất đặc sẵn tới sự bốn chỗ đón anh ở trận xuống của tiếng đó đúng lúc xe tới để vô trung tâm hội nghị quốc gia rồi tạo thêm địch theo giờ xuống xe buýt luôn nha
+   call: ride_hailing.book schedule_time=2026-10-12T08:38:00+07:00
+   call: calendar.create_event start=2026-10-12T08:38:00+07:00
+---
+[public_0336] curr_time=2026-10-05T09:00:00+07:00
+   transcript: Lấy cho anh hai vé đêm nhạc charles tối thứ sáu tuần sau rồi đặt luôn xe bốn chỗ từ nhà tới đúng chỗ diễn hẹn đón trước giờ mở màn bốn lăm phút và nhắc anh lúc nào ra khỏi nhà nhé
+   call: ride_hailing.book schedule_time=2026-10-16T18:45:00+07:00
+   call: reminders.create time=2026-10-16T18:45:00+07:00
+---
+[public_0342] curr_time=2026-10-05T09:00:00+07:00
+   transcript: Kiểm tra trị công thức mì xào chay cho hai người để cuối tuần chị tự làm. Còn trưa nay thì đặt luôn hai suất mì xào chay về nhà nhé. Xong thêm vào danh sách việc cần làm cho chị một việc lúc mười một rưỡi trưa là kiểm tra xem đồ ăn giao tới trưa.
+   call: tasks.add due=2026-10-05T11:30:00+07:00
+---

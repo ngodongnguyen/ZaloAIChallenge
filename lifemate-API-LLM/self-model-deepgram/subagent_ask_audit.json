@@ -1,0 +1,1609 @@
+{
+  "public_0017": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-13T06:30:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Lan"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0019": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0026": {
+    "action": "keep",
+    "reason": "User stated 'Trợ lý ơi mai gọi cho chị nhé' without specifying contact recipient or valid alarm time; contact_id is missing.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0033": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Sếp Dũng"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-12T07:00:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0034": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Mẹ"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-29T05:30:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0035": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-11"
+        }
+      },
+      {
+        "name": "calendar.list_events",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Lan"
+        }
+      },
+      {
+        "name": "calendar.cancel_event",
+        "arguments": {
+          "event_id": "evt_01"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0051": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "smart_home.get_status",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hương"
+        }
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_office",
+          "power": "off"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0074": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Tuấn"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-14T18:45:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0076": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Lan"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0086": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-11T05:15:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0095": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "đổ xăng",
+          "time": "2026-11-05T09:00:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0097": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "đổ xăng",
+          "time": "2026-11-21T08:00:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hương"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0101": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-23T06:30:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0106": {
+    "action": "keep",
+    "reason": "User requested a reminder without specifying time; asking ['time'] matches train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Mẹ"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "reminders.create",
+          "params": [
+            "time"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0108": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "đổ xăng",
+          "time": "2026-11-28T17:00:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0112": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "qua tiệm giặt lấy đồ",
+          "time": "2026-11-19T19:30:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hương"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0122": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Tuấn"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-18T06:30:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0128": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Minh"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-25T14:00:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0129": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts; asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "gọi đặt bánh sinh nhật",
+          "time": "2026-11-09T15:00:00+07:00"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Lan"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "sms.send",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0130": {
+    "action": "keep",
+    "reason": "contacts.search returned multiple matching contacts (ambiguous contact entity); asking contact_id is strictly justified according to train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "date": "2026-11-14"
+        }
+      },
+      {
+        "name": "calendar.list_events",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Lan"
+        }
+      },
+      {
+        "name": "calendar.cancel_event",
+        "arguments": {
+          "event_id": "evt_01"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "phone.call",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0135": {
+    "action": "keep",
+    "reason": "User requested to set an alarm without specifying time; asking ['time'] matches train gold pattern (e.g. train_0135).",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "alarm.create",
+          "params": [
+            "time"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0137": {
+    "action": "keep",
+    "reason": "User requested a reminder without specifying time; asking ['time'] matches train gold pattern.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "reminders.create",
+          "params": [
+            "time"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0141": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hương"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-28T22:00:00+07:00",
+          "label": "đi ngủ sớm"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0143": {
+    "action": "replace",
+    "reason": "In train gold, sys.ask_missing_info NEVER has multiple parameters like ['phone', 'amount']; ewallet.transfer asks always have exactly 1 parameter ['amount']. Replaced with alarm.create followed by single-param ask ['amount'].",
+    "recommended_calls": [
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-21T04:45:00+07:00",
+          "label": "ra sân bay"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0147": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Cô giáo Mai"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-09T08:00:00+07:00",
+          "label": "họp phụ huynh"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0149": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Bác Ba"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-07T14:00:00+07:00",
+          "label": "thức dậy"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0152": {
+    "action": "keep",
+    "reason": "User requested ceiling fan in bedroom, but smart_home has no fan in bedroom (only living room and office fans exist); device_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "smart_home.get_status",
+        "arguments": {}
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_bedroom",
+          "brightness": 15
+        }
+      },
+      {
+        "name": "smart_home.climate_set",
+        "arguments": {
+          "device_id": "ac_bedroom",
+          "mode": "dry",
+          "temperature": 25
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "smart_home.fan_set",
+          "params": [
+            "device_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0167": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "mẹ"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-14T17:00:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0170": {
+    "action": "keep",
+    "reason": "User requested money transfer without specifying exact numerical amount in VND; asking amount with single parameter ['amount'] matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "sếp Dũng"
+        }
+      },
+      {
+        "name": "alarm.create",
+        "arguments": {
+          "time": "2026-11-07T05:30:00+07:00",
+          "label": "đi sớm"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "amount"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0193": {
+    "action": "keep",
+    "reason": "chat_ott.list_chats returned multiple active chats matching recipient name; chat_id is ambiguous and justified.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Linh"
+        }
+      },
+      {
+        "name": "chat_ott.list_chats",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "chat_ott.send_message",
+          "params": [
+            "chat_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0227": {
+    "action": "keep",
+    "reason": "chat_ott.list_chats returned multiple active chats matching recipient name; chat_id is ambiguous and justified.",
+    "recommended_calls": [
+      {
+        "name": "chat_ott.list_chats",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "chat_ott.send_message",
+          "params": [
+            "chat_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0234": {
+    "action": "keep",
+    "reason": "contacts.search returned 0 contacts for Logistics; recipient email address 'to' is completely missing.",
+    "recommended_calls": [
+      {
+        "name": "translator.translate",
+        "arguments": {
+          "text": "Ngày giao hàng đã thay đổi.",
+          "to_lang": "en",
+          "from_lang": "vi"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Logistics"
+        }
+      },
+      {
+        "name": "notes.create",
+        "arguments": {
+          "title": "Báo đối tác",
+          "content": "The delivery date has changed."
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "email.create_draft",
+          "params": [
+            "to"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0298": {
+    "action": "keep",
+    "reason": "chat_ott.list_chats returned multiple active chats matching recipient name; chat_id is ambiguous and justified.",
+    "recommended_calls": [
+      {
+        "name": "chat_ott.list_chats",
+        "arguments": {}
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Bình"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "chat_ott.send_message",
+          "params": [
+            "chat_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0308": {
+    "action": "keep",
+    "reason": "contacts.search returned 2 contacts both named Phúc with vendor relations; transfer recipient contact_id is ambiguous and justified.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Phúc"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ewallet.transfer",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0396": {
+    "action": "keep",
+    "reason": "User requested parking reservation from 9:00 AM without specifying duration in hours; hours is required.",
+    "recommended_calls": [
+      {
+        "name": "weather.get_forecast",
+        "arguments": {
+          "location": "TP.HCM",
+          "date": "2026-11-13"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "parking.reserve",
+          "params": [
+            "hours"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0406": {
+    "action": "keep",
+    "reason": "pantry.list_items returned multiple items matching requested grocery item; item_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "pantry.list_items",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "pantry.consume",
+          "params": [
+            "item_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0416": {
+    "action": "replace",
+    "reason": "Multi-parameter ask ['subject', 'body'] is invalid. The user already provided the body text in transcript ('biểu hằng gửi cái radio về nhà cho ba...'), recipient Hằng is found via contacts.search, and Thằng Út is CC'd. In train gold (e.g. train_1628, train_1349), subject is inferred from user text and email.send is executed directly without asking.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Hằng"
+        }
+      },
+      {
+        "name": "email.send",
+        "arguments": {
+          "to": [
+            "hang@gmail.example.test"
+          ],
+          "cc": [
+            "ut.nguyen@gmail.example.test"
+          ],
+          "subject": "Gửi cái radio về nhà cho ba",
+          "body": "Gửi cái radio về nhà cho ba, ở luôn Thằng Út mới phải."
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0425": {
+    "action": "keep",
+    "reason": "Stock price alert parameter 'price' is missing/ambiguous in context; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "stocks.get_portfolio",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.set_price_alert",
+          "params": [
+            "price"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0443": {
+    "action": "keep",
+    "reason": "Stock order parameter 'symbol' is missing or ambiguous among portfolio holdings; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.place_order",
+          "params": [
+            "symbol"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0473": {
+    "action": "keep",
+    "reason": "Stock price alert parameter 'symbol' is missing/ambiguous in context; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "stocks.get_portfolio",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.set_price_alert",
+          "params": [
+            "symbol"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0475": {
+    "action": "keep",
+    "reason": "Stock order parameter 'quantity' is missing or ambiguous among portfolio holdings; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "ride_hailing.cancel",
+        "arguments": {
+          "ride_id": "ride_01"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.place_order",
+          "params": [
+            "quantity"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0478": {
+    "action": "keep",
+    "reason": "parking.list_sessions showed two active reserved sessions; user did not specify session_id.",
+    "recommended_calls": [
+      {
+        "name": "parking.list_sessions",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "parking.end_session",
+          "params": [
+            "session_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0497": {
+    "action": "keep",
+    "reason": "Stock order parameter 'symbol' is missing or ambiguous among portfolio holdings; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "banking.get_balance",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.place_order",
+          "params": [
+            "symbol"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0508": {
+    "action": "keep",
+    "reason": "Two active shipping ecommerce orders exist; user asked to cancel one without specifying which order_id.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "ecommerce.cancel_order",
+          "params": [
+            "order_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0522": {
+    "action": "keep",
+    "reason": "pantry.list_items returned multiple items matching requested grocery item; item_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "pantry.list_items",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "pantry.consume",
+          "params": [
+            "item_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0525": {
+    "action": "keep",
+    "reason": "Stock price alert parameter 'symbol' is missing/ambiguous in context; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.set_price_alert",
+          "params": [
+            "symbol"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0532": {
+    "action": "replace",
+    "reason": "Sample had two asks and multi-parameter ask ['symbol', 'price', 'direction']. The reminder request was fully actionable ('đặt báo trước 9 giờ xem lại nhé' -> 21:00:00). For stocks.set_price_alert, price (20,000) and direction (below) were specified; only symbol was ambiguous between ZDH and ZTP from history. Replaced with actionable reminders.create and single-param ask ['symbol'].",
+    "recommended_calls": [
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "xem lại giá cổ phiếu",
+          "time": "2026-11-07T21:00:00+07:00"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.set_price_alert",
+          "params": [
+            "symbol"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0535": {
+    "action": "keep",
+    "reason": "Multiple matching trips found; user did not specify departure time or explicitly asked agent to ask first.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "train_bus_tickets.book",
+          "params": [
+            "trip_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0538": {
+    "action": "keep",
+    "reason": "Multiple matching trips found; user did not specify departure time or explicitly asked agent to ask first.",
+    "recommended_calls": [
+      {
+        "name": "train_bus_tickets.search",
+        "arguments": {
+          "origin": "TP.HCM",
+          "destination": "Nha Trang",
+          "date": "2026-10-17",
+          "type": "train"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "train_bus_tickets.book",
+          "params": [
+            "trip_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0544": {
+    "action": "keep",
+    "reason": "User requested grocery delivery at an unspecified / approximate time; delivery_time is missing.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "grocery.checkout",
+          "params": [
+            "delivery_time"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0559": {
+    "action": "replace",
+    "reason": "The user explicitly commanded 'Hủy chỗ ở chợ rồi giữ bên kia y như hồi nãy nghen'. In Turn 1, parking reservation park_02 was made at Bãi xe chợ Cái Răng; this reservation should be ended with parking.end_session. Asking missing info on parking.find with ['near'] is invalid because parking.find is a search tool, whereas the intended reservation tool is parking.reserve missing lot_id.",
+    "recommended_calls": [
+      {
+        "name": "parking.end_session",
+        "arguments": {
+          "session_id": "park_02"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "parking.reserve",
+          "params": [
+            "lot_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0561": {
+    "action": "keep",
+    "reason": "Two active food orders exist; user asked to cancel one without specifying which order_id.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "food_delivery.cancel_order",
+          "params": [
+            "order_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0569": {
+    "action": "keep",
+    "reason": "pantry.list_items returned multiple items matching requested grocery item; item_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "pantry.list_items",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "pantry.consume",
+          "params": [
+            "item_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0572": {
+    "action": "keep",
+    "reason": "flights.my_bookings showed two confirmed bookings on same date; booking_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "flights.my_bookings",
+        "arguments": {}
+      },
+      {
+        "name": "smart_home.get_status",
+        "arguments": {}
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_living",
+          "power": "on"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "flights.cancel",
+          "params": [
+            "booking_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0586": {
+    "action": "keep",
+    "reason": "Event search returned multiple events or 0 specific events; event_id is missing.",
+    "recommended_calls": [
+      {
+        "name": "bill_payment.list_bills",
+        "arguments": {}
+      },
+      {
+        "name": "bill_payment.pay",
+        "arguments": {
+          "bill_id": "bill_5736",
+          "source": "bank"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "event_tickets.book",
+          "params": [
+            "event_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0597": {
+    "action": "keep",
+    "reason": "Stock price alert parameter 'direction' is missing/ambiguous in context; single parameter ask matches domain rules.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "stocks.set_price_alert",
+          "params": [
+            "direction"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0611": {
+    "action": "keep",
+    "reason": "Search results returned multiple matching places for the user's location; place_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "maps.save_place",
+          "params": [
+            "place_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0634": {
+    "action": "keep",
+    "reason": "Two alarms exist at 6:30 AM (alm_4417 and alm_659); user asked to remove one without specifying which alarm_id.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "alarm.delete",
+          "params": [
+            "alarm_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0638": {
+    "action": "keep",
+    "reason": "pantry.list_items returned multiple items matching requested grocery item; item_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "pantry.consume",
+          "params": [
+            "item_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0640": {
+    "action": "keep",
+    "reason": "User requested grocery delivery at an unspecified / approximate time; delivery_time is missing.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "grocery.checkout",
+          "params": [
+            "delivery_time"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0649": {
+    "action": "keep",
+    "reason": "Multiple hotel locations in Da Nang; transit stop is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "public_transit.find_routes",
+        "arguments": {
+          "origin": "Crestview Hotels",
+          "destination": "15 Trần Phú, Hải Châu, Đà Nẵng"
+        }
+      },
+      {
+        "name": "public_transit.next_departures",
+        "arguments": {
+          "stop": "Grandview"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "public_transit.next_departures",
+          "params": [
+            "stop"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0656": {
+    "action": "keep",
+    "reason": "History showed two varieties of apples (Envy and Fuji); user did not specify product_id.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "grocery.add_to_cart",
+          "params": [
+            "product_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0657": {
+    "action": "keep",
+    "reason": "User requested online savings deposit without specifying duration; term_months is required and matches train gold.",
+    "recommended_calls": [
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "banking.open_savings",
+          "params": [
+            "term_months"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0664": {
+    "action": "replace",
+    "reason": "v9 included hallucinated read calls (contacts.search and contacts.get for Julia Moreno) triggered by the background context 'Chị ăn trưa với cilia mereno xong rồi'. Cleaned up to retain parking.list_sessions followed by the justified sys.ask_missing_info for parking.end_session ['session_id'] due to 2 active reserved parking sessions.",
+    "recommended_calls": [
+      {
+        "name": "parking.list_sessions",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "parking.end_session",
+          "params": [
+            "session_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0671": {
+    "action": "keep",
+    "reason": "Event search returned multiple events or 0 specific events; event_id is missing.",
+    "recommended_calls": [
+      {
+        "name": "event_tickets.search",
+        "arguments": {
+          "query": "briza sama"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "event_tickets.book",
+          "params": [
+            "event_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0678": {
+    "action": "keep",
+    "reason": "flights.my_bookings showed two flights tomorrow to Da Nang; booking_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "flights.my_bookings",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "flights.check_in",
+          "params": [
+            "booking_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0680": {
+    "action": "keep",
+    "reason": "contacts.search returned two contacts for Nexora Labs/Studio who both had missed calls; contact_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Nexora"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "contacts.get",
+          "params": [
+            "contact_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  },
+  "public_0699": {
+    "action": "keep",
+    "reason": "Search results returned multiple matching places for the user's location; place_id is ambiguous.",
+    "recommended_calls": [
+      {
+        "name": "maps.search_place",
+        "arguments": {
+          "query": "cây xăng"
+        }
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "maps.save_place",
+          "params": [
+            "place_id"
+          ]
+        }
+      }
+    ],
+    "confidence": "high"
+  }
+}

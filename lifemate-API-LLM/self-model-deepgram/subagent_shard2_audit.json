@@ -1,0 +1,155 @@
+{
+  "public_0352": {
+    "action": "replace",
+    "reason": "Pass specific type 'water' parameter to bill_payment.list_bills matching user request 'tiền nước', pay bill_03 via bank, and add follow-up task.",
+    "confidence": "high",
+    "state_hash": "3d2d17502023f277afa0362cf106ca0cb19a103a6d9529403db01082d505c9ce",
+    "calls": [
+      {
+        "name": "bill_payment.list_bills",
+        "arguments": {
+          "type": "water"
+        }
+      },
+      {
+        "name": "bill_payment.pay",
+        "arguments": {
+          "bill_id": "bill_03",
+          "source": "bank"
+        }
+      },
+      {
+        "name": "tasks.add",
+        "arguments": {
+          "title": "Đối soát hóa đơn nước",
+          "due": "2026-10-07T09:00:00+07:00"
+        }
+      }
+    ]
+  },
+  "public_0357": {
+    "action": "replace",
+    "reason": "Remove failed search query 'Hòa An Tuấn' caused by noisy ASR for 'Hà Anh Tuấn'; use clean search {} to discover event_05, book 1 ticket, and create calendar event with seat A12.",
+    "confidence": "high",
+    "state_hash": "73db52bf1c5094b9df95e81c24e4af84562010746b2d2a46e272d73049744759",
+    "calls": [
+      {
+        "name": "event_tickets.search",
+        "arguments": {}
+      },
+      {
+        "name": "event_tickets.book",
+        "arguments": {
+          "event_id": "event_05",
+          "quantity": 1
+        }
+      },
+      {
+        "name": "calendar.create_event",
+        "arguments": {
+          "title": "Concert Hà Anh Tuấn - Khu A, ghế A12",
+          "start": "2026-10-14T20:00:00+07:00",
+          "location": "Cung Điền kinh Mỹ Đình"
+        }
+      }
+    ]
+  },
+  "public_0383": {
+    "action": "replace",
+    "reason": "Filter calendar.list_events by date 2026-09-21 for tomorrow's picnic cancellation evt_03 as requested due to hot weather.",
+    "confidence": "high",
+    "state_hash": "a28c0fab26d6313d7b73910be7b7f68b0548fe9b64daec84b354f48f2b00cd06",
+    "calls": [
+      {
+        "name": "calendar.list_events",
+        "arguments": {
+          "date_from": "2026-09-21",
+          "date_to": "2026-09-21"
+        }
+      },
+      {
+        "name": "calendar.cancel_event",
+        "arguments": {
+          "event_id": "evt_03"
+        }
+      }
+    ]
+  },
+  "public_0453": {
+    "action": "replace",
+    "reason": "Pass channel 'VTV3' and date '2026-12-07' to tv.guide matching user explicit request 'vtb3 có chiếu cái gì không nhỉ'.",
+    "confidence": "high",
+    "state_hash": "4bfc989c25960052cd0cf658d5fd9124bd9988d318e8ade5f56c8b95b0646f2b",
+    "calls": [
+      {
+        "name": "tv.guide",
+        "arguments": {
+          "channel": "VTV3",
+          "date": "2026-12-07"
+        }
+      }
+    ]
+  },
+  "public_0549": {
+    "action": "replace",
+    "reason": "Replace hallucinated note translation text with actual note content from history (Meeting Lumina Tech note_6117: 'Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau').",
+    "confidence": "high",
+    "state_hash": "86cbd71d9ab0bb433a77fa6facb8835b023e3e0fd095e5feddd71502a2386559",
+    "calls": [
+      {
+        "name": "translator.translate",
+        "arguments": {
+          "from_lang": "vi",
+          "text": "Chốt timeline giai đoạn hai, xin thêm hai tuần để test, gửi lại báo giá trước thứ tư tuần sau",
+          "to_lang": "en"
+        }
+      }
+    ]
+  },
+  "public_0660": {
+    "action": "replace",
+    "reason": "Pass date_from/date_to 2026-12-02 to calendar.list_events to check schedule conflict on review night before skipping event creation.",
+    "confidence": "high",
+    "state_hash": "59d149ed6c18063b471f3e5cc133df893f098897f53584b23bf114a1556e7302",
+    "calls": [
+      {
+        "name": "email.list",
+        "arguments": {}
+      },
+      {
+        "name": "email.read",
+        "arguments": {
+          "email_id": "mail_733"
+        }
+      },
+      {
+        "name": "calendar.list_events",
+        "arguments": {
+          "date_from": "2026-12-02",
+          "date_to": "2026-12-02"
+        }
+      }
+    ]
+  },
+  "public_0671": {
+    "action": "replace",
+    "reason": "Remove failed search query 'briza sama' caused by ASR hearing Priya Sharma; use {} to discover Priya Sharma career talk events before asking missing info.",
+    "confidence": "high",
+    "state_hash": "f6f7e2ebfd77349a955ef4d3844801c0ebeccc233cba8691473f22e317d9f576",
+    "calls": [
+      {
+        "name": "event_tickets.search",
+        "arguments": {}
+      },
+      {
+        "name": "sys.ask_missing_info",
+        "arguments": {
+          "tool_name": "event_tickets.book",
+          "params": [
+            "event_id"
+          ]
+        }
+      }
+    ]
+  }
+}

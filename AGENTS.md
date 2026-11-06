@@ -70,16 +70,6 @@ Quy ước user yêu cầu ngày 2026-11-02, áp dụng cho **Codex, Claude Code
 3. **Chạy trên Kaggle** (push kernel, lấy output).
 4. **Ghi kết quả** vào `.vscode/history_plan/<track>.md`.
 
-## Sinh dữ liệu synthetic LifeMate (khi user bảo "sinh dữ liệu" / "sinh du lieu" / "sinh data" / "gen data")
-
-User chỉ cần nói một câu ngắn, có dấu hoặc không dấu, ví dụ "sinh dữ liệu", "sinh du lieu", "sinh thêm data lifemate", "gen data app tv, music 20 mau". Khi đó:
-
-1. Mở `synthetic-data-llm-generate/prompt_generate.md`, coi toàn bộ nội dung là yêu cầu của user và làm theo từ đầu đến cuối, không hỏi lại.
-2. User có nói app / trọng tâm / số mẫu thì truyền vào `claim_group.py` (`--apps`, `--focus`, `--n`) đúng như mục 1 của prompt; không nói thì để script tự chọn.
-3. Làm theo ba vai trò author → solver ở phiên mới → reviewer ở phiên mới tại mục 6 của prompt. Chỉ release mẫu đã duyệt; không tự nhận vai trò khác để duyệt mẫu mình viết. Phần TTS là pipeline riêng.
-
-Chi tiết công cụ: `synthetic-data-llm-generate/README.md`.
-
 ## Kaggle CLI & pool 9 tài khoản
 
 Máy đã cài sẵn `kaggle` CLI và công cụ quản lý nhiều tài khoản `kaggle-acc` (alias `kaggle-switch`).

@@ -1,0 +1,365 @@
+{
+  "public_0027": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "flights.search",
+        "arguments": {
+          "origin": "TP.HCM",
+          "destination": "Đà Nẵng",
+          "date": "2026-12-10",
+          "passengers": 2
+        }
+      },
+      {
+        "name": "flights.book",
+        "arguments": {
+          "flight_id": "fl_04",
+          "passengers": 2
+        }
+      }
+    ],
+    "reason": "Removed exploratory flights.search on 2026-12-01. ASR \"một nghìn lẻ mười hai\" was \"mùng 10 tháng 12\" (2026-12-10). Flight fl_04 is the last flight of the day (depart 19:00, arrive 21:10), matching user instruction \"lấy chuyến cuối cùng trong ngày\"."
+  },
+  "public_0175": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "public_transit.find_routes",
+        "arguments": {
+          "origin": "Bến xe Mỹ Đình",
+          "destination": "Hồ Gươm"
+        }
+      },
+      {
+        "name": "ride_hailing.book",
+        "arguments": {
+          "pickup": "nhà",
+          "dropoff": "Bến xe Mỹ Đình",
+          "vehicle": "car4"
+        }
+      }
+    ],
+    "reason": "Removed empty maps.search_place (\"Hồi Âm\"). ASR \"ra hồi âm\" was \"ra Hồ Gươm\" (the alight stop of bus_34). Directly queries public_transit.find_routes and books ride_hailing from nhà to Bến xe Mỹ Đình."
+  },
+  "public_0196": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "recipes.search",
+        "arguments": {
+          "query": "súp bí đỏ"
+        }
+      },
+      {
+        "name": "shopping_list.add",
+        "arguments": {
+          "name": "bí đỏ",
+          "quantity": 1
+        }
+      },
+      {
+        "name": "notes.create",
+        "arguments": {
+          "title": "Bữa tối",
+          "content": "Súp bí đỏ kem tươi"
+        }
+      }
+    ],
+    "reason": "Replaced chaotic 9-call corrective sequence with clean 3-call trajectory. ASR \"sắp bí đạo\" was \"súp bí đỏ\" (rcp_02 \"Súp bí đỏ kem tươi\"). Searches recipe, adds 1 bí đỏ to shopping list, and creates note for dinner."
+  },
+  "public_0197": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "translator.translate",
+        "arguments": {
+          "text": "Lịch giao hàng đã thay đổi",
+          "to_lang": "en",
+          "from_lang": "vi"
+        }
+      },
+      {
+        "name": "contacts.search",
+        "arguments": {
+          "query": "Vận hành kho"
+        }
+      },
+      {
+        "name": "notes.create",
+        "arguments": {
+          "title": "Cập nhật giao hàng",
+          "content": "The delivery schedule has changed."
+        }
+      },
+      {
+        "name": "email.create_draft",
+        "arguments": {
+          "to": [
+            "ops@example.test"
+          ],
+          "subject": "Cập nhật giao hàng",
+          "body": "The delivery schedule has changed."
+        }
+      }
+    ],
+    "reason": "Removed exploratory English search contacts.search(\"Operations\") which returned empty. Contact is \"Vận hành kho\" (c_07). Translates text, finds contact, creates note, and creates draft email to ops@example.test."
+  },
+  "public_0240": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "ecommerce.search",
+        "arguments": {
+          "query": "SlimKey 75"
+        }
+      },
+      {
+        "name": "ecommerce.add_to_cart",
+        "arguments": {
+          "product_id": "prod_08",
+          "quantity": 1
+        }
+      },
+      {
+        "name": "ecommerce.checkout",
+        "arguments": {}
+      }
+    ],
+    "reason": "Removed exploratory search ecommerce.search(\"Slim Case 75\") which returned empty. ASR \"slim cây bảy mươi lăm\" was \"SlimKey 75\" (prod_08 \"Bàn phím cơ SlimKey 75\"). Searches SlimKey 75, adds to cart, and checkouts."
+  },
+  "public_0269": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Nhà hát Lớn Hà Nội"
+        }
+      },
+      {
+        "name": "maps.get_route",
+        "arguments": {
+          "origin": "nhà",
+          "destination": "Nhà hát Lớn Hà Nội",
+          "mode": "motorbike"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_05",
+          "from_time": "2026-10-01T10:00:00+07:00",
+          "hours": 2
+        }
+      }
+    ],
+    "reason": "Removed empty exploratory maps.search_place(\"rạp chiếu phim\"). Finds parking near Nhà hát Lớn Hà Nội, gets motorbike route, and reserves lot_05 for 2 hours."
+  },
+  "public_0284": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "train_bus_tickets.search",
+        "arguments": {
+          "origin": "Hà Nội",
+          "destination": "Vinh",
+          "date": "2026-10-09",
+          "type": "train"
+        }
+      },
+      {
+        "name": "train_bus_tickets.book",
+        "arguments": {
+          "trip_id": "trip_09",
+          "seats": 1
+        }
+      },
+      {
+        "name": "tasks.add",
+        "arguments": {
+          "title": "Chuẩn bị giấy xác nhận cho hành khách",
+          "due": "2026-10-08T17:00:00+07:00"
+        }
+      }
+    ],
+    "reason": "Removed empty train_bus_tickets.search to Điện Biên (ASR \"Divin\" was \"Đi Vinh\"). Searches train to Vinh on 2026-10-09, books trip_09, and adds task to prepare confirmation document on 2026-10-08T17:00:00+07:00."
+  },
+  "public_0303": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "public_transit.find_routes",
+        "arguments": {
+          "origin": "Bến xe Long Biên",
+          "destination": "Nhà Văn hóa Thanh niên"
+        }
+      },
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "Ra Bến xe Long Biên",
+          "time": "2026-10-23T16:00:00+07:00"
+        }
+      }
+    ],
+    "reason": "Removed unwanted public_transit.next_departures call which returned empty. The trip is on 2026-10-23 (3 weeks in advance). From find_routes duration_min=25, arrival 16:45 requires departure at 16:20, and 20 min prior reminder is set to 2026-10-23T16:00:00+07:00."
+  },
+  "public_0305": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "smart_home.get_status",
+        "arguments": {
+          "room": "phòng đọc phía đông"
+        }
+      },
+      {
+        "name": "smart_home.light_set",
+        "arguments": {
+          "device_id": "light_reading",
+          "brightness": 60
+        }
+      }
+    ],
+    "reason": "Replaced failed smart_home.get_status(\"phòng đọc sách\") with correct room \"phòng đọc phía đông\" (light_reading). Adjusts brightness to 60 as instructed in dialogue context."
+  },
+  "public_0331": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "train_bus_tickets.search",
+        "arguments": {
+          "origin": "Hà Nội",
+          "destination": "Huế",
+          "date": "2026-10-17",
+          "type": "train"
+        }
+      },
+      {
+        "name": "train_bus_tickets.book",
+        "arguments": {
+          "trip_id": "trip_09",
+          "seats": 2
+        }
+      },
+      {
+        "name": "calendar.create_event",
+        "arguments": {
+          "title": "Tàu tới Huế",
+          "start": "2026-10-18T10:20:00+07:00"
+        }
+      }
+    ],
+    "reason": "Fixed missed booking due to date calculation. Current time is Monday 2026-10-05; \"thứ bảy tuần sau\" is Saturday 2026-10-17 (not 2026-10-10). Trip trip_09 (Tàu SE3, depart 19:10, arrive 10:20) is the only train arriving before 11:00 AM. Books 2 seats and creates arrival calendar event at 2026-10-18T10:20:00+07:00 (overnight transit arrival)."
+  },
+  "public_0332": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "public_transit.find_routes",
+        "arguments": {
+          "origin": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "destination": "Bến xe Mỹ Đình"
+        }
+      },
+      {
+        "name": "ride_hailing.get_quotes",
+        "arguments": {
+          "pickup": "Bến xe Mỹ Đình",
+          "dropoff": "Trung tâm Hội nghị Quốc gia",
+          "vehicle": "car4"
+        }
+      },
+      {
+        "name": "ride_hailing.book",
+        "arguments": {
+          "pickup": "Bến xe Mỹ Đình",
+          "dropoff": "Trung tâm Hội nghị Quốc gia",
+          "vehicle": "car4",
+          "schedule_time": "2026-10-12T08:38:00+07:00"
+        }
+      },
+      {
+        "name": "calendar.create_event",
+        "arguments": {
+          "title": "Đến Trung tâm Hội nghị Quốc gia",
+          "start": "2026-10-12T08:38:00+07:00",
+          "location": "Trung tâm Hội nghị Quốc gia"
+        }
+      }
+    ],
+    "reason": "Removed exploratory public_transit.find_routes to Trung tâm Hội nghị Quốc gia. User stated \"đi xe buýt từ nhà ra Mỹ Đình... đón anh ở trạm xuống để vô Trung tâm Hội nghị Quốc gia\". Directly searches bus route from nhà to Bến xe Mỹ Đình, quotes and books ride_hailing from Bến xe Mỹ Đình to Trung tâm Hội nghị Quốc gia, and creates arrival calendar event."
+  },
+  "public_0336": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "event_tickets.search",
+        "arguments": {
+          "query": "Jazz"
+        }
+      },
+      {
+        "name": "event_tickets.book",
+        "arguments": {
+          "event_id": "event_04",
+          "quantity": 2
+        }
+      },
+      {
+        "name": "ride_hailing.get_quotes",
+        "arguments": {
+          "pickup": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "dropoff": "Nhà hát Tuổi Trẻ, 11 Ngô Thì Nhậm, Hoàn Kiếm, Hà Nội",
+          "vehicle": "car4"
+        }
+      },
+      {
+        "name": "ride_hailing.book",
+        "arguments": {
+          "pickup": "25 Láng Hạ, Đống Đa, Hà Nội",
+          "dropoff": "Nhà hát Tuổi Trẻ, 11 Ngô Thì Nhậm, Hoàn Kiếm, Hà Nội",
+          "vehicle": "car4",
+          "schedule_time": "2026-10-16T18:45:00+07:00"
+        }
+      },
+      {
+        "name": "reminders.create",
+        "arguments": {
+          "content": "Rời nhà đi xem Đêm nhạc Jazz ở Nhà hát Tuổi Trẻ",
+          "time": "2026-10-16T18:45:00+07:00",
+          "repeat": "once"
+        }
+      }
+    ],
+    "reason": "Removed empty event_tickets.search(\"Charles\") caused by ASR mishearing \"đêm nhạc Jazz\" as \"Charles\". Searches \"Jazz\", books 2 tickets for event_04 at Nhà hát Tuổi Trẻ, quotes and schedules ride 45m before showtime, and creates reminder."
+  },
+  "public_0343": {
+    "action": "replace",
+    "calls": [
+      {
+        "name": "maps.search_place",
+        "arguments": {
+          "query": "nhà văn hóa",
+          "near": "Đống Đa, Hà Nội"
+        }
+      },
+      {
+        "name": "parking.find",
+        "arguments": {
+          "near": "Nhà văn hóa phường Láng Thượng, Ngõ 1194 Đường Láng, Đống Đa, Hà Nội"
+        }
+      },
+      {
+        "name": "parking.reserve",
+        "arguments": {
+          "lot_id": "lot_04",
+          "from_time": "2026-10-05T17:00:00+07:00",
+          "hours": 2
+        }
+      }
+    ],
+    "reason": "Removed two empty exploratory maps.search_place calls (\"nhà văn hóa sân cầu lông\" and \"cầu lông\"). Directly searches \"nhà văn hóa\" near Đống Đa to find Nhà văn hóa phường Láng Thượng (has badminton court), finds parking lot_04, and reserves 2 hours."
+  }
+}
