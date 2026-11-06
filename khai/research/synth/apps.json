@@ -1,0 +1,2368 @@
+{
+ "apps": [
+  {
+   "id": "daily_market",
+   "name_vi": "Chợ Mây",
+   "group": "phổ thông",
+   "description": "Mua thực phẩm, đồ dùng cá nhân và nhu yếu phẩm bằng giọng nói.",
+   "tools": [
+    {
+     "name": "daily_market.search_products",
+     "kind": "read",
+     "description": "Tìm sản phẩm còn bán theo tên hoặc nhu cầu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string",
+        "description": "Tên sản phẩm hoặc nhu cầu mua sắm.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "query"
+      ]
+     },
+     "returns": "products[] gồm product_id, tên, đơn vị bán, giá và tồn kho"
+    },
+    {
+     "name": "daily_market.inspect_cart",
+     "kind": "read",
+     "description": "Xem giỏ hàng hiện tại và tổng tiền dự kiến.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "cart gồm items[], tổng tiền hàng và phí giao dự kiến"
+    },
+    {
+     "name": "daily_market.add_to_cart",
+     "kind": "write",
+     "description": "Thêm một sản phẩm vào giỏ hàng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "product_id": {
+        "type": "string",
+        "description": "Mã sản phẩm lấy từ tool daily_market.search_products.",
+        "x-ref": "daily_market.products"
+       },
+       "quantity": {
+        "type": "integer",
+        "description": "Số lượng theo đơn vị bán của sản phẩm."
+       },
+       "substitution_note": {
+        "type": "string",
+        "description": "Dặn dò khi sản phẩm hết hàng.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "product_id",
+       "quantity"
+      ]
+     },
+     "returns": "cart gồm các mặt hàng và tổng tiền đã cập nhật"
+    }
+   ]
+  },
+  {
+   "id": "ride_booking",
+   "name_vi": "Đón Đây",
+   "group": "phổ thông",
+   "description": "Đặt xe máy hoặc ô tô có tài xế để đi lại trong thành phố.",
+   "tools": [
+    {
+     "name": "ride_booking.resolve_places",
+     "kind": "read",
+     "description": "Tìm địa điểm dùng làm điểm đón hoặc điểm đến.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "place_query": {
+        "type": "string",
+        "description": "Tên địa điểm, địa chỉ hoặc mốc dễ nhận biết.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "place_query"
+      ]
+     },
+     "returns": "places[] gồm place_id, tên, địa chỉ và tọa độ"
+    },
+    {
+     "name": "ride_booking.quote_routes",
+     "kind": "read",
+     "description": "Lấy các phương án xe và giá dự kiến cho hành trình.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "pickup_place_id": {
+        "type": "string",
+        "description": "Mã điểm đón lấy từ tool ride_booking.resolve_places.",
+        "x-ref": "ride_booking.places"
+       },
+       "destination_place_id": {
+        "type": "string",
+        "description": "Mã điểm đến lấy từ tool ride_booking.resolve_places.",
+        "x-ref": "ride_booking.places"
+       },
+       "vehicle_type": {
+        "type": "string",
+        "description": "Loại phương tiện muốn đặt.",
+        "enum": [
+         "motorbike",
+         "car_4_seats",
+         "car_7_seats"
+        ]
+       }
+      },
+      "required": [
+       "pickup_place_id",
+       "destination_place_id",
+       "vehicle_type"
+      ]
+     },
+     "returns": "quotes[] gồm quote_id, giá dự kiến, thời gian xe đến và thời điểm hết hiệu lực"
+    },
+    {
+     "name": "ride_booking.request_driver",
+     "kind": "write",
+     "description": "Đặt chuyến theo phương án giá đã chọn.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "quote_id": {
+        "type": "string",
+        "description": "Mã phương án lấy từ tool ride_booking.quote_routes.",
+        "x-ref": "ride_booking.quotes"
+       },
+       "pickup_note": {
+        "type": "string",
+        "description": "Hướng dẫn tài xế nhận diện vị trí đón.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "quote_id"
+      ]
+     },
+     "returns": "ride gồm mã chuyến, trạng thái tìm tài xế và thông tin điểm đón"
+    }
+   ]
+  },
+  {
+   "id": "care_booking",
+   "name_vi": "Hẹn Khỏe",
+   "group": "phổ thông",
+   "description": "Tìm cơ sở khám bệnh và đặt lịch khám trực tiếp.",
+   "tools": [
+    {
+     "name": "care_booking.find_clinics",
+     "kind": "read",
+     "description": "Tìm cơ sở khám theo nhu cầu và khu vực.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "care_need": {
+        "type": "string",
+        "description": "Nhu cầu khám hoặc chuyên khoa mong muốn.",
+        "x-match": "fuzzy"
+       },
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực thuận tiện đi khám.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "care_need",
+       "area_query"
+      ]
+     },
+     "returns": "clinics[] gồm clinic_id, tên, địa chỉ và chuyên khoa"
+    },
+    {
+     "name": "care_booking.check_openings",
+     "kind": "read",
+     "description": "Xem các khung khám còn nhận đặt lịch.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "clinic_id": {
+        "type": "string",
+        "description": "Mã cơ sở lấy từ tool care_booking.find_clinics.",
+        "x-ref": "care_booking.clinics"
+       },
+       "from_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm bắt đầu tìm lịch. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       }
+      },
+      "required": [
+       "clinic_id",
+       "from_at"
+      ]
+     },
+     "returns": "slots[] gồm slot_id, bác sĩ, giờ khám và phí dự kiến"
+    },
+    {
+     "name": "care_booking.reserve_visit",
+     "kind": "write",
+     "description": "Đặt lịch khám cho chủ tài khoản.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "slot_id": {
+        "type": "string",
+        "description": "Mã khung khám lấy từ tool care_booking.check_openings.",
+        "x-ref": "care_booking.slots"
+       },
+       "visit_note": {
+        "type": "string",
+        "description": "Thông tin người dùng muốn gửi trước cho cơ sở khám.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "slot_id"
+      ]
+     },
+     "returns": "appointment gồm mã lịch hẹn, cơ sở, bác sĩ và giờ khám"
+    }
+   ]
+  },
+  {
+   "id": "course_study",
+   "name_vi": "Lớp Mở",
+   "group": "phổ thông",
+   "description": "Học các khóa kỹ năng trực tuyến và quản lý tiến độ bài học.",
+   "tools": [
+    {
+     "name": "course_study.discover_courses",
+     "kind": "read",
+     "description": "Tìm khóa học theo chủ đề.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "topic": {
+        "type": "string",
+        "description": "Kỹ năng hoặc chủ đề muốn học.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "topic"
+      ]
+     },
+     "returns": "courses[] gồm course_id, tên khóa, học phí và cấp độ"
+    },
+    {
+     "name": "course_study.outline_lessons",
+     "kind": "read",
+     "description": "Xem bài học và tiến độ trong một khóa.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "course_id": {
+        "type": "string",
+        "description": "Mã khóa học lấy từ tool course_study.discover_courses.",
+        "x-ref": "course_study.courses"
+       }
+      },
+      "required": [
+       "course_id"
+      ]
+     },
+     "returns": "lessons[] gồm lesson_id, tiêu đề, quyền truy cập và trạng thái hoàn thành"
+    },
+    {
+     "name": "course_study.resume_lesson",
+     "kind": "write",
+     "description": "Mở bài học tại vị trí đã lưu và ghi nhận phiên học.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "lesson_id": {
+        "type": "string",
+        "description": "Mã bài học lấy từ tool course_study.outline_lessons.",
+        "x-ref": "course_study.lessons"
+       }
+      },
+      "required": [
+       "lesson_id"
+      ]
+     },
+     "returns": "study_session gồm bài đang học, vị trí tiếp tục và trạng thái phát"
+    }
+   ]
+  },
+  {
+   "id": "money_diary",
+   "name_vi": "Sổ Đồng",
+   "group": "phổ thông",
+   "description": "Ghi chép thu chi và theo dõi ngân sách cá nhân.",
+   "tools": [
+    {
+     "name": "money_diary.review_accounts",
+     "kind": "read",
+     "description": "Xem các sổ tiền cá nhân đang theo dõi.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "accounts[] gồm account_id, tên sổ và số dư ghi chép bằng VND"
+    },
+    {
+     "name": "money_diary.summarize_spending",
+     "kind": "read",
+     "description": "Tổng hợp thu chi trong khoảng thời gian.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "account_id": {
+        "type": "string",
+        "description": "Mã sổ tiền lấy từ tool money_diary.review_accounts.",
+        "x-ref": "money_diary.accounts"
+       },
+       "from_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Đầu khoảng thống kê. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "to_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Cuối khoảng thống kê, không bao gồm thời điểm này. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       }
+      },
+      "required": [
+       "account_id",
+       "from_at",
+       "to_at"
+      ]
+     },
+     "returns": "summary gồm tổng thu, tổng chi và số tiền theo nhóm"
+    },
+    {
+     "name": "money_diary.record_entry",
+     "kind": "write",
+     "description": "Ghi nhận một khoản thu hoặc chi.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "account_id": {
+        "type": "string",
+        "description": "Mã sổ tiền lấy từ tool money_diary.review_accounts.",
+        "x-ref": "money_diary.accounts"
+       },
+       "entry_type": {
+        "type": "string",
+        "description": "Loại giao dịch ghi chép.",
+        "enum": [
+         "income",
+         "expense"
+        ]
+       },
+       "amount_vnd": {
+        "type": "integer",
+        "description": "Số tiền nguyên dương tính bằng đồng Việt Nam."
+       },
+       "note": {
+        "type": "string",
+        "description": "Nội dung khoản thu hoặc chi.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "account_id",
+       "entry_type",
+       "amount_vnd",
+       "note"
+      ]
+     },
+     "returns": "entry gồm mã bản ghi, số tiền và số dư mới"
+    }
+   ]
+  },
+  {
+   "id": "meal_delivery",
+   "name_vi": "Bữa Tới",
+   "group": "phổ thông",
+   "description": "Chọn món ăn từ quán gần địa chỉ nhận và đặt giao tận nơi.",
+   "tools": [
+    {
+     "name": "meal_delivery.browse_dishes",
+     "kind": "read",
+     "description": "Tìm món có thể giao đến địa chỉ đã lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "dish_query": {
+        "type": "string",
+        "description": "Tên món hoặc kiểu bữa ăn mong muốn.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "dish_query"
+      ]
+     },
+     "returns": "dishes[] gồm dish_id, tên món, quán, giá và tùy chọn đang bán"
+    },
+    {
+     "name": "meal_delivery.estimate_order",
+     "kind": "read",
+     "description": "Tính tiền cho một món và số suất dự kiến.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "dish_id": {
+        "type": "string",
+        "description": "Mã món lấy từ tool meal_delivery.browse_dishes.",
+        "x-ref": "meal_delivery.dishes"
+       },
+       "quantity": {
+        "type": "integer",
+        "description": "Số suất muốn đặt."
+       },
+       "preparation_note": {
+        "type": "string",
+        "description": "Yêu cầu chế biến như ít cay hoặc không hành.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "dish_id",
+       "quantity"
+      ]
+     },
+     "returns": "quotes[] gồm quote_id, tiền món, phí giao, tổng tiền và địa chỉ nhận"
+    },
+    {
+     "name": "meal_delivery.place_order",
+     "kind": "write",
+     "description": "Đặt bữa ăn theo báo giá đến địa chỉ đã lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "quote_id": {
+        "type": "string",
+        "description": "Mã báo giá lấy từ tool meal_delivery.estimate_order.",
+        "x-ref": "meal_delivery.quotes"
+       }
+      },
+      "required": [
+       "quote_id"
+      ]
+     },
+     "returns": "order gồm mã đơn, món đã đặt, tổng tiền và trạng thái quán xác nhận"
+    }
+   ]
+  },
+  {
+   "id": "sports_courts",
+   "name_vi": "Sân Vui",
+   "group": "phổ thông",
+   "description": "Tìm và đặt sân cầu lông, bóng đá hoặc pickleball.",
+   "tools": [
+    {
+     "name": "sports_courts.locate_venues",
+     "kind": "read",
+     "description": "Tìm cụm sân theo môn thể thao và khu vực.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "sport": {
+        "type": "string",
+        "description": "Môn thể thao cần đặt sân.",
+        "enum": [
+         "badminton",
+         "football",
+         "pickleball",
+         "tennis"
+        ]
+       },
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn chơi.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "sport",
+       "area_query"
+      ]
+     },
+     "returns": "venues[] gồm venue_id, tên cụm sân, địa chỉ và tiện ích"
+    },
+    {
+     "name": "sports_courts.check_court_slots",
+     "kind": "read",
+     "description": "Xem các ca sân còn trống.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "venue_id": {
+        "type": "string",
+        "description": "Mã cụm sân lấy từ tool sports_courts.locate_venues.",
+        "x-ref": "sports_courts.venues"
+       },
+       "from_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm bắt đầu tìm ca sân. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       }
+      },
+      "required": [
+       "venue_id",
+       "from_at"
+      ]
+     },
+     "returns": "court_slots[] gồm court_slot_id, sân, giờ bắt đầu, giờ kết thúc và giá"
+    },
+    {
+     "name": "sports_courts.book_court",
+     "kind": "write",
+     "description": "Đặt một ca sân còn trống.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "court_slot_id": {
+        "type": "string",
+        "description": "Mã ca sân lấy từ tool sports_courts.check_court_slots.",
+        "x-ref": "sports_courts.court_slots"
+       },
+       "racket_rental_count": {
+        "type": "integer",
+        "description": "Số vợt muốn thuê thêm; dùng 0 nếu không thuê."
+       }
+      },
+      "required": [
+       "court_slot_id"
+      ]
+     },
+     "returns": "court_booking gồm mã đặt sân, lịch chơi và tổng phí"
+    }
+   ]
+  },
+  {
+   "id": "civic_counter",
+   "name_vi": "Cửa Dân",
+   "group": "phổ thông",
+   "description": "Tra cứu thủ tục hành chính và đặt lịch đến bộ phận một cửa.",
+   "tools": [
+    {
+     "name": "civic_counter.lookup_procedures",
+     "kind": "read",
+     "description": "Tìm thủ tục theo việc người dùng cần giải quyết.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "need_query": {
+        "type": "string",
+        "description": "Nhu cầu hành chính, chẳng hạn xin bản sao giấy khai sinh.",
+        "x-match": "fuzzy"
+       },
+       "locality_query": {
+        "type": "string",
+        "description": "Địa phương nơi thực hiện thủ tục.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "need_query",
+       "locality_query"
+      ]
+     },
+     "returns": "procedures[] gồm procedure_id, tên, hồ sơ cần chuẩn bị và cơ quan tiếp nhận"
+    },
+    {
+     "name": "civic_counter.find_counter_slots",
+     "kind": "read",
+     "description": "Xem lịch tiếp nhận trực tiếp cho thủ tục.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "procedure_id": {
+        "type": "string",
+        "description": "Mã thủ tục lấy từ tool civic_counter.lookup_procedures.",
+        "x-ref": "civic_counter.procedures"
+       }
+      },
+      "required": [
+       "procedure_id"
+      ]
+     },
+     "returns": "counter_slots[] gồm counter_slot_id, địa điểm, giờ hẹn và số chỗ còn lại"
+    },
+    {
+     "name": "civic_counter.reserve_counter_visit",
+     "kind": "write",
+     "description": "Đăng ký lịch đến quầy bằng hồ sơ công dân đã lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "counter_slot_id": {
+        "type": "string",
+        "description": "Mã lịch tiếp nhận lấy từ tool civic_counter.find_counter_slots.",
+        "x-ref": "civic_counter.counter_slots"
+       },
+       "support_note": {
+        "type": "string",
+        "description": "Nhu cầu hỗ trợ khi đến quầy.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "counter_slot_id"
+      ]
+     },
+     "returns": "visit_ticket gồm mã lịch hẹn, địa điểm và hướng dẫn chuẩn bị"
+    }
+   ]
+  },
+  {
+   "id": "mobile_service",
+   "name_vi": "Sóng Đủ",
+   "group": "phổ thông",
+   "description": "Theo dõi dung lượng di động và đăng ký gói cước cho thuê bao đã liên kết.",
+   "tools": [
+    {
+     "name": "mobile_service.check_allowance",
+     "kind": "read",
+     "description": "Xem số dư và dung lượng còn lại của thuê bao.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "allowance gồm thuê bao đã che số, số dư, data còn lại và hạn sử dụng"
+    },
+    {
+     "name": "mobile_service.compare_packages",
+     "kind": "read",
+     "description": "Xem các gói cước thuê bao đủ điều kiện đăng ký.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "usage_need": {
+        "type": "string",
+        "description": "Nhu cầu sử dụng chính.",
+        "enum": [
+         "data",
+         "calls",
+         "mixed"
+        ]
+       }
+      },
+      "required": [
+       "usage_need"
+      ]
+     },
+     "returns": "packages[] gồm package_id, tên, giá, quyền lợi và điều kiện gia hạn"
+    },
+    {
+     "name": "mobile_service.activate_package",
+     "kind": "write",
+     "description": "Đăng ký gói cước bằng số dư thuê bao.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "package_id": {
+        "type": "string",
+        "description": "Mã gói cước lấy từ tool mobile_service.compare_packages.",
+        "x-ref": "mobile_service.packages"
+       },
+       "auto_renew": {
+        "type": "boolean",
+        "description": "Cho phép tự động gia hạn khi hết chu kỳ."
+       }
+      },
+      "required": [
+       "package_id",
+       "auto_renew"
+      ]
+     },
+     "returns": "activation gồm gói đã đăng ký, phí thu và trạng thái gia hạn"
+    }
+   ]
+  },
+  {
+   "id": "job_match",
+   "name_vi": "Việc Hợp",
+   "group": "phổ thông",
+   "description": "Tìm việc làm và nộp hồ sơ ứng tuyển.",
+   "tools": [
+    {
+     "name": "job_match.search_openings",
+     "kind": "read",
+     "description": "Tìm vị trí đang tuyển theo công việc và khu vực.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "role_query": {
+        "type": "string",
+        "description": "Tên vị trí hoặc kỹ năng muốn sử dụng.",
+        "x-match": "fuzzy"
+       },
+       "location_query": {
+        "type": "string",
+        "description": "Địa điểm làm việc mong muốn.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "role_query"
+      ]
+     },
+     "returns": "jobs[] gồm job_id, vị trí, doanh nghiệp, nơi làm việc và mức lương công bố"
+    },
+    {
+     "name": "job_match.review_resumes",
+     "kind": "read",
+     "description": "Xem các phiên bản hồ sơ ứng tuyển đã lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "resumes[] gồm resume_id, tên hồ sơ, ngôn ngữ và lần cập nhật"
+    },
+    {
+     "name": "job_match.submit_application",
+     "kind": "write",
+     "description": "Gửi một hồ sơ đến vị trí tuyển dụng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "job_id": {
+        "type": "string",
+        "description": "Mã vị trí lấy từ tool job_match.search_openings.",
+        "x-ref": "job_match.jobs"
+       },
+       "resume_id": {
+        "type": "string",
+        "description": "Mã hồ sơ lấy từ tool job_match.review_resumes.",
+        "x-ref": "job_match.resumes"
+       },
+       "cover_note": {
+        "type": "string",
+        "description": "Lời giới thiệu gửi nhà tuyển dụng.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "job_id",
+       "resume_id"
+      ]
+     },
+     "returns": "application gồm mã ứng tuyển, vị trí và trạng thái tiếp nhận"
+    }
+   ]
+  },
+  {
+   "id": "stay_finder",
+   "name_vi": "Trọ Chuyến",
+   "group": "phổ thông",
+   "description": "Tìm và đặt khách sạn hoặc homestay cho chuyến du lịch.",
+   "tools": [
+    {
+     "name": "stay_finder.search_stays",
+     "kind": "read",
+     "description": "Tìm nơi lưu trú còn phòng trong khoảng đã chọn.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "destination_query": {
+        "type": "string",
+        "description": "Điểm đến hoặc khu vực muốn lưu trú.",
+        "x-match": "fuzzy"
+       },
+       "check_in_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm nhận phòng dự kiến. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "check_out_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm trả phòng dự kiến. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "guest_count": {
+        "type": "integer",
+        "description": "Tổng số khách lưu trú."
+       }
+      },
+      "required": [
+       "destination_query",
+       "check_in_at",
+       "check_out_at",
+       "guest_count"
+      ]
+     },
+     "returns": "stays[] gồm stay_id, tên, địa chỉ và giá tham khảo cho lượt tìm"
+    },
+    {
+     "name": "stay_finder.quote_rooms",
+     "kind": "read",
+     "description": "Lấy các lựa chọn phòng và điều kiện đặt cho lượt tìm tương ứng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "stay_id": {
+        "type": "string",
+        "description": "Mã kết quả lưu trú lấy từ tool stay_finder.search_stays; gắn với lịch và số khách đã tìm.",
+        "x-ref": "stay_finder.stays"
+       }
+      },
+      "required": [
+       "stay_id"
+      ]
+     },
+     "returns": "room_offers[] gồm room_offer_id, loại phòng, tổng tiền và chính sách hủy"
+    },
+    {
+     "name": "stay_finder.confirm_reservation",
+     "kind": "write",
+     "description": "Đặt phòng bằng hồ sơ khách và phương thức thanh toán đã lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "room_offer_id": {
+        "type": "string",
+        "description": "Mã lựa chọn phòng lấy từ tool stay_finder.quote_rooms.",
+        "x-ref": "stay_finder.room_offers"
+       },
+       "guest_note": {
+        "type": "string",
+        "description": "Yêu cầu gửi nơi lưu trú.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "room_offer_id"
+      ]
+     },
+     "returns": "reservation gồm mã đặt phòng, lịch lưu trú, tổng tiền và trạng thái xác nhận"
+    }
+   ]
+  },
+  {
+   "id": "local_events",
+   "name_vi": "Hẹn Phố",
+   "group": "phổ thông",
+   "description": "Khám phá sự kiện văn hóa, hội chợ và buổi giao lưu tại địa phương.",
+   "tools": [
+    {
+     "name": "local_events.discover_events",
+     "kind": "read",
+     "description": "Tìm sự kiện theo sở thích và khu vực.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "interest_query": {
+        "type": "string",
+        "description": "Chủ đề hoặc loại sự kiện quan tâm.",
+        "x-match": "fuzzy"
+       },
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn tham dự.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "area_query"
+      ]
+     },
+     "returns": "events[] gồm event_id, tên, địa điểm và lịch tổ chức"
+    },
+    {
+     "name": "local_events.inspect_ticket_options",
+     "kind": "read",
+     "description": "Xem loại vé và số chỗ còn lại của sự kiện.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "event_id": {
+        "type": "string",
+        "description": "Mã sự kiện lấy từ tool local_events.discover_events.",
+        "x-ref": "local_events.events"
+       }
+      },
+      "required": [
+       "event_id"
+      ]
+     },
+     "returns": "ticket_options[] gồm ticket_option_id, hạng vé, giá và số lượng còn"
+    },
+    {
+     "name": "local_events.reserve_tickets",
+     "kind": "write",
+     "description": "Đặt vé sự kiện cho người dùng và người đi cùng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "ticket_option_id": {
+        "type": "string",
+        "description": "Mã loại vé lấy từ tool local_events.inspect_ticket_options.",
+        "x-ref": "local_events.ticket_options"
+       },
+       "quantity": {
+        "type": "integer",
+        "description": "Số vé cần đặt."
+       }
+      },
+      "required": [
+       "ticket_option_id",
+       "quantity"
+      ]
+     },
+     "returns": "ticket_booking gồm mã đặt vé, số vé, tổng tiền và trạng thái"
+    }
+   ]
+  },
+  {
+   "id": "ebook_shelf",
+   "name_vi": "Kệ Chữ",
+   "group": "phổ thông",
+   "description": "Đọc sách điện tử và lưu vị trí đọc cá nhân.",
+   "tools": [
+    {
+     "name": "ebook_shelf.find_books",
+     "kind": "read",
+     "description": "Tìm sách theo tên, tác giả hoặc chủ đề.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "book_query": {
+        "type": "string",
+        "description": "Tên sách, tác giả hoặc chủ đề cần tìm.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "book_query"
+      ]
+     },
+     "returns": "books[] gồm book_id, tên, tác giả và quyền đọc hiện có"
+    },
+    {
+     "name": "ebook_shelf.read_chapter_index",
+     "kind": "read",
+     "description": "Xem mục lục và vị trí đọc gần nhất.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "book_id": {
+        "type": "string",
+        "description": "Mã sách lấy từ tool ebook_shelf.find_books.",
+        "x-ref": "ebook_shelf.books"
+       }
+      },
+      "required": [
+       "book_id"
+      ]
+     },
+     "returns": "chapters[] gồm chapter_id, tên chương, quyền truy cập và tiến độ đọc"
+    },
+    {
+     "name": "ebook_shelf.open_chapter",
+     "kind": "write",
+     "description": "Mở chương và cập nhật sách đang đọc.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "chapter_id": {
+        "type": "string",
+        "description": "Mã chương lấy từ tool ebook_shelf.read_chapter_index.",
+        "x-ref": "ebook_shelf.chapters"
+       }
+      },
+      "required": [
+       "chapter_id"
+      ]
+     },
+     "returns": "reading_session gồm chương đang mở và vị trí đọc đã lưu"
+    }
+   ]
+  },
+  {
+   "id": "photo_memories",
+   "name_vi": "Ảnh Nhà Mình",
+   "group": "phổ thông",
+   "description": "Tìm ảnh cá nhân và sắp xếp ảnh vào album.",
+   "tools": [
+    {
+     "name": "photo_memories.search_photos",
+     "kind": "read",
+     "description": "Tìm ảnh theo nội dung hoặc địa điểm được mô tả.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "memory_query": {
+        "type": "string",
+        "description": "Mô tả ảnh muốn tìm, chẳng hạn ảnh đi biển cùng gia đình.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "memory_query"
+      ]
+     },
+     "returns": "photos[] gồm photo_id, ảnh xem trước, thời điểm chụp và chú thích"
+    },
+    {
+     "name": "photo_memories.browse_albums",
+     "kind": "read",
+     "description": "Xem các album cá nhân hiện có.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "albums[] gồm album_id, tên và số ảnh"
+    },
+    {
+     "name": "photo_memories.add_photo_to_album",
+     "kind": "write",
+     "description": "Thêm một ảnh vào album đã chọn.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "photo_id": {
+        "type": "string",
+        "description": "Mã ảnh lấy từ tool photo_memories.search_photos.",
+        "x-ref": "photo_memories.photos"
+       },
+       "album_id": {
+        "type": "string",
+        "description": "Mã album lấy từ tool photo_memories.browse_albums.",
+        "x-ref": "photo_memories.albums"
+       }
+      },
+      "required": [
+       "photo_id",
+       "album_id"
+      ]
+     },
+     "returns": "album_update gồm album, ảnh được thêm và tổng số ảnh"
+    }
+   ]
+  },
+  {
+   "id": "housing_search",
+   "name_vi": "Chỗ An",
+   "group": "phổ thông",
+   "description": "Tìm nhà, căn hộ hoặc phòng trọ để thuê dài hạn.",
+   "tools": [
+    {
+     "name": "housing_search.search_rentals",
+     "kind": "read",
+     "description": "Tìm chỗ thuê theo khu vực và ngân sách.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn thuê.",
+        "x-match": "fuzzy"
+       },
+       "max_monthly_rent_vnd": {
+        "type": "integer",
+        "description": "Tiền thuê tối đa mỗi tháng bằng đồng Việt Nam."
+       },
+       "property_type": {
+        "type": "string",
+        "description": "Loại chỗ ở cần thuê.",
+        "enum": [
+         "room",
+         "apartment",
+         "house"
+        ]
+       }
+      },
+      "required": [
+       "area_query",
+       "max_monthly_rent_vnd"
+      ]
+     },
+     "returns": "rentals[] gồm rental_id, tiêu đề, khu vực, diện tích và tiền thuê"
+    },
+    {
+     "name": "housing_search.inspect_rental",
+     "kind": "read",
+     "description": "Xem chi phí, nội quy và mô tả chi tiết chỗ thuê.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "rental_id": {
+        "type": "string",
+        "description": "Mã tin cho thuê lấy từ tool housing_search.search_rentals.",
+        "x-ref": "housing_search.rentals"
+       }
+      },
+      "required": [
+       "rental_id"
+      ]
+     },
+     "returns": "rental_detail gồm tiền cọc, phí bổ sung, nội quy và tình trạng còn trống"
+    },
+    {
+     "name": "housing_search.request_viewing",
+     "kind": "write",
+     "description": "Gửi đề nghị hẹn xem chỗ thuê đến người đăng tin.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "rental_id": {
+        "type": "string",
+        "description": "Mã tin cho thuê lấy từ tool housing_search.search_rentals.",
+        "x-ref": "housing_search.rentals"
+       },
+       "preferred_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm mong muốn đến xem. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "message": {
+        "type": "string",
+        "description": "Lời nhắn về nhu cầu thuê hoặc lịch xem.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "rental_id",
+       "preferred_at"
+      ]
+     },
+     "returns": "viewing_request gồm mã đề nghị và trạng thái chờ người đăng phản hồi"
+    }
+   ]
+  },
+  {
+   "id": "school_connect",
+   "name_vi": "Cổng Lớp",
+   "group": "phổ thông",
+   "description": "Giúp phụ huynh xem thông báo trường và gửi đơn xin nghỉ cho con.",
+   "tools": [
+    {
+     "name": "school_connect.identify_children",
+     "kind": "read",
+     "description": "Xem các học sinh đã liên kết với tài khoản phụ huynh.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "children[] gồm child_id, tên học sinh, trường và lớp"
+    },
+    {
+     "name": "school_connect.read_notices",
+     "kind": "read",
+     "description": "Xem thông báo nhà trường gửi cho một học sinh.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "child_id": {
+        "type": "string",
+        "description": "Mã học sinh lấy từ tool school_connect.identify_children.",
+        "x-ref": "school_connect.children"
+       },
+       "unread_only": {
+        "type": "boolean",
+        "description": "Chỉ lấy thông báo chưa đọc nếu đặt true."
+       }
+      },
+      "required": [
+       "child_id"
+      ]
+     },
+     "returns": "notices[] gồm notice_id, tiêu đề, nội dung và đơn vị gửi"
+    },
+    {
+     "name": "school_connect.request_absence",
+     "kind": "write",
+     "description": "Gửi đơn xin nghỉ học cho con.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "child_id": {
+        "type": "string",
+        "description": "Mã học sinh lấy từ tool school_connect.identify_children.",
+        "x-ref": "school_connect.children"
+       },
+       "starts_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Bắt đầu thời gian xin nghỉ. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "ends_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Kết thúc thời gian xin nghỉ. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "reason": {
+        "type": "string",
+        "description": "Lý do xin nghỉ học.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "child_id",
+       "starts_at",
+       "ends_at",
+       "reason"
+      ]
+     },
+     "returns": "absence_request gồm mã đơn, học sinh và trạng thái giáo viên tiếp nhận"
+    }
+   ]
+  },
+  {
+   "id": "quick_translate",
+   "name_vi": "Hiểu Nhau",
+   "group": "phổ thông",
+   "description": "Dịch hội thoại và lưu các câu giao tiếp cần dùng lại.",
+   "tools": [
+    {
+     "name": "quick_translate.translate_text",
+     "kind": "read",
+     "description": "Dịch một câu và trả về các cách diễn đạt phù hợp.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "source_text": {
+        "type": "string",
+        "description": "Nội dung cần dịch; khi dịch phải giữ nguyên nội dung đã nhận.",
+        "x-match": "fuzzy"
+       },
+       "source_language": {
+        "type": "string",
+        "description": "Ngôn ngữ đầu vào.",
+        "enum": [
+         "auto",
+         "vi",
+         "en",
+         "ja",
+         "ko",
+         "zh",
+         "fr"
+        ]
+       },
+       "target_language": {
+        "type": "string",
+        "description": "Ngôn ngữ đích.",
+        "enum": [
+         "vi",
+         "en",
+         "ja",
+         "ko",
+         "zh",
+         "fr"
+        ]
+       }
+      },
+      "required": [
+       "source_text",
+       "source_language",
+       "target_language"
+      ]
+     },
+     "returns": "translations[] gồm translation_id, câu gốc, bản dịch và cách đọc"
+    },
+    {
+     "name": "quick_translate.browse_phrasebooks",
+     "kind": "read",
+     "description": "Xem các bộ câu giao tiếp cá nhân.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "phrasebooks[] gồm phrasebook_id, tên bộ câu và số câu đã lưu"
+    },
+    {
+     "name": "quick_translate.save_translation",
+     "kind": "write",
+     "description": "Lưu bản dịch vào một bộ câu giao tiếp.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "translation_id": {
+        "type": "string",
+        "description": "Mã bản dịch lấy từ tool quick_translate.translate_text.",
+        "x-ref": "quick_translate.translations"
+       },
+       "phrasebook_id": {
+        "type": "string",
+        "description": "Mã bộ câu lấy từ tool quick_translate.browse_phrasebooks.",
+        "x-ref": "quick_translate.phrasebooks"
+       }
+      },
+      "required": [
+       "translation_id",
+       "phrasebook_id"
+      ]
+     },
+     "returns": "saved_phrase gồm mã câu đã lưu và bộ câu chứa"
+    }
+   ]
+  },
+  {
+   "id": "charity_giving",
+   "name_vi": "Góp Nắng",
+   "group": "phổ thông",
+   "description": "Tìm chiến dịch thiện nguyện và đóng góp tiền cho tổ chức tiếp nhận.",
+   "tools": [
+    {
+     "name": "charity_giving.discover_campaigns",
+     "kind": "read",
+     "description": "Tìm chiến dịch đang nhận đóng góp.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "cause_query": {
+        "type": "string",
+        "description": "Mục đích hỗ trợ hoặc địa phương quan tâm.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "cause_query"
+      ]
+     },
+     "returns": "campaigns[] gồm campaign_id, tên, tổ chức tiếp nhận và mục tiêu"
+    },
+    {
+     "name": "charity_giving.inspect_campaign",
+     "kind": "read",
+     "description": "Xem kế hoạch sử dụng tiền và báo cáo của chiến dịch.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "campaign_id": {
+        "type": "string",
+        "description": "Mã chiến dịch lấy từ tool charity_giving.discover_campaigns.",
+        "x-ref": "charity_giving.campaigns"
+       }
+      },
+      "required": [
+       "campaign_id"
+      ]
+     },
+     "returns": "campaign_detail gồm đơn vị nhận, kế hoạch chi, số tiền đã nhận và báo cáo"
+    },
+    {
+     "name": "charity_giving.donate",
+     "kind": "write",
+     "description": "Đóng góp bằng phương thức thanh toán mặc định đã liên kết.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "campaign_id": {
+        "type": "string",
+        "description": "Mã chiến dịch lấy từ tool charity_giving.discover_campaigns.",
+        "x-ref": "charity_giving.campaigns"
+       },
+       "amount_vnd": {
+        "type": "integer",
+        "description": "Số tiền đóng góp nguyên dương bằng đồng Việt Nam."
+       },
+       "anonymous": {
+        "type": "boolean",
+        "description": "Ẩn tên trên danh sách đóng góp công khai nếu đặt true."
+       }
+      },
+      "required": [
+       "campaign_id",
+       "amount_vnd",
+       "anonymous"
+      ]
+     },
+     "returns": "donation gồm mã đóng góp, số tiền và biên nhận"
+    }
+   ]
+  },
+  {
+   "id": "beauty_booking",
+   "name_vi": "Hẹn Đẹp",
+   "group": "phổ thông",
+   "description": "Đặt dịch vụ cắt tóc, chăm sóc da hoặc làm móng tại cửa hàng.",
+   "tools": [
+    {
+     "name": "beauty_booking.find_services",
+     "kind": "read",
+     "description": "Tìm dịch vụ làm đẹp theo nhu cầu và khu vực.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "service_query": {
+        "type": "string",
+        "description": "Dịch vụ muốn sử dụng.",
+        "x-match": "fuzzy"
+       },
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn đặt lịch.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "service_query",
+       "area_query"
+      ]
+     },
+     "returns": "services[] gồm service_id, tên dịch vụ, cửa hàng và giá niêm yết"
+    },
+    {
+     "name": "beauty_booking.check_service_slots",
+     "kind": "read",
+     "description": "Xem lịch trống của dịch vụ tại cửa hàng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "service_id": {
+        "type": "string",
+        "description": "Mã dịch vụ lấy từ tool beauty_booking.find_services.",
+        "x-ref": "beauty_booking.services"
+       }
+      },
+      "required": [
+       "service_id"
+      ]
+     },
+     "returns": "service_slots[] gồm service_slot_id, nhân viên, giờ bắt đầu và giờ kết thúc"
+    },
+    {
+     "name": "beauty_booking.book_service",
+     "kind": "write",
+     "description": "Đặt một lịch làm đẹp cho chủ tài khoản.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "service_slot_id": {
+        "type": "string",
+        "description": "Mã lịch trống lấy từ tool beauty_booking.check_service_slots.",
+        "x-ref": "beauty_booking.service_slots"
+       },
+       "preference_note": {
+        "type": "string",
+        "description": "Mong muốn về kiểu tóc, màu móng hoặc cách phục vụ.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "service_slot_id"
+      ]
+     },
+     "returns": "beauty_appointment gồm mã lịch hẹn, dịch vụ, cửa hàng và giá dự kiến"
+    }
+   ]
+  },
+  {
+   "id": "vehicle_care",
+   "name_vi": "Xe Bền",
+   "group": "phổ thông",
+   "description": "Theo dõi lịch bảo dưỡng xe cá nhân và đặt dịch vụ tại gara.",
+   "tools": [
+    {
+     "name": "vehicle_care.review_vehicles",
+     "kind": "read",
+     "description": "Xem xe cá nhân và các hạng mục bảo dưỡng sắp đến hạn.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "vehicles[] gồm vehicle_id, tên gọi, loại xe và hạng mục cần chăm sóc"
+    },
+    {
+     "name": "vehicle_care.find_garage_offers",
+     "kind": "read",
+     "description": "Tìm dịch vụ gara phù hợp với xe.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "vehicle_id": {
+        "type": "string",
+        "description": "Mã xe lấy từ tool vehicle_care.review_vehicles.",
+        "x-ref": "vehicle_care.vehicles"
+       },
+       "service_query": {
+        "type": "string",
+        "description": "Hạng mục muốn làm, chẳng hạn thay dầu hoặc kiểm tra phanh.",
+        "x-match": "fuzzy"
+       },
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn tìm gara.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "vehicle_id",
+       "service_query",
+       "area_query"
+      ]
+     },
+     "returns": "garage_offers[] gồm garage_offer_id, gara, hạng mục và giá dự kiến; gắn với xe đã chọn"
+    },
+    {
+     "name": "vehicle_care.request_service_visit",
+     "kind": "write",
+     "description": "Gửi yêu cầu hẹn bảo dưỡng xe đến gara.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "garage_offer_id": {
+        "type": "string",
+        "description": "Mã dịch vụ gara lấy từ tool vehicle_care.find_garage_offers.",
+        "x-ref": "vehicle_care.garage_offers"
+       },
+       "preferred_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm mong muốn đưa xe đến. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "symptom_note": {
+        "type": "string",
+        "description": "Biểu hiện bất thường của xe cần báo cho gara.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "garage_offer_id",
+       "preferred_at"
+      ]
+     },
+     "returns": "service_request gồm mã yêu cầu, xe, gara và trạng thái chờ xác nhận"
+    }
+   ]
+  },
+  {
+   "id": "utility_bills",
+   "name_vi": "Hóa Đơn Êm",
+   "group": "phổ thông",
+   "description": "Tra cứu và thanh toán hóa đơn điện, nước, internet của hộ gia đình.",
+   "tools": [
+    {
+     "name": "utility_bills.browse_contracts",
+     "kind": "read",
+     "description": "Xem các hợp đồng dịch vụ đã liên kết.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "contracts[] gồm contract_id, loại dịch vụ, nhà cung cấp và tên gợi nhớ"
+    },
+    {
+     "name": "utility_bills.check_unpaid_bills",
+     "kind": "read",
+     "description": "Xem hóa đơn chưa thanh toán của một hợp đồng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "contract_id": {
+        "type": "string",
+        "description": "Mã hợp đồng lấy từ tool utility_bills.browse_contracts.",
+        "x-ref": "utility_bills.contracts"
+       }
+      },
+      "required": [
+       "contract_id"
+      ]
+     },
+     "returns": "bills[] gồm bill_id, kỳ sử dụng, số tiền, phí thanh toán và hạn trả"
+    },
+    {
+     "name": "utility_bills.pay_bill",
+     "kind": "write",
+     "description": "Thanh toán một hóa đơn bằng phương thức mặc định đã liên kết.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "bill_id": {
+        "type": "string",
+        "description": "Mã hóa đơn lấy từ tool utility_bills.check_unpaid_bills.",
+        "x-ref": "utility_bills.bills"
+       }
+      },
+      "required": [
+       "bill_id"
+      ]
+     },
+     "returns": "payment gồm mã thanh toán, số tiền, trạng thái và biên nhận"
+    }
+   ]
+  },
+  {
+   "id": "pet_care",
+   "name_vi": "Bạn Bốn Chân",
+   "group": "ngách",
+   "description": "Quản lý hồ sơ thú cưng và ghi lại các lần chăm sóc.",
+   "tools": [
+    {
+     "name": "pet_care.browse_pets",
+     "kind": "read",
+     "description": "Xem thú cưng đã đăng ký trong tài khoản.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "pets[] gồm pet_id, tên, loài và cân nặng gần nhất"
+    },
+    {
+     "name": "pet_care.review_care_history",
+     "kind": "read",
+     "description": "Xem lịch sử chăm sóc và các mốc sắp tới của thú cưng.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "pet_id": {
+        "type": "string",
+        "description": "Mã thú cưng lấy từ tool pet_care.browse_pets.",
+        "x-ref": "pet_care.pets"
+       }
+      },
+      "required": [
+       "pet_id"
+      ]
+     },
+     "returns": "care_history gồm records[] và upcoming_reminders[]"
+    },
+    {
+     "name": "pet_care.log_care",
+     "kind": "write",
+     "description": "Ghi lại một lần chăm sóc đã thực hiện.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "pet_id": {
+        "type": "string",
+        "description": "Mã thú cưng lấy từ tool pet_care.browse_pets.",
+        "x-ref": "pet_care.pets"
+       },
+       "care_type": {
+        "type": "string",
+        "description": "Hoạt động chăm sóc đã thực hiện.",
+        "enum": [
+         "bath",
+         "grooming",
+         "vaccination",
+         "vet_visit"
+        ]
+       },
+       "performed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm thực hiện chăm sóc. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "note": {
+        "type": "string",
+        "description": "Ghi chú về lần chăm sóc.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "pet_id",
+       "care_type",
+       "performed_at"
+      ]
+     },
+     "returns": "care_record gồm mã bản ghi, thú cưng và hoạt động đã lưu"
+    }
+   ]
+  },
+  {
+   "id": "balcony_garden",
+   "name_vi": "Vườn Ban Công",
+   "group": "ngách",
+   "description": "Ghi nhật ký trồng cây và theo dõi việc chăm cây thủ công.",
+   "tools": [
+    {
+     "name": "balcony_garden.browse_plants",
+     "kind": "read",
+     "description": "Xem các cây người dùng đang trồng.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "plants[] gồm plant_id, tên cây, vị trí đặt và trạng thái gần nhất"
+    },
+    {
+     "name": "balcony_garden.read_care_plan",
+     "kind": "read",
+     "description": "Xem hướng dẫn và các việc chăm sóc đã lên lịch cho cây.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "plant_id": {
+        "type": "string",
+        "description": "Mã cây lấy từ tool balcony_garden.browse_plants.",
+        "x-ref": "balcony_garden.plants"
+       }
+      },
+      "required": [
+       "plant_id"
+      ]
+     },
+     "returns": "care_plan gồm hướng dẫn và scheduled_tasks[]"
+    },
+    {
+     "name": "balcony_garden.record_observation",
+     "kind": "write",
+     "description": "Ghi tình trạng cây hoặc việc chăm sóc vừa làm.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "plant_id": {
+        "type": "string",
+        "description": "Mã cây lấy từ tool balcony_garden.browse_plants.",
+        "x-ref": "balcony_garden.plants"
+       },
+       "activity": {
+        "type": "string",
+        "description": "Loại nhật ký muốn ghi.",
+        "enum": [
+         "watering",
+         "fertilizing",
+         "pruning",
+         "observation"
+        ]
+       },
+       "note": {
+        "type": "string",
+        "description": "Mô tả tình trạng cây hoặc cách chăm sóc đã thực hiện.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "plant_id",
+       "activity",
+       "note"
+      ]
+     },
+     "returns": "garden_entry gồm mã nhật ký, cây và nội dung đã ghi"
+    }
+   ]
+  },
+  {
+   "id": "fishing_log",
+   "name_vi": "Cần Thảnh Thơi",
+   "group": "ngách",
+   "description": "Tìm điểm câu giải trí và ghi nhật ký các buổi câu.",
+   "tools": [
+    {
+     "name": "fishing_log.find_fishing_spots",
+     "kind": "read",
+     "description": "Tìm điểm câu có thông tin cho phép câu giải trí.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn tìm điểm câu.",
+        "x-match": "fuzzy"
+       },
+       "spot_type": {
+        "type": "string",
+        "description": "Loại điểm câu mong muốn.",
+        "enum": [
+         "managed_pond",
+         "designated_riverbank",
+         "designated_coast"
+        ]
+       }
+      },
+      "required": [
+       "area_query"
+      ]
+     },
+     "returns": "fishing_spots[] gồm fishing_spot_id, tên, vị trí, phí và nội quy"
+    },
+    {
+     "name": "fishing_log.review_sessions",
+     "kind": "read",
+     "description": "Xem nhật ký cá nhân tại một điểm câu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "fishing_spot_id": {
+        "type": "string",
+        "description": "Mã điểm câu lấy từ tool fishing_log.find_fishing_spots.",
+        "x-ref": "fishing_log.fishing_spots"
+       }
+      },
+      "required": [
+       "fishing_spot_id"
+      ]
+     },
+     "returns": "sessions[] gồm session_id, thời điểm câu, kết quả và ghi chú"
+    },
+    {
+     "name": "fishing_log.log_session",
+     "kind": "write",
+     "description": "Lưu kết quả một buổi câu cá.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "fishing_spot_id": {
+        "type": "string",
+        "description": "Mã điểm câu lấy từ tool fishing_log.find_fishing_spots.",
+        "x-ref": "fishing_log.fishing_spots"
+       },
+       "started_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm bắt đầu buổi câu. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "catch_count": {
+        "type": "integer",
+        "description": "Số cá câu được; dùng 0 nếu không có."
+       },
+       "note": {
+        "type": "string",
+        "description": "Ghi chú về mồi, loài cá hoặc việc thả cá.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "fishing_spot_id",
+       "started_at",
+       "catch_count"
+      ]
+     },
+     "returns": "session gồm mã buổi câu và kết quả đã lưu"
+    }
+   ]
+  },
+  {
+   "id": "trail_companion",
+   "name_vi": "Dấu Đường Mòn",
+   "group": "ngách",
+   "description": "Khám phá tuyến đi bộ đường dài và lập kế hoạch trekking cá nhân.",
+   "tools": [
+    {
+     "name": "trail_companion.discover_trails",
+     "kind": "read",
+     "description": "Tìm tuyến đi bộ đường dài theo địa phương và độ khó.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "area_query": {
+        "type": "string",
+        "description": "Địa phương hoặc vùng muốn đi trekking.",
+        "x-match": "fuzzy"
+       },
+       "difficulty": {
+        "type": "string",
+        "description": "Độ khó mong muốn.",
+        "enum": [
+         "easy",
+         "moderate",
+         "hard"
+        ]
+       }
+      },
+      "required": [
+       "area_query"
+      ]
+     },
+     "returns": "trails[] gồm trail_id, tên, chiều dài, độ khó và điểm xuất phát"
+    },
+    {
+     "name": "trail_companion.inspect_trail",
+     "kind": "read",
+     "description": "Xem tình trạng tuyến và yêu cầu chuẩn bị được công bố.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "trail_id": {
+        "type": "string",
+        "description": "Mã tuyến lấy từ tool trail_companion.discover_trails.",
+        "x-ref": "trail_companion.trails"
+       }
+      },
+      "required": [
+       "trail_id"
+      ]
+     },
+     "returns": "trail_detail gồm bản đồ, thông báo đóng mở, yêu cầu đăng ký và đồ cần mang"
+    },
+    {
+     "name": "trail_companion.save_hike_plan",
+     "kind": "write",
+     "description": "Lưu kế hoạch trekking riêng tư cho một tuyến.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "trail_id": {
+        "type": "string",
+        "description": "Mã tuyến lấy từ tool trail_companion.discover_trails.",
+        "x-ref": "trail_companion.trails"
+       },
+       "departure_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm dự kiến bắt đầu đi bộ. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "party_size": {
+        "type": "integer",
+        "description": "Số người dự kiến tham gia."
+       },
+       "note": {
+        "type": "string",
+        "description": "Ghi chú chuẩn bị cho chuyến đi.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "trail_id",
+       "departure_at",
+       "party_size"
+      ]
+     },
+     "returns": "hike_plan gồm mã kế hoạch, tuyến, lịch khởi hành và danh sách chuẩn bị"
+    }
+   ]
+  },
+  {
+   "id": "family_roots",
+   "name_vi": "Gốc Nhà",
+   "group": "ngách",
+   "description": "Lưu gia phả và những câu chuyện trong gia đình.",
+   "tools": [
+    {
+     "name": "family_roots.browse_trees",
+     "kind": "read",
+     "description": "Xem các cây gia phả người dùng được truy cập.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "family_trees[] gồm family_tree_id, tên gia phả và quyền đóng góp"
+    },
+    {
+     "name": "family_roots.find_relatives",
+     "kind": "read",
+     "description": "Tìm người trong một cây gia phả.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "family_tree_id": {
+        "type": "string",
+        "description": "Mã gia phả lấy từ tool family_roots.browse_trees.",
+        "x-ref": "family_roots.family_trees"
+       },
+       "person_query": {
+        "type": "string",
+        "description": "Tên, biệt danh hoặc cách gọi người thân.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "family_tree_id",
+       "person_query"
+      ]
+     },
+     "returns": "relatives[] gồm relative_id, họ tên, vai vế và nhánh gia đình"
+    },
+    {
+     "name": "family_roots.add_memory",
+     "kind": "write",
+     "description": "Gắn một câu chuyện vào hồ sơ người thân trong gia phả.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "relative_id": {
+        "type": "string",
+        "description": "Mã người thân lấy từ tool family_roots.find_relatives.",
+        "x-ref": "family_roots.relatives"
+       },
+       "title": {
+        "type": "string",
+        "description": "Tiêu đề câu chuyện.",
+        "x-match": "fuzzy"
+       },
+       "story": {
+        "type": "string",
+        "description": "Nội dung kỷ niệm hoặc câu chuyện gia đình.",
+        "x-match": "fuzzy"
+       },
+       "visibility": {
+        "type": "string",
+        "description": "Phạm vi người được xem câu chuyện.",
+        "enum": [
+         "private",
+         "tree_members"
+        ]
+       }
+      },
+      "required": [
+       "relative_id",
+       "title",
+       "story",
+       "visibility"
+      ]
+     },
+     "returns": "memory gồm mã câu chuyện, người thân được gắn và quyền xem"
+    }
+   ]
+  },
+  {
+   "id": "collection_catalog",
+   "name_vi": "Tủ Sưu Tầm",
+   "group": "ngách",
+   "description": "Quản lý bộ sưu tập tem, bưu thiếp và đồ kỷ niệm cá nhân.",
+   "tools": [
+    {
+     "name": "collection_catalog.browse_collections",
+     "kind": "read",
+     "description": "Xem các bộ sưu tập đã lập.",
+     "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "returns": "collections[] gồm collection_id, tên, loại và số hiện vật"
+    },
+    {
+     "name": "collection_catalog.search_items",
+     "kind": "read",
+     "description": "Tìm hiện vật trong một bộ sưu tập.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "collection_id": {
+        "type": "string",
+        "description": "Mã bộ sưu tập lấy từ tool collection_catalog.browse_collections.",
+        "x-ref": "collection_catalog.collections"
+       },
+       "item_query": {
+        "type": "string",
+        "description": "Tên, chủ đề hoặc đặc điểm hiện vật.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "collection_id",
+       "item_query"
+      ]
+     },
+     "returns": "collection_items[] gồm collection_item_id, tên, tình trạng và vị trí cất"
+    },
+    {
+     "name": "collection_catalog.register_item",
+     "kind": "write",
+     "description": "Thêm một hiện vật vào bộ sưu tập.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "collection_id": {
+        "type": "string",
+        "description": "Mã bộ sưu tập lấy từ tool collection_catalog.browse_collections.",
+        "x-ref": "collection_catalog.collections"
+       },
+       "item_name": {
+        "type": "string",
+        "description": "Tên gọi của hiện vật.",
+        "x-match": "fuzzy"
+       },
+       "condition": {
+        "type": "string",
+        "description": "Tình trạng bảo quản hiện tại.",
+        "enum": [
+         "excellent",
+         "good",
+         "worn",
+         "damaged"
+        ]
+       },
+       "storage_note": {
+        "type": "string",
+        "description": "Nơi cất giữ hoặc nguồn gốc hiện vật.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "collection_id",
+       "item_name",
+       "condition"
+      ]
+     },
+     "returns": "collection_item gồm mã hiện vật và thông tin đã ghi"
+    }
+   ]
+  },
+  {
+   "id": "sky_observer",
+   "name_vi": "Ngước Sao",
+   "group": "ngách",
+   "description": "Tra cứu vật thể trên bầu trời và ghi nhật ký ngắm sao nghiệp dư.",
+   "tools": [
+    {
+     "name": "sky_observer.find_observing_sites",
+     "kind": "read",
+     "description": "Tìm địa điểm ngắm sao trong danh mục.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn tìm chỗ quan sát bầu trời.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "area_query"
+      ]
+     },
+     "returns": "observing_sites[] gồm observing_site_id, tên, tọa độ và điều kiện tiếp cận"
+    },
+    {
+     "name": "sky_observer.predict_visible_objects",
+     "kind": "read",
+     "description": "Tra các vật thể có vị trí trên đường chân trời tại nơi và giờ đã chọn.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "observing_site_id": {
+        "type": "string",
+        "description": "Mã điểm quan sát lấy từ tool sky_observer.find_observing_sites.",
+        "x-ref": "sky_observer.observing_sites"
+       },
+       "observe_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm dự kiến quan sát. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       }
+      },
+      "required": [
+       "observing_site_id",
+       "observe_at"
+      ]
+     },
+     "returns": "sky_objects[] gồm sky_object_id, tên, hướng, độ cao và dụng cụ quan sát gợi ý"
+    },
+    {
+     "name": "sky_observer.record_sighting",
+     "kind": "write",
+     "description": "Lưu một lần quan sát vật thể bầu trời.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "observing_site_id": {
+        "type": "string",
+        "description": "Mã điểm quan sát lấy từ tool sky_observer.find_observing_sites.",
+        "x-ref": "sky_observer.observing_sites"
+       },
+       "sky_object_id": {
+        "type": "string",
+        "description": "Mã vật thể lấy từ tool sky_observer.predict_visible_objects.",
+        "x-ref": "sky_observer.sky_objects"
+       },
+       "observed_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Thời điểm thực tế quan sát. ISO-8601 đầy đủ giây và offset múi giờ, ví dụ 2026-11-11T05:30:00+07:00"
+       },
+       "note": {
+        "type": "string",
+        "description": "Mô tả điều nhìn thấy và điều kiện quan sát.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "observing_site_id",
+       "sky_object_id",
+       "observed_at"
+      ]
+     },
+     "returns": "sighting gồm mã nhật ký, vật thể và địa điểm quan sát"
+    }
+   ]
+  },
+  {
+   "id": "sewing_studio",
+   "name_vi": "Mũi Chỉ",
+   "group": "ngách",
+   "description": "Tìm mẫu may vá gia đình và theo dõi dự án thủ công cá nhân.",
+   "tools": [
+    {
+     "name": "sewing_studio.discover_patterns",
+     "kind": "read",
+     "description": "Tìm mẫu may theo món đồ và trình độ.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "item_query": {
+        "type": "string",
+        "description": "Món đồ muốn may, chẳng hạn túi vải hoặc vỏ gối.",
+        "x-match": "fuzzy"
+       },
+       "skill_level": {
+        "type": "string",
+        "description": "Trình độ phù hợp với mẫu.",
+        "enum": [
+         "beginner",
+         "intermediate",
+         "advanced"
+        ]
+       }
+      },
+      "required": [
+       "item_query"
+      ]
+     },
+     "returns": "patterns[] gồm pattern_id, tên mẫu, độ khó và vật liệu cần có"
+    },
+    {
+     "name": "sewing_studio.review_projects",
+     "kind": "read",
+     "description": "Xem các dự án may vá cá nhân đang lưu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "status": {
+        "type": "string",
+        "description": "Trạng thái dự án cần xem.",
+        "enum": [
+         "all",
+         "planned",
+         "in_progress",
+         "completed"
+        ]
+       }
+      },
+      "required": []
+     },
+     "returns": "sewing_projects[] gồm sewing_project_id, tên, mẫu sử dụng và tiến độ"
+    },
+    {
+     "name": "sewing_studio.start_project",
+     "kind": "write",
+     "description": "Lập dự án may mới từ một mẫu.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "pattern_id": {
+        "type": "string",
+        "description": "Mã mẫu lấy từ tool sewing_studio.discover_patterns.",
+        "x-ref": "sewing_studio.patterns"
+       },
+       "project_name": {
+        "type": "string",
+        "description": "Tên riêng cho dự án may.",
+        "x-match": "fuzzy"
+       },
+       "fabric_note": {
+        "type": "string",
+        "description": "Loại vải, màu sắc hoặc vật liệu dự định dùng.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "pattern_id",
+       "project_name"
+      ]
+     },
+     "returns": "sewing_project gồm mã dự án, mẫu đã chọn và danh sách công đoạn"
+    }
+   ]
+  },
+  {
+   "id": "boardgame_club",
+   "name_vi": "Bàn Bạn",
+   "group": "ngách",
+   "description": "Tìm nhóm chơi board game và đăng ký tham gia bàn chơi phù hợp.",
+   "tools": [
+    {
+     "name": "boardgame_club.find_game_tables",
+     "kind": "read",
+     "description": "Tìm bàn chơi đang nhận người tham gia.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "area_query": {
+        "type": "string",
+        "description": "Khu vực muốn đến chơi.",
+        "x-match": "fuzzy"
+       },
+       "game_query": {
+        "type": "string",
+        "description": "Tên hoặc thể loại board game muốn chơi.",
+        "x-match": "fuzzy"
+       },
+       "beginner_friendly": {
+        "type": "boolean",
+        "description": "Chỉ tìm bàn có hướng dẫn người mới nếu đặt true."
+       }
+      },
+      "required": [
+       "area_query"
+      ]
+     },
+     "returns": "game_tables[] gồm game_table_id, trò chơi, địa điểm, giờ chơi, phí và số ghế trống"
+    },
+    {
+     "name": "boardgame_club.inspect_table_rules",
+     "kind": "read",
+     "description": "Xem điều kiện tham gia và nội quy bàn chơi.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "game_table_id": {
+        "type": "string",
+        "description": "Mã bàn chơi lấy từ tool boardgame_club.find_game_tables.",
+        "x-ref": "boardgame_club.game_tables"
+       }
+      },
+      "required": [
+       "game_table_id"
+      ]
+     },
+     "returns": "table_rules gồm yêu cầu kinh nghiệm, nội quy, chính sách hủy và thông tin người hướng dẫn"
+    },
+    {
+     "name": "boardgame_club.join_table",
+     "kind": "write",
+     "description": "Đăng ký ghế tại một bàn chơi.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "game_table_id": {
+        "type": "string",
+        "description": "Mã bàn chơi lấy từ tool boardgame_club.find_game_tables.",
+        "x-ref": "boardgame_club.game_tables"
+       },
+       "seat_count": {
+        "type": "integer",
+        "description": "Số ghế đăng ký, bao gồm người dùng."
+       },
+       "experience_note": {
+        "type": "string",
+        "description": "Kinh nghiệm chơi hoặc nhu cầu được hướng dẫn.",
+        "x-match": "fuzzy"
+       }
+      },
+      "required": [
+       "game_table_id",
+       "seat_count"
+      ]
+     },
+     "returns": "table_registration gồm mã đăng ký, bàn chơi, số ghế và trạng thái xác nhận"
+    }
+   ]
+  }
+ ]
+}
