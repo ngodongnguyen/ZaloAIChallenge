@@ -1,4 +1,4 @@
-"""LoRA SFT on multi-turn trajectories; loss only on assistant turns. Merges and saves the full model."""
+"""LoRA SFT on multi-turn trajectories; loss only on assistant turns. Saves the adapter only (src/llm.py merges it at load time)."""
 import argparse
 import json
 import sys
@@ -6,9 +6,9 @@ from pathlib import Path
 
 import torch
 import torch.nn.functional as F
-from peft import LoraConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from torch.utils.data import Dataset
-from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from chat import encode_with_labels, needs_manual  # noqa: E402
@@ -139,14 +139,12 @@ def main():
             seed=42, report_to="none", remove_unused_columns=False),
     )
     trainer.train()
-    model.save_pretrained(args.out + "_adapter")
-    del trainer, model
-    torch.cuda.empty_cache()
-    # merge into a clean (non-quantized) base so the final model needs no bitsandbytes
-    base = AutoModelForCausalLM.from_pretrained(args.base, torch_dtype=dtype)
-    model = PeftModel.from_pretrained(base, args.out + "_adapter").merge_and_unload()
+    # Only the adapter (~260 MB) is saved; src/llm.py merges it into the base in memory at load time. Writing a merged 8 GB
+    # model hung ai3 twice. config.json keeps the "already trained" check of run_e*.sh working; the tokenizer makes --out loadable.
     model.save_pretrained(args.out)
     tok.save_pretrained(args.out)
+    AutoConfig.from_pretrained(args.base).save_pretrained(args.out)
+    print("saved adapter", args.out)
 
 
 if __name__ == "__main__":

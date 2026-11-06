@@ -3,7 +3,7 @@ import random
 
 SEED = 42
 ASR_MODEL = os.environ.get("ASR_MODEL", "vinai/PhoWhisper-large")
-LLM_MODEL = os.environ.get("LLM_MODEL", "models/lifemate-llm")  # merged SFT model
+LLM_MODEL = os.environ.get("LLM_MODEL", "models/lifemate-llm")  # SFT output dir: a LoRA adapter (merged in memory by llm.py) or a full model
 BASE_LLM = os.environ.get("BASE_LLM", "Qwen/Qwen2.5-3B-Instruct")
 
 MAX_STEPS = 7  # gold has at most 6 calls + the final done
