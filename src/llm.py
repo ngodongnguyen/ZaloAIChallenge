@@ -48,7 +48,7 @@ class LLM:
             dev, dtype = "mps", torch.float16
         else:
             dev, dtype = "cpu", torch.float32
-        if base_id:  # a LoRA adapter directory (sft.py --no-merge or *_adapter): merge into its base here, nothing big is written to disk
+        if base_id:  # a LoRA adapter directory (what train/sft.py saves): merge into its base here, nothing big is written to disk
             from peft import PeftModel
             base = AutoModelForCausalLM.from_pretrained(base_id, torch_dtype=dtype).to(dev)
             self.model = PeftModel.from_pretrained(base, model_path).merge_and_unload().eval()
