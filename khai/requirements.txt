@@ -1,0 +1,7 @@
+# Versions of the Kaggle runs behind our leaderboard scores (transformers 4.46 cannot load Qwen3).
+torch>=2.3
+transformers==4.57.6
+accelerate==1.15.0
+peft==0.21.2
+soundfile>=0.12
+numpy
