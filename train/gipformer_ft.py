@@ -311,8 +311,8 @@ def main():
             out = Path(args.out)
             out.mkdir(parents=True, exist_ok=True)
             torch.save({"model": model.state_dict()}, out / "model.pt")
-            shutil.copy(files["bpe.model"], out / "bpe.model")
-            shutil.copy(files["tokens.txt"], out / "tokens.txt")
+            shutil.copyfile(files["bpe.model"], out / "bpe.model")  # copyfile: copy() keeps the read-only mode of the HF cache file and the next epoch cannot overwrite it
+            shutil.copyfile(files["tokens.txt"], out / "tokens.txt")
             print(f"saved best (WER {best:.3f}) to {out}", flush=True)
 
 
