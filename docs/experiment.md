@@ -285,3 +285,6 @@ Mục "Trạng thái": `done` / `running` / `planned` / `aborted`.
 
 ## E27: E22 với teacher 9B
 - Cùng 376 câu tổng hợp, nhãn do 9B (đồng thuận 2 lần, không hỏi lại) thay cho tự gán nhãn: 173 quỹ đạo, 346 dòng trong 5348 (6.5%), 1 epoch. Holdout unseen 0.6270 (E22 0.6100); web 57.03 (E22 56.31, trong nhiễu). Chưng cất theo cách này chưa giúp.
+
+## E28: đo teacher Qwen3.5-9B trên 187 mẫu unseen
+- 9B (4-bit, think, few-shot 3, transcript gold) đạt 0.5542 (tool-call 0.6680, hash 135/187) so với 0.7385 của 4B 3 epoch trên cùng tập. Dưới ngưỡng dừng 0.70, nên không mở rộng chưng cất. Chuyển sang Docker. Chi tiết trong docs/result.md.

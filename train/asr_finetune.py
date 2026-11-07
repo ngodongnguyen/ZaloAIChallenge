@@ -10,6 +10,7 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import soundfile as sf
 import torch
 import torch.nn.functional as F
@@ -46,15 +47,22 @@ def collect(base, rows, skip_ids):
 
 
 class Clips(Dataset):
-    def __init__(self, clips):
+    def __init__(self, clips, speeds=()):
         self.clips = clips
+        self.speeds = speeds  # e.g. (0.9, 1.1): each clip is replayed at a random one of these (or unchanged) factors; training only
 
     def __len__(self):
         return len(self.clips)
 
     def __getitem__(self, i):
         path, text = self.clips[i]
-        return read_audio(path), text
+        audio = read_audio(path)
+        if self.speeds:
+            f = random.choice((1.0,) + tuple(self.speeds))
+            if f != 1.0:  # speed change like sox "speed": tempo and pitch move together, as with a faster or slower speaker
+                n = int(len(audio) / f)
+                audio = np.interp(np.linspace(0, len(audio) - 1, n), np.arange(len(audio)), audio).astype("float32")
+        return audio, text
 
 
 def make_collate(fe, tok):
@@ -103,6 +111,8 @@ def main():
     ap.add_argument("--accum", type=int, default=2)
     ap.add_argument("--eval-n", type=int, default=150)
     ap.add_argument("--limit", type=int, default=0, help="debug: use only the first N training clips")
+    ap.add_argument("--speed", default="", help="comma-separated speed factors for augmentation, e.g. 0.9,1.1 (default: none)")
+    ap.add_argument("--specaug", action="store_true", help="SpecAugment time/frequency masking while training")
     args = ap.parse_args()
 
     seed_everything()
@@ -123,6 +133,10 @@ def main():
     tok.set_prefix_tokens(language="vietnamese", task="transcribe", predict_timestamps=False)
     model = WhisperForConditionalGeneration.from_pretrained(args.base, dtype=torch.bfloat16).to(device)
     model.config.use_cache = False
+    if args.specaug:  # the encoder reads these on every training forward pass; evaluation is unaffected
+        model.config.apply_spec_augment = True
+        model.config.mask_time_prob, model.config.mask_time_length = 0.05, 10
+        model.config.mask_feature_prob, model.config.mask_feature_length = 0.05, 10
 
     print(f"WER before: {wer(model, fe, tok, val, device):.3f}", flush=True)
 
@@ -132,7 +146,8 @@ def main():
         target_modules=["q_proj", "k_proj", "v_proj", "out_proj", "fc1", "fc2"]))
     model.print_trainable_parameters()
 
-    loader = DataLoader(Clips(train), batch_size=args.batch, shuffle=True, num_workers=4,
+    speeds = tuple(float(x) for x in args.speed.split(",") if x)
+    loader = DataLoader(Clips(train, speeds), batch_size=args.batch, shuffle=True, num_workers=4,
                         collate_fn=make_collate(fe, tok), generator=torch.Generator().manual_seed(42), drop_last=True)
     params = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(params, lr=args.lr, weight_decay=0.01)
@@ -163,6 +178,10 @@ def main():
                     print(f"epoch {ep} step {step}/{total} loss {run / (20 * args.accum):.4f}  "
                           f"elapsed {el / 60:.1f}m  {el / step:.1f}s/step  eta {el / step * (total - step) / 60:.1f}m", flush=True)
                     run = 0.0
+        model.config.use_cache = True  # per-epoch WER and adapter, to pick the epoch before the model starts memorising
+        print(f"epoch {ep + 1} WER: {wer(model, fe, tok, val, device):.3f}", flush=True)
+        model.config.use_cache = False
+        model.save_pretrained(f"{args.out}_adapter_ep{ep + 1}")
 
     model = model.merge_and_unload()
     model.config.use_cache = True
