@@ -53,11 +53,21 @@ def main():
     ap.add_argument("--int8", action="store_true")
     ap.add_argument("--compare", default=None, help="a PhoWhisper-style model dir (e.g. models/asr_ft) run on the same clips")
     ap.add_argument("--out", default="out/asr_eval/gipformer1.5.jsonl")
+    ap.add_argument("--dump", default=None, help="skip the WER and write {id, text} for every holdout sample here (an --asr-cache for infer.py)")
     args = ap.parse_args()
 
     base = Path(args.root) / args.split
     hold = set(open(args.holdout).read().split())
     rows = [json.loads(l) for l in open(base / f"{args.split}.jsonl", encoding="utf-8")]
+    if args.dump:
+        rec = make_recognizer(args.model_dir, args.int8)
+        Path(args.dump).parent.mkdir(parents=True, exist_ok=True)
+        with open(args.dump, "w", encoding="utf-8") as f:
+            for r in rows:
+                if r["id"] in hold:
+                    f.write(json.dumps({"id": r["id"], "text": transcribe(rec, base / r["audio"])}, ensure_ascii=False) + "\n")
+        print("wrote", args.dump)
+        return
     val = [(r["id"], base / r["audio"], r["audio_text"]) for r in rows if r["id"] in hold]
     random.Random(0).shuffle(val)  # same selection as train/asr_finetune.py
     val = val[: args.n]
